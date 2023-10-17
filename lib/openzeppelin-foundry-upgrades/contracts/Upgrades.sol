@@ -21,11 +21,11 @@ library Upgrades {
   }
 
   function deployFromBytecode(bytes memory bytecode) private returns (address) {
-        address addr;
-        assembly {
-            addr := create(0, add(bytecode, 32), mload(bytecode))
-        }
-        return addr;
+    address addr;
+    assembly {
+      addr := create(0, add(bytecode, 32), mload(bytecode))
+    }
+    return addr;
    }
 
   function deployUUPSProxy(bytes memory implCreationCode, bytes memory data) internal returns (ERC1967Proxy) {
