@@ -89,9 +89,6 @@ library Upgrades {
   }
 
   modifier broadcast(address deployer) {
-    console.log('msg.sender in Upgrades is %s', msg.sender);
-    console.log('deployer is ', deployer);
-
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
     bool wasBroadcasting = false;
