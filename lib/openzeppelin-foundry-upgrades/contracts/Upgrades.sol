@@ -60,15 +60,18 @@ library Upgrades {
     }
   }
 
-  function upgradeProxy(address proxy, bytes memory newImplCreationCode, address owner, bytes memory data) internal broadcast(owner) {
+  function upgradeProxy(address proxy, bytes memory newImplCreationCode, address owner, bytes memory data) internal {
     address newImpl = deployImplementation(newImplCreationCode);
     upgradeProxy(proxy, newImpl, owner, data);
   }
 
-  function upgradeBeacon(address beacon, bytes memory newImplCreationCode, address owner) internal broadcast(owner) {
-    address newImpl = deployImplementation(newImplCreationCode);
-
+  function upgradeBeacon(address beacon, address newImpl, address owner) internal broadcast(owner) {
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
+  }
+
+  function upgradeBeacon(address beacon, bytes memory newImplCreationCode, address owner) internal {
+    address newImpl = deployImplementation(newImplCreationCode);
+    upgradeBeacon(beacon, newImpl, owner);
   }
 
   function getAdminAddress(address proxy) internal view returns (address) {
