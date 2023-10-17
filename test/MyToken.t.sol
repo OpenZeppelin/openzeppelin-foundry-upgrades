@@ -27,7 +27,6 @@ contract MyTokenTest is Test {
 
     assertEq(instance.greeting(), "resetted");
     assertFalse(implAddressV2 == implAddressV1);
-
   }
 
   function testTransparent() public {
@@ -69,5 +68,24 @@ contract MyTokenTest is Test {
 
     assertEq(instance.greeting(), "resetted");
     assertFalse(implAddressV2 == implAddressV1);
+  }
+
+  function testUpgradeWithImplAddress() public {
+    Proxy proxy = Upgrades.deployTransparentProxy(type(MyToken).creationCode, msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
+    MyToken instance = MyToken(address(proxy));
+    address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
+
+    assertEq(instance.name(), "MyToken");
+    assertEq(instance.greeting(), "hello");
+    assertEq(instance.owner(), msg.sender);
+
+    address newImpl = Upgrades.deployImplementation(type(MyTokenV2).creationCode);
+
+    Upgrades.upgradeProxy(address(proxy), newImpl, msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
+    address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
+
+    assertEq(instance.greeting(), "resetted");
+    assertFalse(implAddressV2 == implAddressV1);
+    assertEq(newImpl, implAddressV2);
   }
 }

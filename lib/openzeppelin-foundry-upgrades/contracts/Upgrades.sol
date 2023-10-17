@@ -47,9 +47,7 @@ library Upgrades {
     return new BeaconProxy(beacon, data);
   }
 
-  function upgradeProxy(address proxy, bytes memory newImplCreationCode, address owner, bytes memory data) internal broadcast(owner) {
-    address newImpl = deployImplementation(newImplCreationCode);
-
+  function upgradeProxy(address proxy, address newImpl, address owner, bytes memory data) internal broadcast(owner) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
     bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
@@ -60,6 +58,11 @@ library Upgrades {
       ProxyAdmin admin = ProxyAdmin(address(uint160(uint256(adminSlot))));
       admin.upgradeAndCall(ITransparentUpgradeableProxy(proxy), newImpl, data);
     }
+  }
+
+  function upgradeProxy(address proxy, bytes memory newImplCreationCode, address owner, bytes memory data) internal broadcast(owner) {
+    address newImpl = deployImplementation(newImplCreationCode);
+    upgradeProxy(proxy, newImpl, owner, data);
   }
 
   function upgradeBeacon(address beacon, bytes memory newImplCreationCode, address owner) internal broadcast(owner) {
