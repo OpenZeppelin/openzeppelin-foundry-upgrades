@@ -12,11 +12,61 @@ contract LayoutV1 {
     uint256 b;
 }
 
-contract LayoutV2 {
+contract LayoutV2_Bad {
     uint256 a;
+    uint256 c;
+    uint256 b;
 }
 
 /// @custom:oz-upgrades-from LayoutV1
-contract LayoutV2_Reference {
+contract LayoutV2_UpgradesFrom_Bad {
     uint256 a;
+    uint256 c;
+    uint256 b;
+}
+
+contract NamespacedV1 {
+    /// @custom:storage-location erc7201:s
+    struct S {
+        uint256 a;
+        uint256 b;
+    }
+}
+
+contract NamespacedV2_Bad {
+    /// @custom:storage-location erc7201:s
+    struct S {
+        uint256 a;
+        uint256 c;
+        uint256 b;
+    }
+}
+
+/// @custom:oz-upgrades-from NamespacedV1
+contract NamespacedV2_UpgradesFrom_Bad {
+    /// @custom:storage-location erc7201:s
+    struct S {
+        uint256 a;
+        uint256 c;
+        uint256 b;
+    }
+}
+
+contract NamespacedV2_Ok {
+    /// @custom:storage-location erc7201:s
+    struct S {
+        uint256 a;
+        uint256 b;
+        uint256 c;
+    }
+}
+
+/// @custom:oz-upgrades-from NamespacedV1
+contract NamespacedV2_UpgradesFrom_Ok {
+    /// @custom:storage-location erc7201:s
+    struct S {
+        uint256 a;
+        uint256 b;
+        uint256 c;
+    }
 }

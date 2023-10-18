@@ -105,21 +105,47 @@ contract MyTokenTest is Test {
   function testValidateLayout() public {
     Options memory opts;
     Validator v = new Validator();
-    try v.validateImplementation("Validations.sol:LayoutV2", "Validations.sol:LayoutV1", opts) {
+    try v.validateImplementation("Validations.sol:LayoutV2_Bad", "Validations.sol:LayoutV1", opts) {
       fail();
     } catch {
       // TODO: check error message
     }
   }
 
-  function testValidateLayoutReference() public {
+  function testValidateLayoutUpgradesFrom() public {
     Options memory opts;
     Validator v = new Validator();
-    try v.validateImplementation("Validations.sol:LayoutV2_Reference", opts) {
+    try v.validateImplementation("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
       fail();
     } catch {
       // TODO: check error message
     }
+  }
+
+  function testValidateNamespaced() public {
+    Options memory opts;
+    Validator v = new Validator();
+    try v.validateImplementation("Validations.sol:NamespacedV2_Bad", "Validations.sol:NamespacedV1", opts) {
+      fail();
+    } catch {
+      // TODO: check error message
+    }
+  }
+
+  function testValidateNamespacedUpgradesFrom() public {
+    Options memory opts;
+    Validator v = new Validator();
+    try v.validateImplementation("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
+      fail();
+    } catch {
+      // TODO: check error message
+    }
+  }
+
+  function testValidateNamespacedOk() public {
+    Options memory opts;
+    Validator v = new Validator();
+    v.validateImplementation("Validations.sol:NamespacedV2_Ok", "Validations.sol:NamespacedV1", opts);
   }
 }
 
