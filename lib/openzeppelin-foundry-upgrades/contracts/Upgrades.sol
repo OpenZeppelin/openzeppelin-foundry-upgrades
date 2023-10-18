@@ -13,18 +13,13 @@ import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/Console.sol";
 
+struct Options {
+  string srcDir;
+  string outDir;
+}
+
 library Upgrades {
-  struct Options {
-    string srcDir;
-    string outDir;
-  }
-
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
-  function validateImplementation(string memory contractName) internal {
-    Options memory opts;
-    validateImplementation(contractName, opts);
-  }
 
   function validateImplementation(string memory contractName, Options memory opts) internal {
     // TODO get defaults for src and out from foundry.toml
@@ -59,8 +54,8 @@ library Upgrades {
     revert(string.concat("Upgrade safety validation failed: ", string(res)));
   }
 
-  function deployImplementation(string memory contractName) internal returns (address) {
-    validateImplementation(contractName);
+  function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
+    validateImplementation(contractName, opts);
 
     bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
     return deployFromBytecode(code);
@@ -74,27 +69,42 @@ library Upgrades {
     return addr;
    }
 
-  function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (ERC1967Proxy) {
-    address impl = deployImplementation(contractName);
+  function deployUUPSProxy(string memory contractName, bytes memory data, Options memory opts) internal returns (ERC1967Proxy) {
+    address impl = deployImplementation(contractName, opts);
     return new ERC1967Proxy(impl, data);
   }
 
-  function deployTransparentProxy(string memory contractName, address initialOwner, bytes memory data) internal returns (TransparentUpgradeableProxy) {
-    address impl = deployImplementation(contractName);
+  function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (ERC1967Proxy) {
+    Options memory opts;
+    return deployUUPSProxy(contractName, data, opts);
+  }
+
+  function deployTransparentProxy(string memory contractName, address initialOwner, bytes memory data, Options memory opts) internal returns (TransparentUpgradeableProxy) {
+    address impl = deployImplementation(contractName, opts);
     return new TransparentUpgradeableProxy(impl, initialOwner, data);
   }
 
-  function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
-    address impl = deployImplementation(contractName);
+  function deployTransparentProxy(string memory contractName, address initialOwner, bytes memory data) internal returns (TransparentUpgradeableProxy) {
+    Options memory opts;
+    return deployTransparentProxy(contractName, initialOwner, data, opts);
+  }
+
+  function deployBeacon(string memory contractName, address initialOwner, Options memory opts) internal returns (IBeacon) {
+    address impl = deployImplementation(contractName, opts);
     return new UpgradeableBeacon(impl, initialOwner);
+  }
+
+  function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
+    Options memory opts;
+    return deployBeacon(contractName, initialOwner, opts);
   }
 
   function deployBeaconProxy(address beacon, bytes memory data) internal returns (BeaconProxy) {
     return new BeaconProxy(beacon, data);
   }
 
-  function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal  {
-    address newImpl = deployImplementation(contractName);
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
+    address newImpl = deployImplementation(contractName, opts);
 
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
@@ -108,17 +118,37 @@ library Upgrades {
     }
   }
 
-  function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
-    upgradeProxy(proxy, contractName, data);
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
+    Options memory opts;
+    upgradeProxy(proxy, contractName, data, opts);
   }
 
-  function upgradeBeacon(address beacon, string memory contractName) internal {
-    address newImpl = deployImplementation(contractName);
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts, address tryCaller) internal tryPrank(tryCaller) {
+    upgradeProxy(proxy, contractName, data, opts);
+  }
+
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
+    Options memory opts;
+    upgradeProxy(proxy, contractName, data, opts, tryCaller);
+  }
+
+  function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
+    address newImpl = deployImplementation(contractName, opts);
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
   }
 
+  function upgradeBeacon(address beacon, string memory contractName) internal {
+    Options memory opts;
+    upgradeBeacon(beacon, contractName, opts);
+  }
+
+  function upgradeBeacon(address beacon, string memory contractName, Options memory opts, address tryCaller) internal tryPrank(tryCaller) {
+    upgradeBeacon(beacon, contractName, opts);
+  }
+
   function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
-    upgradeBeacon(beacon, contractName);
+    Options memory opts;
+    upgradeBeacon(beacon, contractName, opts, tryCaller);
   }
 
   function getAdminAddress(address proxy) internal view returns (address) {
