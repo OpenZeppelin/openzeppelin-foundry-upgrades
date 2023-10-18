@@ -62,8 +62,12 @@ library Upgrades {
     revert(string.concat("Upgrade safety validation failed: ", string(res)));
   }
 
-  function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
+  function validateImplementation(string memory contractName, Options memory opts) internal {
     validateImplementation(contractName, "", opts);
+  }
+
+  function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
+    validateImplementation(contractName, opts);
 
     bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
     return deployFromBytecode(code);

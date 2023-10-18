@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
 
-import {Upgrades} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
+import {Upgrades, Options} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 
@@ -90,5 +90,45 @@ contract MyTokenTest is Test {
     vm.startPrank(msg.sender);
     Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol");
     vm.stopPrank();
+  }
+
+  function testValidate() public {
+    Options memory opts;
+    Validator v = new Validator();
+    try v.validateImplementation("Validations.sol:Unsafe", opts) {
+      fail();
+    } catch {
+      // TODO: check error message
+    }
+  }
+
+  function testValidateLayout() public {
+    Options memory opts;
+    Validator v = new Validator();
+    try v.validateImplementation("Validations.sol:LayoutV2", "Validations.sol:LayoutV1", opts) {
+      fail();
+    } catch {
+      // TODO: check error message
+    }
+  }
+
+  function testValidateLayoutReference() public {
+    Options memory opts;
+    Validator v = new Validator();
+    try v.validateImplementation("Validations.sol:LayoutV2_Reference", opts) {
+      fail();
+    } catch {
+      // TODO: check error message
+    }
+  }
+}
+
+contract Validator {
+  function validateImplementation(string memory contractName, Options memory opts) public {
+    Upgrades.validateImplementation(contractName, opts);
+  }
+
+  function validateImplementation(string memory contractName, string memory referenceContract, Options memory opts) public {
+    Upgrades.validateImplementation(contractName, referenceContract, opts);
   }
 }
