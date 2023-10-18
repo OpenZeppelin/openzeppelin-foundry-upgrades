@@ -16,8 +16,9 @@ import {Vm} from "forge-std/Vm.sol";
 library Upgrades {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
-  function deployImplementation(bytes memory creationCode) internal returns (address) {
-    return deployFromBytecode(creationCode);
+  function deployImplementation(string memory contractName) internal returns (address) {
+    bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+    return deployFromBytecode(code);
   }
 
   function deployFromBytecode(bytes memory bytecode) private returns (address) {
@@ -28,18 +29,18 @@ library Upgrades {
     return addr;
    }
 
-  function deployUUPSProxy(bytes memory implCreationCode, bytes memory data) internal returns (ERC1967Proxy) {
-    address impl = deployImplementation(implCreationCode);
+  function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (ERC1967Proxy) {
+    address impl = deployImplementation(contractName);
     return new ERC1967Proxy(impl, data);
   }
 
-  function deployTransparentProxy(bytes memory implCreationCode, address initialOwner, bytes memory data) internal returns (TransparentUpgradeableProxy) {
-    address impl = deployImplementation(implCreationCode);
+  function deployTransparentProxy(string memory contractName, address initialOwner, bytes memory data) internal returns (TransparentUpgradeableProxy) {
+    address impl = deployImplementation(contractName);
     return new TransparentUpgradeableProxy(impl, initialOwner, data);
   }
 
-  function deployBeacon(bytes memory implCreationCode, address initialOwner) internal returns (IBeacon) {
-    address impl = deployImplementation(implCreationCode);
+  function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
+    address impl = deployImplementation(contractName);
     return new UpgradeableBeacon(impl, initialOwner);
   }
 
@@ -60,8 +61,8 @@ library Upgrades {
     }
   }
 
-  function upgradeProxy(address proxy, bytes memory newImplCreationCode, address owner, bytes memory data) internal {
-    address newImpl = deployImplementation(newImplCreationCode);
+  function upgradeProxy(address proxy, string memory contractName, address owner, bytes memory data) internal {
+    address newImpl = deployImplementation(contractName);
     upgradeProxy(proxy, newImpl, owner, data);
   }
 
@@ -69,8 +70,8 @@ library Upgrades {
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
   }
 
-  function upgradeBeacon(address beacon, bytes memory newImplCreationCode, address owner) internal {
-    address newImpl = deployImplementation(newImplCreationCode);
+  function upgradeBeacon(address beacon, string memory contractName, address owner) internal {
+    address newImpl = deployImplementation(contractName);
     upgradeBeacon(beacon, newImpl, owner);
   }
 

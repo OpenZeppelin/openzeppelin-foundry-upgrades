@@ -15,7 +15,7 @@ import {MyTokenProxiableV2} from "../src/MyTokenProxiableV2.sol";
 contract MyTokenTest is Test {
 
   function testUUPS() public {
-    Proxy proxy = Upgrades.deployUUPSProxy(type(MyTokenProxiable).creationCode, abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
+    Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
     MyToken instance = MyToken(address(proxy));
     address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
 
@@ -23,7 +23,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeProxy(address(proxy), type(MyTokenProxiableV2).creationCode, msg.sender, abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol", msg.sender, abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
 
     assertEq(instance.greeting(), "resetted");
@@ -31,7 +31,7 @@ contract MyTokenTest is Test {
   }
 
   function testTransparent() public {
-    Proxy proxy = Upgrades.deployTransparentProxy(type(MyToken).creationCode, msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
+    Proxy proxy = Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
     MyToken instance = MyToken(address(proxy));
     address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
     address adminAddress = Upgrades.getAdminAddress(address(proxy));
@@ -42,7 +42,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeProxy(address(proxy), type(MyTokenV2).creationCode, msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(address(proxy), "MyTokenV2.sol", msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
     
     assertEq(Upgrades.getAdminAddress(address(proxy)), adminAddress);
@@ -52,7 +52,7 @@ contract MyTokenTest is Test {
   }
 
   function testBeacon() public {
-    IBeacon beacon = Upgrades.deployBeacon(type(MyToken).creationCode, msg.sender);
+    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
     address implAddressV1 = beacon.implementation();
 
     Proxy proxy = Upgrades.deployBeaconProxy(address(beacon), abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
@@ -62,7 +62,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeBeacon(address(beacon), type(MyTokenV2).creationCode, msg.sender);
+    Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol", msg.sender);
     address implAddressV2 = beacon.implementation();
 
     MyTokenV2(address(instance)).resetGreeting();
@@ -72,7 +72,7 @@ contract MyTokenTest is Test {
   }
 
   function testUpgradeProxyWithImplAddress() public {
-    Proxy proxy = Upgrades.deployTransparentProxy(type(MyToken).creationCode, msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
+    Proxy proxy = Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
     MyToken instance = MyToken(address(proxy));
     address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
 
@@ -80,7 +80,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    address newImpl = Upgrades.deployImplementation(type(MyTokenV2).creationCode);
+    address newImpl = Upgrades.deployImplementation("MyTokenV2.sol");
 
     Upgrades.upgradeProxy(address(proxy), newImpl, msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
@@ -91,7 +91,7 @@ contract MyTokenTest is Test {
   }
 
   function testUpgradeBeaconWithImplAddress() public {
-    IBeacon beacon = Upgrades.deployBeacon(type(MyToken).creationCode, msg.sender);
+    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
     address implAddressV1 = beacon.implementation();
 
     Proxy proxy = Upgrades.deployBeaconProxy(address(beacon), abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
@@ -101,7 +101,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    address newImpl = Upgrades.deployImplementation(type(MyTokenV2).creationCode);
+    address newImpl = Upgrades.deployImplementation("MyTokenV2.sol");
 
     Upgrades.upgradeBeacon(address(beacon), newImpl, msg.sender);
     address implAddressV2 = beacon.implementation();

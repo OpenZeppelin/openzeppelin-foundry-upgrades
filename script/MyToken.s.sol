@@ -13,11 +13,11 @@ contract MyTokenScript is Script {
   function run() public {
     vm.startBroadcast();
 
-    address proxy = address(Upgrades.deployTransparentProxy(type(MyToken).creationCode, msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender))));
-    Upgrades.upgradeProxy(proxy, type(MyTokenV2).creationCode, msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
+    address proxy = address(Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender))));
+    Upgrades.upgradeProxy(proxy, "MyTokenV2.sol", msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
 
-    address beacon = address(Upgrades.deployBeacon(type(MyToken).creationCode, msg.sender));
-    Upgrades.upgradeBeacon(beacon, type(MyTokenV2).creationCode, msg.sender);    
+    address beacon = address(Upgrades.deployBeacon("MyToken.sol", msg.sender));
+    Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol", msg.sender);    
 
     vm.stopBroadcast();
   }
