@@ -48,7 +48,7 @@ library Upgrades {
     return new BeaconProxy(beacon, data);
   }
 
-  function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal  {
     address newImpl = deployImplementation(contractName);
 
     Vm vm = Vm(CHEATCODE_ADDRESS);
@@ -63,9 +63,17 @@ library Upgrades {
     }
   }
 
-  function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
+    upgradeProxy(proxy, contractName, data);
+  }
+
+  function upgradeBeacon(address beacon, string memory contractName) internal {
     address newImpl = deployImplementation(contractName);
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
+  }
+
+  function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
+    upgradeBeacon(beacon, contractName);
   }
 
   function getAdminAddress(address proxy) internal view returns (address) {
@@ -83,7 +91,7 @@ library Upgrades {
   }
 
   /**
-   * @dev Runs a function as a prank, or just runs the function normally if a broadcast or prank was already in progress.
+   * @dev Runs a function as a prank, or just runs the function normally if the prank could not be started.
    */
   modifier tryPrank(address deployer) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
