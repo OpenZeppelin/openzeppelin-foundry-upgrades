@@ -48,7 +48,7 @@ library Upgrades {
     return new BeaconProxy(beacon, data);
   }
 
-  function upgradeProxy(address proxy, address newImpl, address owner, bytes memory data) internal tryPrank(owner) {
+  function upgradeProxy(address proxy, address newImpl, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
     bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
@@ -61,18 +61,18 @@ library Upgrades {
     }
   }
 
-  function upgradeProxy(address proxy, string memory contractName, address owner, bytes memory data) internal {
+  function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal {
     address newImpl = deployImplementation(contractName);
-    upgradeProxy(proxy, newImpl, owner, data);
+    upgradeProxy(proxy, newImpl, data, tryCaller);
   }
 
-  function upgradeBeacon(address beacon, address newImpl, address owner) internal tryPrank(owner) {
+  function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal tryPrank(tryCaller) {
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
   }
 
-  function upgradeBeacon(address beacon, string memory contractName, address owner) internal {
+  function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal {
     address newImpl = deployImplementation(contractName);
-    upgradeBeacon(beacon, newImpl, owner);
+    upgradeBeacon(beacon, newImpl, tryCaller);
   }
 
   function getAdminAddress(address proxy) internal view returns (address) {

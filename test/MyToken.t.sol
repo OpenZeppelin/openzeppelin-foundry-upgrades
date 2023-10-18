@@ -23,7 +23,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol", msg.sender, abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()), msg.sender);
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
 
     assertEq(instance.greeting(), "resetted");
@@ -42,7 +42,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeProxy(address(proxy), "MyTokenV2.sol", msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(address(proxy), "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
     
     assertEq(Upgrades.getAdminAddress(address(proxy)), adminAddress);
@@ -82,7 +82,7 @@ contract MyTokenTest is Test {
 
     address newImpl = Upgrades.deployImplementation("MyTokenV2.sol");
 
-    Upgrades.upgradeProxy(address(proxy), newImpl, msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(address(proxy), newImpl, abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
 
     assertEq(instance.greeting(), "resetted");

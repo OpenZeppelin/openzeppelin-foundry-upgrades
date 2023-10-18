@@ -14,7 +14,7 @@ contract MyTokenScript is Script {
     vm.startBroadcast();
 
     address proxy = address(Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender))));
-    Upgrades.upgradeProxy(proxy, "MyTokenV2.sol", msg.sender, abi.encodeCall(MyTokenV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(proxy, "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
 
     address beacon = address(Upgrades.deployBeacon("MyToken.sol", msg.sender));
     Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol", msg.sender);    
