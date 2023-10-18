@@ -48,7 +48,7 @@ library Upgrades {
     return new BeaconProxy(beacon, data);
   }
 
-  function upgradeProxy(address proxy, address newImpl, address owner, bytes memory data) internal broadcast(owner) {
+  function upgradeProxy(address proxy, address newImpl, address owner, bytes memory data) internal tryPrank(owner) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
     bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
@@ -66,7 +66,7 @@ library Upgrades {
     upgradeProxy(proxy, newImpl, owner, data);
   }
 
-  function upgradeBeacon(address beacon, address newImpl, address owner) internal broadcast(owner) {
+  function upgradeBeacon(address beacon, address newImpl, address owner) internal tryPrank(owner) {
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
   }
 
@@ -89,22 +89,17 @@ library Upgrades {
     return address(uint160(uint256(implSlot)));
   }
 
-  modifier broadcast(address deployer) {
+  /**
+   * @dev Runs a function as a prank, or just runs the function normally if a broadcast or prank was already in progress.
+   */
+  modifier tryPrank(address deployer) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
-    bool wasBroadcasting = false;
-    try vm.stopBroadcast() {
-      wasBroadcasting = true;
+    try vm.startPrank(deployer) {
+      _;
+      vm.stopPrank();
     } catch {
-      // ignore
-    }
-
-    vm.startBroadcast(deployer);
-    _;
-    vm.stopBroadcast();
-    
-    if (wasBroadcasting) {
-      vm.startBroadcast(msg.sender);
+      _;
     }
   }
 }
