@@ -11,11 +11,57 @@ import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol"
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 
 import {Vm} from "forge-std/Vm.sol";
+import {console} from "forge-std/Console.sol";
 
 library Upgrades {
+  struct Options {
+    string srcDir;
+    string outDir;
+  }
+
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
+  function validateImplementation(string memory contractName) internal {
+    Options memory opts;
+    validateImplementation(contractName, opts);
+  }
+
+  function validateImplementation(string memory contractName, Options memory opts) internal {
+    // TODO get defaults for src and out from foundry.toml
+    string memory srcDir = opts.srcDir;
+    if (bytes(srcDir).length == 0) {
+      srcDir = "src";
+    }
+
+    string memory outDir = opts.outDir;
+    if (bytes(outDir).length == 0) {
+      outDir = "out";
+    }
+
+    string[] memory inputs = new string[](6);
+    inputs[0] = "npx";
+    inputs[1] = "@openzeppelin/upgrades-core@latest";
+    inputs[2] = "validate";
+    inputs[3] = string.concat(outDir, "/build-info");
+    inputs[4] = "--contract";
+    inputs[5] = string.concat(srcDir, "/", contractName);
+    // TODO support contract name without .sol extension
+    // TODO pass in validation options from environment variables
+
+    bytes memory res = Vm(CHEATCODE_ADDRESS).ffi(inputs);
+    console.log("Validation result: %s", string(res));
+    // check if res contains "SUCCESS"
+    for (uint i = 0; i < res.length - 7; i++) {
+      if (res[i] == "S" && res[i+1] == "U" && res[i+2] == "C" && res[i+3] == "C" && res[i+4] == "E" && res[i+5] == "S" && res[i+6] == "S") {
+        return;
+      }
+    }
+    revert(string.concat("Upgrade safety validation failed: ", string(res)));
+  }
+
   function deployImplementation(string memory contractName) internal returns (address) {
+    validateImplementation(contractName);
+
     bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
     return deployFromBytecode(code);
   }
