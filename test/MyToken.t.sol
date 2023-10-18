@@ -70,46 +70,4 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "resetted");
     assertFalse(implAddressV2 == implAddressV1);
   }
-
-  function testUpgradeProxyWithImplAddress() public {
-    Proxy proxy = Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
-    MyToken instance = MyToken(address(proxy));
-    address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
-
-    assertEq(instance.name(), "MyToken");
-    assertEq(instance.greeting(), "hello");
-    assertEq(instance.owner(), msg.sender);
-
-    address newImpl = Upgrades.deployImplementation("MyTokenV2.sol");
-
-    Upgrades.upgradeProxy(address(proxy), newImpl, abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
-    address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
-
-    assertEq(instance.greeting(), "resetted");
-    assertFalse(implAddressV2 == implAddressV1);
-    assertEq(newImpl, implAddressV2);
-  }
-
-  function testUpgradeBeaconWithImplAddress() public {
-    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
-    address implAddressV1 = beacon.implementation();
-
-    Proxy proxy = Upgrades.deployBeaconProxy(address(beacon), abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
-    MyToken instance = MyToken(address(proxy));
-
-    assertEq(instance.name(), "MyToken");
-    assertEq(instance.greeting(), "hello");
-    assertEq(instance.owner(), msg.sender);
-
-    address newImpl = Upgrades.deployImplementation("MyTokenV2.sol");
-
-    Upgrades.upgradeBeacon(address(beacon), newImpl, msg.sender);
-    address implAddressV2 = beacon.implementation();
-
-    MyTokenV2(address(instance)).resetGreeting();
-
-    assertEq(instance.greeting(), "resetted");
-    assertFalse(implAddressV2 == implAddressV1);
-    assertEq(newImpl, implAddressV2);
-  }
 }
