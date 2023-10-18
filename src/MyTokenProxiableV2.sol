@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
+/// @custom:oz-upgrades-from MyTokenProxiable
 contract MyTokenProxiableV2 is Initializable, ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
     string public greeting;
 
