@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
+import {Vm} from "forge-std/Vm.sol";
 
 import {Upgrades} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
@@ -13,6 +14,8 @@ import {MyTokenProxiable} from "../src/MyTokenProxiable.sol";
 import {MyTokenProxiableV2} from "../src/MyTokenProxiableV2.sol";
 
 contract MyTokenTest is Test {
+
+  address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
   function testUUPS() public {
     Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
@@ -69,5 +72,23 @@ contract MyTokenTest is Test {
 
     assertEq(instance.greeting(), "resetted");
     assertFalse(implAddressV2 == implAddressV1);
+  }
+
+  function testUpgradeProxyWithoutCaller() public {
+    Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
+
+    Vm vm = Vm(CHEATCODE_ADDRESS);
+    vm.startPrank(msg.sender);
+    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
+    vm.stopPrank();
+  }
+
+  function testUpgradeBeaconWithoutCaller() public {
+    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
+
+    Vm vm = Vm(CHEATCODE_ADDRESS);
+    vm.startPrank(msg.sender);
+    Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol");
+    vm.stopPrank();
   }
 }
