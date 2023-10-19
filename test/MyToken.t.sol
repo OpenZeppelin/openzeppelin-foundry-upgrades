@@ -144,8 +144,12 @@ contract MyTokenTest is Test {
 
   function testValidateNamespacedOk() public {
     Options memory opts;
-    Validator v = new Validator();
-    v.validateUpgrade("Validations.sol:NamespacedV2_Ok", "Validations.sol:NamespacedV1", opts);
+    Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", "Validations.sol:NamespacedV1", opts);
+  }
+
+  function testValidateNamespacedUpgradesFromOk() public {
+    Options memory opts;
+    Upgrades.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Ok", opts);
   }
 }
 
