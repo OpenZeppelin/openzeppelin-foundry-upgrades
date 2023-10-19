@@ -63,7 +63,6 @@ library Upgrades {
     // TODO pass in validation options from environment variables
 
     bytes memory res = Vm(CHEATCODE_ADDRESS).ffi(inputs);
-    console.log("Validation result: %s", string(res));
     // check if res contains "SUCCESS"
     for (uint j = 0; j < res.length - 7; j++) {
       if (res[j] == "S" && res[j+1] == "U" && res[j+2] == "C" && res[j+3] == "C" && res[j+4] == "E" && res[j+5] == "S" && res[j+6] == "S") {

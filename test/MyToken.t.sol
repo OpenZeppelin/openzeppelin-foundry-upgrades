@@ -155,6 +155,7 @@ contract MyTokenTest is Test {
   function testValidateNamespacedNoReference() public {
     Options memory opts;
     Validator v = new Validator();
+    // validate upgrade without reference contract - an error is expected from upgrades-core CLI
     try v.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts) {
       fail();
     } catch {
