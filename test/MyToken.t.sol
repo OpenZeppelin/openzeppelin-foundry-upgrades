@@ -92,7 +92,7 @@ contract MyTokenTest is Test {
     vm.stopPrank();
   }
 
-  function testValidate() public {
+  function testValidateImplementation() public {
     Options memory opts;
     Validator v = new Validator();
     try v.validateImplementation("Validations.sol:Unsafe", opts) {
@@ -105,7 +105,7 @@ contract MyTokenTest is Test {
   function testValidateLayout() public {
     Options memory opts;
     Validator v = new Validator();
-    try v.validateImplementation("Validations.sol:LayoutV2_Bad", "Validations.sol:LayoutV1", opts) {
+    try v.validateUpgrade("Validations.sol:LayoutV2_Bad", "Validations.sol:LayoutV1", opts) {
       fail();
     } catch {
       // TODO: check error message
@@ -115,7 +115,7 @@ contract MyTokenTest is Test {
   function testValidateLayoutUpgradesFrom() public {
     Options memory opts;
     Validator v = new Validator();
-    try v.validateImplementation("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
+    try v.validateUpgrade("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
       fail();
     } catch {
       // TODO: check error message
@@ -125,7 +125,7 @@ contract MyTokenTest is Test {
   function testValidateNamespaced() public {
     Options memory opts;
     Validator v = new Validator();
-    try v.validateImplementation("Validations.sol:NamespacedV2_Bad", "Validations.sol:NamespacedV1", opts) {
+    try v.validateUpgrade("Validations.sol:NamespacedV2_Bad", "Validations.sol:NamespacedV1", opts) {
       fail();
     } catch {
       // TODO: check error message
@@ -135,7 +135,7 @@ contract MyTokenTest is Test {
   function testValidateNamespacedUpgradesFrom() public {
     Options memory opts;
     Validator v = new Validator();
-    try v.validateImplementation("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
+    try v.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
       fail();
     } catch {
       // TODO: check error message
@@ -145,7 +145,7 @@ contract MyTokenTest is Test {
   function testValidateNamespacedOk() public {
     Options memory opts;
     Validator v = new Validator();
-    v.validateImplementation("Validations.sol:NamespacedV2_Ok", "Validations.sol:NamespacedV1", opts);
+    v.validateUpgrade("Validations.sol:NamespacedV2_Ok", "Validations.sol:NamespacedV1", opts);
   }
 }
 
@@ -154,7 +154,11 @@ contract Validator {
     Upgrades.validateImplementation(contractName, opts);
   }
 
-  function validateImplementation(string memory contractName, string memory referenceContract, Options memory opts) public {
-    Upgrades.validateImplementation(contractName, referenceContract, opts);
+  function validateUpgrade(string memory contractName, string memory referenceContract, Options memory opts) public {
+    Upgrades.validateUpgrade(contractName, referenceContract, opts);
+  }
+
+  function validateUpgrade(string memory contractName, Options memory opts) public {
+    Upgrades.validateUpgrade(contractName, opts);
   }
 }

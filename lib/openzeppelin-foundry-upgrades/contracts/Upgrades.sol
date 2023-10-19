@@ -21,7 +21,7 @@ struct Options {
 library Upgrades {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
-  function validateImplementation(string memory contractName, string memory referenceContract, Options memory opts) internal {
+  function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool upgrade) private {
     // TODO get defaults for src and out from foundry.toml
     string memory srcDir = opts.srcDir;
     if (bytes(srcDir).length == 0) {
@@ -48,6 +48,8 @@ library Upgrades {
     inputs[4] = "--contract";
     inputs[5] = string.concat(srcDir, "/", contractName);
 
+    // TODO if upgrade, add --upgrade flag
+
     // TODO support contract name without .sol extension
     // TODO pass in validation options from environment variables
 
@@ -63,17 +65,37 @@ library Upgrades {
   }
 
   function validateImplementation(string memory contractName, Options memory opts) internal {
-    validateImplementation(contractName, "", opts);
+    _validate(contractName, "", opts, false);
+  }
+
+  function validateUpgrade(string memory contractName, string memory referenceContract, Options memory opts) internal {
+    _validate(contractName, referenceContract, opts, true);
+  }
+
+  function validateUpgrade(string memory contractName, Options memory opts) internal {
+    validateUpgrade(contractName, "", opts);
+  }
+
+  function prepareUpgrade(string memory contractName, string memory referenceContract, Options memory opts) internal returns (address) {
+    validateUpgrade(contractName, referenceContract, opts);
+    return _deploy(contractName);
+  }
+
+  function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
+    return prepareUpgrade(contractName, "", opts);
   }
 
   function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
     validateImplementation(contractName, opts);
-
-    bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-    return deployFromBytecode(code);
+    return _deploy(contractName);
   }
 
-  function deployFromBytecode(bytes memory bytecode) private returns (address) {
+  function _deploy(string memory contractName) private returns (address) {
+    bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+    return _deployFromBytecode(code);
+  }
+
+  function _deployFromBytecode(bytes memory bytecode) private returns (address) {
     address addr;
     assembly {
       addr := create(0, add(bytecode, 32), mload(bytecode))
@@ -116,7 +138,7 @@ library Upgrades {
   }
 
   function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
-    address newImpl = deployImplementation(contractName, opts);
+    address newImpl = prepareUpgrade(contractName, opts);
 
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
@@ -145,7 +167,7 @@ library Upgrades {
   }
 
   function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
-    address newImpl = deployImplementation(contractName, opts);
+    address newImpl = prepareUpgrade(contractName, opts);
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
   }
 
