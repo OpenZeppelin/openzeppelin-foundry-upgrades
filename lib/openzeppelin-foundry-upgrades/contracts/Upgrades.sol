@@ -65,8 +65,8 @@ library Upgrades {
     bytes memory res = Vm(CHEATCODE_ADDRESS).ffi(inputs);
     console.log("Validation result: %s", string(res));
     // check if res contains "SUCCESS"
-    for (uint i = 0; i < res.length - 7; i++) {
-      if (res[i] == "S" && res[i+1] == "U" && res[i+2] == "C" && res[i+3] == "C" && res[i+4] == "E" && res[i+5] == "S" && res[i+6] == "S") {
+    for (uint j = 0; j < res.length - 7; j++) {
+      if (res[j] == "S" && res[j+1] == "U" && res[j+2] == "C" && res[j+3] == "C" && res[j+4] == "E" && res[j+5] == "S" && res[j+6] == "S") {
         return;
       }
     }

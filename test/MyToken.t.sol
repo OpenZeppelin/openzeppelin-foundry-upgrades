@@ -151,6 +151,16 @@ contract MyTokenTest is Test {
     Options memory opts;
     Upgrades.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Ok", opts);
   }
+
+  function testValidateNamespacedNoReference() public {
+    Options memory opts;
+    Validator v = new Validator();
+    try v.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts) {
+      fail();
+    } catch {
+      // TODO: check error message
+    }
+  }
 }
 
 contract Validator {
