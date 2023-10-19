@@ -21,7 +21,7 @@ struct Options {
 library Upgrades {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
-  function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool upgrade) private {
+  function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private {
     // TODO get defaults for src and out from foundry.toml
     string memory srcDir = opts.srcDir;
     if (bytes(srcDir).length == 0) {
@@ -34,21 +34,30 @@ library Upgrades {
     }
 
     string[] memory inputs;
-    if (bytes(referenceContract).length == 0) {
-      inputs = new string[](6);
-    } else {
-      inputs = new string[](8);
-      inputs[6] = "--reference";
-      inputs[7] = string.concat(srcDir, "/", referenceContract);
-    }
-    inputs[0] = "npx";
-    inputs[1] = "@openzeppelin/upgrades-core@latest";
-    inputs[2] = "validate";
-    inputs[3] = string.concat(outDir, "/build-info");
-    inputs[4] = "--contract";
-    inputs[5] = string.concat(srcDir, "/", contractName);
 
-    // TODO if upgrade, add --upgrade flag
+    uint8 inputLength = 6;
+    if (bytes(referenceContract).length != 0) {
+      inputLength += 2;
+    }
+    if (requireReference) {
+      inputLength += 1;
+    }
+    inputs = new string[](inputLength);
+
+    uint8 i = 0;
+    inputs[i++] = "npx";
+    inputs[i++] = "@openzeppelin/upgrades-core";
+    inputs[i++] = "validate";
+    inputs[i++] = string.concat(outDir, "/build-info");
+    inputs[i++] = "--contract";
+    inputs[i++] = string.concat(srcDir, "/", contractName);
+    if (bytes(referenceContract).length != 0) {
+      inputs[i++] = "--reference";
+      inputs[i++] = string.concat(srcDir, "/", referenceContract);
+    }
+    if (requireReference) {
+      inputs[i++] = "--requireReference";
+    }
 
     // TODO support contract name without .sol extension
     // TODO pass in validation options from environment variables
