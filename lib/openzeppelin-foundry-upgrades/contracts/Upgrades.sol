@@ -34,6 +34,17 @@ library Upgrades {
       return;
     }
 
+    string[] memory inputs = _buildInputs(contractName, referenceContract, opts, requireReference);
+    bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(inputs);
+
+    // if last 7 chars is "SUCCESS"
+    if (result[result.length - 7] == "S" && result[result.length - 6] == "U" && result[result.length - 5] == "C" && result[result.length - 4] == "C" && result[result.length - 3] == "E" && result[result.length - 2] == "S" && result[result.length - 1] == "S") {
+      return;
+    }
+    revert(string.concat("Upgrade safety validation failed: ", string(result)));
+  }
+
+  function _buildInputs(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private pure returns (string[] memory) {
     // TODO get defaults from foundry.toml
     string memory outDir = opts.outDir;
     if (bytes(outDir).length == 0) {
@@ -73,13 +84,7 @@ library Upgrades {
       inputs[j] = inputBuilder[j];
     }
 
-    bytes memory res = Vm(CHEATCODE_ADDRESS).ffi(inputs);
-
-    // if last 7 chars is "SUCCESS"
-    if (res[res.length - 7] == "S" && res[res.length - 6] == "U" && res[res.length - 5] == "C" && res[res.length - 4] == "C" && res[res.length - 3] == "E" && res[res.length - 2] == "S" && res[res.length - 1] == "S") {
-      return;
-    }
-    revert(string.concat("Upgrade safety validation failed: ", string(res)));
+    return inputs;
   }
 
   function validateImplementation(string memory contractName, Options memory opts) internal {
