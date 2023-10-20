@@ -162,6 +162,34 @@ contract MyTokenTest is Test {
       // TODO: check error message
     }
   }
+
+  function testUnsafeSkipChecks() public {
+    Options memory opts;
+    opts.unsafeSkipChecks = true;
+    Upgrades.validateImplementation("Validations.sol:Unsafe", opts);
+  }
+
+  function testUnsafeSkipStorageCheck() public {
+    Options memory opts;
+    opts.unsafeSkipStorageCheck = true;
+    Upgrades.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts);
+  }
+
+  function testUnsafeAllow() public {
+    Options memory opts;
+    opts.unsafeAllow = "delegatecall,selfdestruct";
+    Upgrades.validateImplementation("Validations.sol:Unsafe", opts);
+  }
+
+  // TODO
+  // function testUnsafeAllowRenames()
+
+  // TODO fix this in upgrades-core
+  // function testSkipStorageCheckNoReference() public {
+  //   Options memory opts;
+  //   opts.unsafeSkipStorageCheck = true;
+  //   Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts);
+  // }
 }
 
 contract Validator {

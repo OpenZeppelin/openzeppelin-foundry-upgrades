@@ -69,7 +69,7 @@ library Upgrades {
     }
     if (bytes(opts.unsafeAllow).length != 0) {
       inputBuilder[i++] = "--unsafeAllow";
-      inputBuilder[i++] = string.concat("\"", opts.unsafeAllow, "\"");
+      inputBuilder[i++] = opts.unsafeAllow;
     }
     if (opts.unsafeAllowRenames) {
       inputBuilder[i++] = "--unsafeAllowRenames";
