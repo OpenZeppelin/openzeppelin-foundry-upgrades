@@ -50,10 +50,10 @@ library Upgrades {
     inputs[i++] = "validate";
     inputs[i++] = string.concat(outDir, "/build-info");
     inputs[i++] = "--contract";
-    inputs[i++] = string.concat(srcDir, "/", contractName);
+    inputs[i++] = contractName;
     if (bytes(referenceContract).length != 0) {
       inputs[i++] = "--reference";
-      inputs[i++] = string.concat(srcDir, "/", referenceContract);
+      inputs[i++] = referenceContract;
     }
     if (requireReference) {
       inputs[i++] = "--requireReference";
@@ -63,11 +63,10 @@ library Upgrades {
     // TODO pass in validation options from environment variables
 
     bytes memory res = Vm(CHEATCODE_ADDRESS).ffi(inputs);
-    // check if res contains "SUCCESS"
-    for (uint j = 0; j < res.length - 7; j++) {
-      if (res[j] == "S" && res[j+1] == "U" && res[j+2] == "C" && res[j+3] == "C" && res[j+4] == "E" && res[j+5] == "S" && res[j+6] == "S") {
-        return;
-      }
+
+    // if last 7 chars is "SUCCESS"
+    if (res[res.length - 7] == "S" && res[res.length - 6] == "U" && res[res.length - 5] == "C" && res[res.length - 4] == "C" && res[res.length - 3] == "E" && res[res.length - 2] == "S" && res[res.length - 1] == "S") {
+      return;
     }
     revert(string.concat("Upgrade safety validation failed: ", string(res)));
   }
