@@ -14,7 +14,6 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/Console.sol";
 
 struct Options {
-  string srcDir;
   string outDir;
 }
 
@@ -22,12 +21,7 @@ library Upgrades {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
   function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private {
-    // TODO get defaults for src and out from foundry.toml
-    string memory srcDir = opts.srcDir;
-    if (bytes(srcDir).length == 0) {
-      srcDir = "src";
-    }
-
+    // TODO get defaults from foundry.toml
     string memory outDir = opts.outDir;
     if (bytes(outDir).length == 0) {
       outDir = "out";
