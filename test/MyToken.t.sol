@@ -18,7 +18,7 @@ contract MyTokenTest is Test {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
   function testUUPS() public {
-    Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol:MyTokenProxiable", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
+    Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
     MyToken instance = MyToken(address(proxy));
     address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
 
@@ -26,7 +26,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol:MyTokenProxiableV2", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()), msg.sender);
+    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()), msg.sender);
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
 
     assertEq(instance.greeting(), "resetted");
@@ -34,7 +34,7 @@ contract MyTokenTest is Test {
   }
 
   function testTransparent() public {
-    Proxy proxy = Upgrades.deployTransparentProxy("MyToken.sol:MyToken", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
+    Proxy proxy = Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
     MyToken instance = MyToken(address(proxy));
     address implAddressV1 = Upgrades.getImplementationAddress(address(proxy));
     address adminAddress = Upgrades.getAdminAddress(address(proxy));
@@ -45,7 +45,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeProxy(address(proxy), "MyTokenV2.sol:MyTokenV2", abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
+    Upgrades.upgradeProxy(address(proxy), "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
     address implAddressV2 = Upgrades.getImplementationAddress(address(proxy));
     
     assertEq(Upgrades.getAdminAddress(address(proxy)), adminAddress);
@@ -55,7 +55,7 @@ contract MyTokenTest is Test {
   }
 
   function testBeacon() public {
-    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol:MyToken", msg.sender);
+    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
     address implAddressV1 = beacon.implementation();
 
     Proxy proxy = Upgrades.deployBeaconProxy(address(beacon), abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
@@ -65,7 +65,7 @@ contract MyTokenTest is Test {
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);
 
-    Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol:MyTokenV2", msg.sender);
+    Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol", msg.sender);
     address implAddressV2 = beacon.implementation();
 
     MyTokenV2(address(instance)).resetGreeting();
@@ -75,20 +75,20 @@ contract MyTokenTest is Test {
   }
 
   function testUpgradeProxyWithoutCaller() public {
-    Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol:MyTokenProxiable", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
+    Proxy proxy = Upgrades.deployUUPSProxy("MyTokenProxiable.sol", abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender)));
 
     Vm vm = Vm(CHEATCODE_ADDRESS);
     vm.startPrank(msg.sender);
-    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol:MyTokenProxiableV2", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
+    Upgrades.upgradeProxy(address(proxy), "MyTokenProxiableV2.sol", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
     vm.stopPrank();
   }
 
   function testUpgradeBeaconWithoutCaller() public {
-    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol:MyToken", msg.sender);
+    IBeacon beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
 
     Vm vm = Vm(CHEATCODE_ADDRESS);
     vm.startPrank(msg.sender);
-    Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol:MyTokenV2");
+    Upgrades.upgradeBeacon(address(beacon), "MyTokenV2.sol");
     vm.stopPrank();
   }
 
