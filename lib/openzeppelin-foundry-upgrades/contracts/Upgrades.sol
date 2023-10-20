@@ -14,47 +14,64 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/Console.sol";
 
 struct Options {
+  // Foundry options
   string outDir;
+
+  // Foundry Upgrades options
+  bool unsafeSkipChecks;
+
+  // CLI options
+  string unsafeAllow;
+  bool unsafeAllowRenames;
+  bool unsafeSkipStorageCheck;
 }
 
 library Upgrades {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
   function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private {
+    if (opts.unsafeSkipChecks) {
+      return;
+    }
+
     // TODO get defaults from foundry.toml
     string memory outDir = opts.outDir;
     if (bytes(outDir).length == 0) {
       outDir = "out";
     }
 
-    string[] memory inputs;
-
-    uint8 inputLength = 6;
-    if (bytes(referenceContract).length != 0) {
-      inputLength += 2;
-    }
-    if (requireReference) {
-      inputLength += 1;
-    }
-    inputs = new string[](inputLength);
+    string[] memory inputBuilder = new string[](255);
 
     uint8 i = 0;
-    inputs[i++] = "npx";
-    inputs[i++] = "@openzeppelin/upgrades-core";
-    inputs[i++] = "validate";
-    inputs[i++] = string.concat(outDir, "/build-info");
-    inputs[i++] = "--contract";
-    inputs[i++] = contractName;
+    inputBuilder[i++] = "npx";
+    inputBuilder[i++] = "@openzeppelin/upgrades-core";
+    inputBuilder[i++] = "validate";
+    inputBuilder[i++] = string.concat(outDir, "/build-info");
+    inputBuilder[i++] = "--contract";
+    inputBuilder[i++] = contractName;
     if (bytes(referenceContract).length != 0) {
-      inputs[i++] = "--reference";
-      inputs[i++] = referenceContract;
+      inputBuilder[i++] = "--reference";
+      inputBuilder[i++] = referenceContract;
     }
     if (requireReference) {
-      inputs[i++] = "--requireReference";
+      inputBuilder[i++] = "--requireReference";
+    }
+    if (bytes(opts.unsafeAllow).length != 0) {
+      inputBuilder[i++] = "--unsafeAllow";
+      inputBuilder[i++] = string.concat("\"", opts.unsafeAllow, "\"");
+    }
+    if (opts.unsafeAllowRenames) {
+      inputBuilder[i++] = "--unsafeAllowRenames";
+    }
+    if (opts.unsafeSkipStorageCheck) {
+      inputBuilder[i++] = "--unsafeSkipStorageCheck";
     }
 
-    // TODO support contract name without .sol extension
-    // TODO pass in validation options from environment variables
+    // Create a copy of inputs but with the correct length
+    string[] memory inputs = new string[](i);
+    for (uint8 j = 0; j < i; j++) {
+      inputs[j] = inputBuilder[j];
+    }
 
     bytes memory res = Vm(CHEATCODE_ADDRESS).ffi(inputs);
 
