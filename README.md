@@ -2,6 +2,10 @@
 
 Preview Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
 
+> **Warning**
+> Experimental code. Functionality is subject to change.
+> **Use at your own risk.**
+
 ## Installing Foundry
 
 See [Foundry installation guide](https://book.getfoundry.sh/getting-started/installation).
