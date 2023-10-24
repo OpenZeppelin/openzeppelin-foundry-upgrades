@@ -61,6 +61,8 @@ contract MyTokenTest is Test {
     Proxy proxy = Upgrades.deployBeaconProxy(address(beacon), abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
     MyToken instance = MyToken(address(proxy));
 
+    assertEq(Upgrades.getBeaconAddress(address(proxy)), address(beacon));
+
     assertEq(instance.name(), "MyToken");
     assertEq(instance.greeting(), "hello");
     assertEq(instance.owner(), msg.sender);

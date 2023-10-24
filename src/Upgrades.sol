@@ -400,7 +400,7 @@ library Upgrades {
   }
 
   /**
-   * @dev Gets the implementation address of a proxy according to its ERC1967 implementation storage slot.
+   * @dev Gets the implementation address of a transparent or UUPS proxy according to its ERC1967 implementation storage slot.
    *
    * @param proxy Address of a transparent or UUPS proxy
    */
@@ -409,6 +409,18 @@ library Upgrades {
 
     bytes32 implSlot = vm.load(proxy, ERC1967Utils.IMPLEMENTATION_SLOT);
     return address(uint160(uint256(implSlot)));
+  }
+
+  /**
+   * @dev Gets the beacon address of a beacon proxy according to its ERC1967 beacon storage slot.
+   *
+   * @param proxy Address of a beacon proxy
+   */
+  function getBeaconAddress(address proxy) internal view returns (address) {
+    Vm vm = Vm(CHEATCODE_ADDRESS);
+
+    bytes32 beaconSlot = vm.load(proxy, ERC1967Utils.BEACON_SLOT);
+    return address(uint160(uint256(beaconSlot)));
   }
 
   /**
