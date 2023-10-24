@@ -12,6 +12,7 @@ import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/Console.sol";
+import {strings} from "solidity-stringutils/strings.sol";
 
 struct Options {
   // Foundry options
@@ -27,6 +28,8 @@ struct Options {
 }
 
 library Upgrades {
+  using strings for *;
+
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
   function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private {
@@ -44,6 +47,23 @@ library Upgrades {
     revert(string.concat("Upgrade safety validation failed: ", string(result)));
   }
 
+  function _toShortName(string memory contractName) private pure returns (string memory) {
+    strings.slice memory name = contractName.toSlice();
+    if (name.endsWith(".sol".toSlice())) {
+      return name.until(".sol".toSlice()).toString();
+    } else if (name.count(":".toSlice()) == 1) {
+      // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
+      strings.slice memory part;
+      // get the second part
+      name.split(":".toSlice(), part);
+      name.split(":".toSlice(), part);
+      return part.toString();
+    } else {
+      // TODO support artifact file name
+      revert(string.concat("Contract name ", contractName, " must be in File.sol:Name or File.sol format"));
+    }
+  }
+
   function _buildInputs(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private pure returns (string[] memory) {
     // TODO get defaults from foundry.toml
     string memory outDir = opts.outDir;
@@ -59,10 +79,10 @@ library Upgrades {
     inputBuilder[i++] = "validate";
     inputBuilder[i++] = string.concat(outDir, "/build-info");
     inputBuilder[i++] = "--contract";
-    inputBuilder[i++] = contractName;
+    inputBuilder[i++] = _toShortName(contractName);
     if (bytes(referenceContract).length != 0) {
       inputBuilder[i++] = "--reference";
-      inputBuilder[i++] = referenceContract;
+      inputBuilder[i++] = _toShortName(referenceContract);
     }
     if (requireReference) {
       inputBuilder[i++] = "--requireReference";
