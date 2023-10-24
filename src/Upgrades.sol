@@ -52,7 +52,6 @@ library Upgrades {
       return name.until(".sol".toSlice()).toString();
     } else if (name.count(":".toSlice()) == 1) {
       // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
-      strings.slice memory part;
       name.split(":".toSlice());
       return name.split(":".toSlice()).toString();
     } else {
