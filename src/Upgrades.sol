@@ -46,20 +46,6 @@ library Upgrades {
     revert(string.concat("Upgrade safety validation failed: ", string(result)));
   }
 
-  function _toShortName(string memory contractName) private pure returns (string memory) {
-    strings.slice memory name = contractName.toSlice();
-    if (name.endsWith(".sol".toSlice())) {
-      return name.until(".sol".toSlice()).toString();
-    } else if (name.count(":".toSlice()) == 1) {
-      // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
-      name.split(":".toSlice());
-      return name.split(":".toSlice()).toString();
-    } else {
-      // TODO support artifact file name
-      revert(string.concat("Contract name ", contractName, " must be in File.sol:Name or File.sol format"));
-    }
-  }
-
   function _buildInputs(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private pure returns (string[] memory) {
     // TODO get defaults from foundry.toml
     string memory outDir = opts.outDir;
@@ -101,6 +87,20 @@ library Upgrades {
     }
 
     return inputs;
+  }
+
+  function _toShortName(string memory contractName) private pure returns (string memory) {
+    strings.slice memory name = contractName.toSlice();
+    if (name.endsWith(".sol".toSlice())) {
+      return name.until(".sol".toSlice()).toString();
+    } else if (name.count(":".toSlice()) == 1) {
+      // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
+      name.split(":".toSlice());
+      return name.split(":".toSlice()).toString();
+    } else {
+      // TODO support artifact file name
+      revert(string.concat("Contract name ", contractName, " must be in File.sol:Name or File.sol format"));
+    }
   }
 
   function validateImplementation(string memory contractName, Options memory opts) internal {
