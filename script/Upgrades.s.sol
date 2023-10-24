@@ -3,8 +3,8 @@ pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 
-import {MyToken} from "../src/MyToken.sol";
-import {MyTokenV2} from "../src/MyTokenV2.sol";
+import {MyToken} from "../test/contracts/MyToken.sol";
+import {MyTokenV2} from "../test/contracts/MyTokenV2.sol";
 
 import {Upgrades} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
 
@@ -23,7 +23,3 @@ contract MyTokenScript is Script {
     vm.stopBroadcast();
   }
 }
-
-
-
-

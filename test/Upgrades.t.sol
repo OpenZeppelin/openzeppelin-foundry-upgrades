@@ -8,10 +8,10 @@ import {Upgrades, Options} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 
-import {MyToken} from "../src/MyToken.sol";
-import {MyTokenV2} from "../src/MyTokenV2.sol";
-import {MyTokenProxiable} from "../src/MyTokenProxiable.sol";
-import {MyTokenProxiableV2} from "../src/MyTokenProxiableV2.sol";
+import {MyToken} from "./contracts/MyToken.sol";
+import {MyTokenV2} from "./contracts/MyTokenV2.sol";
+import {MyTokenProxiable} from "./contracts/MyTokenProxiable.sol";
+import {MyTokenProxiableV2} from "./contracts/MyTokenProxiableV2.sol";
 
 contract MyTokenTest is Test {
 
