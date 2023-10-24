@@ -21,12 +21,15 @@ struct Options {
   // Foundry Upgrades options
   bool unsafeSkipChecks;
 
-  // CLI options
+  // @openzeppelin/upgrades-core CLI options
   string unsafeAllow;
   bool unsafeAllowRenames;
   bool unsafeSkipStorageCheck;
 }
 
+/**
+ * @dev Library for deploying and managing upgradeable contracts in Forge.
+ */
 library Upgrades {
   using strings for *;
 
