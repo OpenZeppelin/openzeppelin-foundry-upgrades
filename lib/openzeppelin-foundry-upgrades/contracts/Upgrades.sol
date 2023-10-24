@@ -40,8 +40,7 @@ library Upgrades {
     string[] memory inputs = _buildInputs(contractName, referenceContract, opts, requireReference);
     bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(inputs);
 
-    // if last 7 chars is "SUCCESS"
-    if (result[result.length - 7] == "S" && result[result.length - 6] == "U" && result[result.length - 5] == "C" && result[result.length - 4] == "C" && result[result.length - 3] == "E" && result[result.length - 2] == "S" && result[result.length - 1] == "S") {
+    if (string(result).toSlice().endsWith("SUCCESS".toSlice())) {
       return;
     }
     revert(string.concat("Upgrade safety validation failed: ", string(result)));
@@ -54,10 +53,8 @@ library Upgrades {
     } else if (name.count(":".toSlice()) == 1) {
       // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
       strings.slice memory part;
-      // get the second part
-      name.split(":".toSlice(), part);
-      name.split(":".toSlice(), part);
-      return part.toString();
+      name.split(":".toSlice());
+      return name.split(":".toSlice()).toString();
     } else {
       // TODO support artifact file name
       revert(string.concat("Contract name ", contractName, " must be in File.sol:Name or File.sol format"));
