@@ -28,7 +28,7 @@ struct Options {
 }
 
 /**
- * @dev Library for deploying and managing upgradeable contracts in Forge.
+ * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
  */
 library Upgrades {
   using strings for *;
@@ -106,27 +106,72 @@ library Upgrades {
     }
   }
 
+  /**
+   * @dev Validates an implementation contract without deploying it.
+   *
+   * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param opts Options for validations
+   */
   function validateImplementation(string memory contractName, Options memory opts) internal {
     _validate(contractName, "", opts, false);
   }
 
+  /**
+   * @dev Validates a new implementation contract without deploying it.
+   * Compares the reference contract to the new implementation contract to check for storage layout compatibility errors.
+   *
+   * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param referenceContract Name of the reference contract to use for storage layout comparisons.
+   *  If empty, uses the `@custom:oz-upgrades-from <reference>` annotation from the contract as the reference contract.
+   * @param opts Options for validations
+   */
   function validateUpgrade(string memory contractName, string memory referenceContract, Options memory opts) internal {
     _validate(contractName, referenceContract, opts, true);
   }
 
+  /**
+   * @dev Validates a new implementation contract without deploying it.
+   * Uses the `@custom:oz-upgrades-from <reference>` annotation from the contract to use as the reference contract for storage layout comparisons.
+   *
+   * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param opts Options for validations
+   */
   function validateUpgrade(string memory contractName, Options memory opts) internal {
     validateUpgrade(contractName, "", opts);
   }
 
+  /**
+   * @dev Validates and deploys a new implementation contract, and returns its address.
+   * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
+   *
+   * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param referenceContract Name of the reference contract to use for storage layout comparisons.
+   *  If empty, uses the `@custom:oz-upgrades-from <reference>` annotation from the contract as the reference contract.
+   * @param opts Options for validations
+   */
   function prepareUpgrade(string memory contractName, string memory referenceContract, Options memory opts) internal returns (address) {
     validateUpgrade(contractName, referenceContract, opts);
     return _deploy(contractName);
   }
 
+  /**
+   * @dev Validates and deploys a new implementation contract, and returns its address.
+   * Uses the `@custom:oz-upgrades-from <reference>` annotation from the contract to use as the reference contract for storage layout comparisons.
+   * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
+   *
+   * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param opts Options for validations
+   */
   function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
     return prepareUpgrade(contractName, "", opts);
   }
 
+  /**
+   * @dev Validates and deploys a new implementation contract, and returns its address.
+   *
+   * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param opts Options for validations
+   */
   function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
     validateImplementation(contractName, opts);
     return _deploy(contractName);
@@ -145,40 +190,95 @@ library Upgrades {
     return addr;
    }
 
+  /**
+   * @dev Deploys a UUPS proxy using the given contract as the implementation.
+   *
+   * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+   * @param opts Options for validations
+   */
   function deployUUPSProxy(string memory contractName, bytes memory data, Options memory opts) internal returns (ERC1967Proxy) {
     address impl = deployImplementation(contractName, opts);
     return new ERC1967Proxy(impl, data);
   }
 
+  /**
+   * @dev Deploys a UUPS proxy using the given contract as the implementation.
+   *
+   * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+   */
   function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (ERC1967Proxy) {
     Options memory opts;
     return deployUUPSProxy(contractName, data, opts);
   }
 
+  /**
+   * @dev Deploys a transparent proxy using the given contract as the implementation.
+   *
+   * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
+   * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+   * @param opts Options for validations
+   */
   function deployTransparentProxy(string memory contractName, address initialOwner, bytes memory data, Options memory opts) internal returns (TransparentUpgradeableProxy) {
     address impl = deployImplementation(contractName, opts);
     return new TransparentUpgradeableProxy(impl, initialOwner, data);
   }
 
+  /**
+   * @dev Deploys a transparent proxy using the given contract as the implementation.
+   *
+   * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
+   * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+   */
   function deployTransparentProxy(string memory contractName, address initialOwner, bytes memory data) internal returns (TransparentUpgradeableProxy) {
     Options memory opts;
     return deployTransparentProxy(contractName, initialOwner, data, opts);
   }
 
+  /**
+   * @dev Deploys an upgradeable beacon using the given contract as the implementation.
+   *
+   * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+   * @param opts Options for validations
+   */
   function deployBeacon(string memory contractName, address initialOwner, Options memory opts) internal returns (IBeacon) {
     address impl = deployImplementation(contractName, opts);
     return new UpgradeableBeacon(impl, initialOwner);
   }
 
+  /**
+   * @dev Deploys an upgradeable beacon using the given contract as the implementation.
+   *
+   * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+   */
   function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
     Options memory opts;
     return deployBeacon(contractName, initialOwner, opts);
   }
 
+  /**
+   * @dev Deploys a beacon proxy using the given beacon and call data.
+   *
+   * @param beacon Address of the beacon to use
+   * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+   */
   function deployBeaconProxy(address beacon, bytes memory data) internal returns (BeaconProxy) {
     return new BeaconProxy(beacon, data);
   }
 
+  /**
+   * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+   *
+   * @param proxy Address of the proxy to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+   * @param opts Options for validations
+   */
   function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
     address newImpl = prepareUpgrade(contractName, opts);
 
@@ -194,39 +294,104 @@ library Upgrades {
     }
   }
 
+  /**
+   * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+   *
+   * @param proxy Address of the proxy to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+   */
   function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
     Options memory opts;
     upgradeProxy(proxy, contractName, data, opts);
   }
 
+  /**
+   * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the proxy or its ProxyAdmin.
+   *
+   * @param proxy Address of the proxy to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+   * @param opts Options for validations
+   * @param tryCaller Address to use as the caller of the upgrade function.
+   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   */
   function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts, address tryCaller) internal tryPrank(tryCaller) {
     upgradeProxy(proxy, contractName, data, opts);
   }
 
+  /**
+   * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the proxy or its ProxyAdmin.
+   *
+   * @param proxy Address of the proxy to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+   * @param tryCaller Address to use as the caller of the upgrade function.
+   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   */
   function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
     Options memory opts;
     upgradeProxy(proxy, contractName, data, opts, tryCaller);
   }
 
+  /**
+   * @dev Upgrades a beacon to a new implementation contract.
+   *
+   * @param beacon Address of the beacon to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param opts Options for validations
+   */
   function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
     address newImpl = prepareUpgrade(contractName, opts);
     UpgradeableBeacon(beacon).upgradeTo(newImpl);
   }
 
+  /**
+   * @dev Upgrades a beacon to a new implementation contract.
+   *
+   * @param beacon Address of the beacon to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   */
   function upgradeBeacon(address beacon, string memory contractName) internal {
     Options memory opts;
     upgradeBeacon(beacon, contractName, opts);
   }
 
+  /**
+   * @dev Upgrades a beacon to a new implementation contract.
+   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the beacon.
+   *
+   * @param beacon Address of the beacon to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param opts Options for validations
+   * @param tryCaller Address to use as the caller of the upgrade function.
+   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   */
   function upgradeBeacon(address beacon, string memory contractName, Options memory opts, address tryCaller) internal tryPrank(tryCaller) {
     upgradeBeacon(beacon, contractName, opts);
   }
 
+  /**
+   * @dev Upgrades a beacon to a new implementation contract.
+   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the beacon.
+   *
+   * @param beacon Address of the beacon to upgrade
+   * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+   * @param tryCaller Address to use as the caller of the upgrade function.
+   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   */
   function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
     Options memory opts;
     upgradeBeacon(beacon, contractName, opts, tryCaller);
   }
 
+  /**
+   * @dev Gets the admin address of a transparent proxy according to its ERC1967 admin storage slot.
+   *
+   * @param proxy Address of a transparent proxy
+   */
   function getAdminAddress(address proxy) internal view returns (address) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
@@ -234,6 +399,11 @@ library Upgrades {
     return address(uint160(uint256(adminSlot)));
   }
 
+  /**
+   * @dev Gets the implementation address of a proxy according to its ERC1967 implementation storage slot.
+   *
+   * @param proxy Address of a transparent or UUPS proxy
+   */
   function getImplementationAddress(address proxy) internal view returns (address) {
     Vm vm = Vm(CHEATCODE_ADDRESS);
 
