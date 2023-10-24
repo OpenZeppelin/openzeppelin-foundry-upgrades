@@ -33,12 +33,12 @@ Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, de
 forge clean && forge test --ffi
 ```
 
-### Running script
+### Running test script
 
 You can simulate a deployment by running the script:
 
 ```
-forge clean && forge script script/Upgrades.s.sol --ffi
+forge clean && forge script test/Upgrades.s.sol --ffi
 ```
 
 See [Solidity scripting guide](https://book.getfoundry.sh/tutorials/solidity-scripting) for more information.
