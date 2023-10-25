@@ -3,18 +3,18 @@
 Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
 
 > **Warning**
-> Experimental code. This library is provided as a technology preview and its functionality may be subject to change.
+> Experimental code. This is provided as a technology preview and its functionality may be subject to change.
 > **Use at your own risk.**
 
-## Installing Foundry
-
-See [Foundry installation guide](https://book.getfoundry.sh/getting-started/installation).
-
-## Installing the library
+## Installing
 
 ```
-forge install OpenZeppelin/openzeppelin-foundry-upgrades
+$ forge install OpenZeppelin/openzeppelin-foundry-upgrades
 ```
+
+## Version limitations
+
+This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts 5.0 or higher.
 
 ## Prerequisites
 
@@ -51,5 +51,3 @@ You can simulate deployments and upgrades of the various kinds of proxies by run
 ```
 forge clean && forge script test/Upgrades.s.sol --ffi
 ```
-
-See [Solidity scripting guide](https://book.getfoundry.sh/tutorials/solidity-scripting) for more information.
