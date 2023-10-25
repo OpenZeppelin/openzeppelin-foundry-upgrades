@@ -6,12 +6,13 @@
     "clean": "forge clean",
     "compile": "forge build",
     "test": "npm run clean && forge test --ffi",
-    "lint": "prettier --log-level warn --ignore-path .gitignore '{contracts,test}/**/*.sol' --check && solhint '{contracts,test}/**/*.sol'",
-    "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{contracts,test}/**/*.sol' --write"
+    "lint": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --check && solhint '{src,test}/**/*.sol'",
+    "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write"
   },
   "devDependencies": {
     "@openzeppelin/upgrades-core": "1.31.0",
     "prettier": "^3.0.0",
-    "prettier-plugin-solidity": "^1.1.0"
+    "prettier-plugin-solidity": "^1.1.0",
+    "solhint": "^3.3.6"
   }
 }
