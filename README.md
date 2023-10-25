@@ -44,9 +44,9 @@ Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, de
 forge clean && forge test --ffi
 ```
 
-### Running test script
+### Running example script
 
-You can simulate a deployment by running the script:
+You can simulate deployments and upgrades of the various kinds of proxies by running the script:
 
 ```
 forge clean && forge script test/Upgrades.s.sol --ffi
