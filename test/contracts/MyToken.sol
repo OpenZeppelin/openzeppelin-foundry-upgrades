@@ -14,7 +14,7 @@ contract MyToken is Initializable, ERC20Upgradeable, OwnableUpgradeable {
         _disableInitializers();
     }
 
-    function initialize(string memory _greeting, address initialOwner) initializer public {
+    function initialize(string memory _greeting, address initialOwner) public initializer {
         __ERC20_init("MyToken", "MTK");
         __Ownable_init(initialOwner);
         greeting = _greeting;

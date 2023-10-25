@@ -9,17 +9,23 @@ import {MyTokenV2} from "./contracts/MyTokenV2.sol";
 import {Upgrades} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
 
 contract MyTokenScript is Script {
-  function setUp() public {}
+    function setUp() public {}
 
-  function run() public {
-    vm.startBroadcast();
+    function run() public {
+        vm.startBroadcast();
 
-    address proxy = address(Upgrades.deployTransparentProxy("MyToken.sol", msg.sender, abi.encodeCall(MyToken.initialize, ("hello", msg.sender))));
-    Upgrades.upgradeProxy(proxy, "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()));
+        address proxy = address(
+            Upgrades.deployTransparentProxy(
+                "MyToken.sol",
+                msg.sender,
+                abi.encodeCall(MyToken.initialize, ("hello", msg.sender))
+            )
+        );
+        Upgrades.upgradeProxy(proxy, "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()));
 
-    address beacon = address(Upgrades.deployBeacon("MyToken.sol", msg.sender));
-    Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol");
+        address beacon = address(Upgrades.deployBeacon("MyToken.sol", msg.sender));
+        Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol");
 
-    vm.stopBroadcast();
-  }
+        vm.stopBroadcast();
+    }
 }

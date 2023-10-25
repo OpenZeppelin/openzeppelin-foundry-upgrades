@@ -15,16 +15,12 @@ contract MyTokenProxiable is Initializable, ERC20Upgradeable, OwnableUpgradeable
         _disableInitializers();
     }
 
-    function initialize(string memory _greeting, address initialOwner) initializer public {
+    function initialize(string memory _greeting, address initialOwner) public initializer {
         __ERC20_init("MyToken", "MTK");
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
         greeting = _greeting;
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        onlyOwner
-        override
-    {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 }
