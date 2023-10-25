@@ -13,11 +13,6 @@ Run the command:
 forge install OpenZeppelin/openzeppelin-foundry-upgrades
 ```
 
-Then add the following in `remappings.txt`:
-```
-@openzeppelin/foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/
-```
-
 ## Version limitations
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts 5.0 or higher.
@@ -37,7 +32,7 @@ If you do not want to run upgrade safety checks, use the `unsafeSkipAllChecks` o
 
 Import the library:
 ```
-import {Upgrades} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
 
 Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
