@@ -14,6 +14,9 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
+/**
+ * @dev Options for validations
+ */
 struct Options {
     /**
      * Foundry output directory
@@ -47,153 +50,6 @@ struct Options {
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
  */
 library Upgrades {
-    using strings for *;
-
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
-    function _validate(string memory contractName, Options memory opts, bool requireReference) private {
-        if (opts.unsafeSkipAllChecks) {
-            return;
-        }
-
-        string[] memory inputs = _buildInputs(contractName, opts, requireReference);
-        bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(inputs);
-
-        if (string(result).toSlice().endsWith("SUCCESS".toSlice())) {
-            return;
-        }
-        revert(string.concat("Upgrade safety validation failed: ", string(result)));
-    }
-
-    function _buildInputs(
-        string memory contractName,
-        Options memory opts,
-        bool requireReference
-    ) private pure returns (string[] memory) {
-        // TODO get defaults from foundry.toml
-        string memory outDir = opts.outDir;
-        if (bytes(outDir).length == 0) {
-            outDir = "out";
-        }
-
-        string[] memory inputBuilder = new string[](255);
-
-        uint8 i = 0;
-        inputBuilder[i++] = "npx";
-        inputBuilder[i++] = "@openzeppelin/upgrades-core";
-        inputBuilder[i++] = "validate";
-        inputBuilder[i++] = string.concat(outDir, "/build-info");
-        inputBuilder[i++] = "--contract";
-        inputBuilder[i++] = _toShortName(contractName);
-        if (bytes(opts.referenceContract).length != 0) {
-            inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = _toShortName(opts.referenceContract);
-        }
-        if (requireReference) {
-            inputBuilder[i++] = "--requireReference";
-        }
-        if (bytes(opts.unsafeAllow).length != 0) {
-            inputBuilder[i++] = "--unsafeAllow";
-            inputBuilder[i++] = opts.unsafeAllow;
-        }
-        if (opts.unsafeAllowRenames) {
-            inputBuilder[i++] = "--unsafeAllowRenames";
-        }
-        if (opts.unsafeSkipStorageCheck) {
-            inputBuilder[i++] = "--unsafeSkipStorageCheck";
-        }
-
-        // Create a copy of inputs but with the correct length
-        string[] memory inputs = new string[](i);
-        for (uint8 j = 0; j < i; j++) {
-            inputs[j] = inputBuilder[j];
-        }
-
-        return inputs;
-    }
-
-    function _toShortName(string memory contractName) private pure returns (string memory) {
-        strings.slice memory name = contractName.toSlice();
-        if (name.endsWith(".sol".toSlice())) {
-            return name.until(".sol".toSlice()).toString();
-        } else if (name.count(":".toSlice()) == 1) {
-            // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
-            name.split(":".toSlice());
-            return name.split(":".toSlice()).toString();
-        } else {
-            // TODO support artifact file name
-            revert(
-                string.concat(
-                    "Contract name ",
-                    contractName,
-                    " must be in the format MyContract.sol:MyContract or MyContract.sol"
-                )
-            );
-        }
-    }
-
-    /**
-     * @dev Validates an implementation contract, but does not deploy it.
-     *
-     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
-     */
-    function validateImplementation(string memory contractName, Options memory opts) internal {
-        _validate(contractName, opts, false);
-    }
-
-    /**
-     * @dev Validates a new implementation contract in comparison with a reference contract, but does not deploy it.
-     *
-     * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
-     *
-     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
-     */
-    function validateUpgrade(string memory contractName, Options memory opts) internal {
-        _validate(contractName, opts, true);
-    }
-
-    /**
-     * @dev Validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract,
-     * and returns its address.
-     *
-     * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
-     *
-     * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
-     *
-     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
-     */
-    function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
-        validateUpgrade(contractName, opts);
-        return _deploy(contractName);
-    }
-
-    /**
-     * @dev Validates and deploys an implementation contract, and returns its address.
-     *
-     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
-     */
-    function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
-        validateImplementation(contractName, opts);
-        return _deploy(contractName);
-    }
-
-    function _deploy(string memory contractName) private returns (address) {
-        bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-        return _deployFromBytecode(code);
-    }
-
-    function _deployFromBytecode(bytes memory bytecode) private returns (address) {
-        address addr;
-        assembly {
-            addr := create(0, add(bytecode, 32), mload(bytecode))
-        }
-        return addr;
-    }
-
     /**
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
@@ -253,43 +109,6 @@ library Upgrades {
     ) internal returns (TransparentUpgradeableProxy) {
         Options memory opts;
         return deployTransparentProxy(contractName, initialOwner, data, opts);
-    }
-
-    /**
-     * @dev Deploys an upgradeable beacon using the given contract as the implementation.
-     *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
-     * @param opts Options for validations
-     */
-    function deployBeacon(
-        string memory contractName,
-        address initialOwner,
-        Options memory opts
-    ) internal returns (IBeacon) {
-        address impl = deployImplementation(contractName, opts);
-        return new UpgradeableBeacon(impl, initialOwner);
-    }
-
-    /**
-     * @dev Deploys an upgradeable beacon using the given contract as the implementation.
-     *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
-     */
-    function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
-        Options memory opts;
-        return deployBeacon(contractName, initialOwner, opts);
-    }
-
-    /**
-     * @dev Deploys a beacon proxy using the given beacon and call data.
-     *
-     * @param beacon Address of the beacon to use
-     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
-     */
-    function deployBeaconProxy(address beacon, bytes memory data) internal returns (BeaconProxy) {
-        return new BeaconProxy(beacon, data);
     }
 
     /**
@@ -379,6 +198,33 @@ library Upgrades {
     }
 
     /**
+     * @dev Deploys an upgradeable beacon using the given contract as the implementation.
+     *
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+     * @param opts Options for validations
+     */
+    function deployBeacon(
+        string memory contractName,
+        address initialOwner,
+        Options memory opts
+    ) internal returns (IBeacon) {
+        address impl = deployImplementation(contractName, opts);
+        return new UpgradeableBeacon(impl, initialOwner);
+    }
+
+    /**
+     * @dev Deploys an upgradeable beacon using the given contract as the implementation.
+     *
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+     */
+    function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
+        Options memory opts;
+        return deployBeacon(contractName, initialOwner, opts);
+    }
+
+    /**
      * @dev Upgrades a beacon to a new implementation contract.
      *
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
@@ -445,6 +291,65 @@ library Upgrades {
     }
 
     /**
+     * @dev Deploys a beacon proxy using the given beacon and call data.
+     *
+     * @param beacon Address of the beacon to use
+     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     */
+    function deployBeaconProxy(address beacon, bytes memory data) internal returns (BeaconProxy) {
+        return new BeaconProxy(beacon, data);
+    }
+
+    /**
+     * @dev Validates an implementation contract, but does not deploy it.
+     *
+     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param opts Options for validations
+     */
+    function validateImplementation(string memory contractName, Options memory opts) internal {
+        _validate(contractName, opts, false);
+    }
+
+    /**
+     * @dev Validates and deploys an implementation contract, and returns its address.
+     *
+     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param opts Options for validations
+     */
+    function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
+        validateImplementation(contractName, opts);
+        return _deploy(contractName);
+    }
+
+    /**
+     * @dev Validates a new implementation contract in comparison with a reference contract, but does not deploy it.
+     *
+     * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
+     *
+     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param opts Options for validations
+     */
+    function validateUpgrade(string memory contractName, Options memory opts) internal {
+        _validate(contractName, opts, true);
+    }
+
+    /**
+     * @dev Validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract,
+     * and returns its address.
+     *
+     * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
+     *
+     * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
+     *
+     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param opts Options for validations
+     */
+    function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
+        validateUpgrade(contractName, opts);
+        return _deploy(contractName);
+    }
+
+    /**
      * @dev Gets the admin address of a transparent proxy from its ERC1967 admin storage slot.
      *
      * @param proxy Address of a transparent proxy
@@ -492,5 +397,102 @@ library Upgrades {
         } catch {
             _;
         }
+    }
+
+    using strings for *;
+    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
+
+    function _validate(string memory contractName, Options memory opts, bool requireReference) private {
+        if (opts.unsafeSkipAllChecks) {
+            return;
+        }
+
+        string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
+        bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(inputs);
+
+        if (string(result).toSlice().endsWith("SUCCESS".toSlice())) {
+            return;
+        }
+        revert(string.concat("Upgrade safety validation failed: ", string(result)));
+    }
+
+    function _buildValidateCommand(
+        string memory contractName,
+        Options memory opts,
+        bool requireReference
+    ) private pure returns (string[] memory) {
+        // TODO get defaults from foundry.toml
+        string memory outDir = opts.outDir;
+        if (bytes(outDir).length == 0) {
+            outDir = "out";
+        }
+
+        string[] memory inputBuilder = new string[](255);
+
+        uint8 i = 0;
+        inputBuilder[i++] = "npx";
+        inputBuilder[i++] = "@openzeppelin/upgrades-core";
+        inputBuilder[i++] = "validate";
+        inputBuilder[i++] = string.concat(outDir, "/build-info");
+        inputBuilder[i++] = "--contract";
+        inputBuilder[i++] = _toShortName(contractName);
+        if (bytes(opts.referenceContract).length != 0) {
+            inputBuilder[i++] = "--reference";
+            inputBuilder[i++] = _toShortName(opts.referenceContract);
+        }
+        if (requireReference) {
+            inputBuilder[i++] = "--requireReference";
+        }
+        if (bytes(opts.unsafeAllow).length != 0) {
+            inputBuilder[i++] = "--unsafeAllow";
+            inputBuilder[i++] = opts.unsafeAllow;
+        }
+        if (opts.unsafeAllowRenames) {
+            inputBuilder[i++] = "--unsafeAllowRenames";
+        }
+        if (opts.unsafeSkipStorageCheck) {
+            inputBuilder[i++] = "--unsafeSkipStorageCheck";
+        }
+
+        // Create a copy of inputs but with the correct length
+        string[] memory inputs = new string[](i);
+        for (uint8 j = 0; j < i; j++) {
+            inputs[j] = inputBuilder[j];
+        }
+
+        return inputs;
+    }
+
+    function _toShortName(string memory contractName) private pure returns (string memory) {
+        strings.slice memory name = contractName.toSlice();
+        if (name.endsWith(".sol".toSlice())) {
+            return name.until(".sol".toSlice()).toString();
+        } else if (name.count(":".toSlice()) == 1) {
+            // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
+            name.split(":".toSlice());
+            return name.split(":".toSlice()).toString();
+        } else {
+            // TODO support artifact file name
+            revert(
+                string.concat(
+                    "Contract name ",
+                    contractName,
+                    " must be in the format MyContract.sol:MyContract or MyContract.sol"
+                )
+            );
+        }
+    }
+
+    function _deploy(string memory contractName) private returns (address) {
+        bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+        return _deployFromBytecode(code);
+    }
+
+    function _deployFromBytecode(bytes memory bytecode) private returns (address) {
+        address addr;
+        assembly {
+            addr := create(0, add(bytecode, 32), mload(bytecode))
+        }
+        return addr;
     }
 }
