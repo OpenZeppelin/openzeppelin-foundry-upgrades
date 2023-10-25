@@ -20,6 +20,7 @@ struct Options {
 
   // Foundry Upgrades options
   bool unsafeSkipChecks;
+  string referenceContract;
 
   // @openzeppelin/upgrades-core CLI options
   string unsafeAllow;
@@ -35,12 +36,12 @@ library Upgrades {
 
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
-  function _validate(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private {
+  function _validate(string memory contractName, Options memory opts, bool requireReference) private {
     if (opts.unsafeSkipChecks) {
       return;
     }
 
-    string[] memory inputs = _buildInputs(contractName, referenceContract, opts, requireReference);
+    string[] memory inputs = _buildInputs(contractName, opts, requireReference);
     bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(inputs);
 
     if (string(result).toSlice().endsWith("SUCCESS".toSlice())) {
@@ -49,7 +50,7 @@ library Upgrades {
     revert(string.concat("Upgrade safety validation failed: ", string(result)));
   }
 
-  function _buildInputs(string memory contractName, string memory referenceContract, Options memory opts, bool requireReference) private pure returns (string[] memory) {
+  function _buildInputs(string memory contractName, Options memory opts, bool requireReference) private pure returns (string[] memory) {
     // TODO get defaults from foundry.toml
     string memory outDir = opts.outDir;
     if (bytes(outDir).length == 0) {
@@ -65,9 +66,9 @@ library Upgrades {
     inputBuilder[i++] = string.concat(outDir, "/build-info");
     inputBuilder[i++] = "--contract";
     inputBuilder[i++] = _toShortName(contractName);
-    if (bytes(referenceContract).length != 0) {
+    if (bytes(opts.referenceContract).length != 0) {
       inputBuilder[i++] = "--reference";
-      inputBuilder[i++] = _toShortName(referenceContract);
+      inputBuilder[i++] = _toShortName(opts.referenceContract);
     }
     if (requireReference) {
       inputBuilder[i++] = "--requireReference";
@@ -107,67 +108,45 @@ library Upgrades {
   }
 
   /**
-   * @dev Validates an implementation contract without deploying it.
+   * @dev Validates an implementation contract, but does not deploy it.
    *
    * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param opts Options for validations
    */
   function validateImplementation(string memory contractName, Options memory opts) internal {
-    _validate(contractName, "", opts, false);
+    _validate(contractName, opts, false);
   }
 
   /**
-   * @dev Validates a new implementation contract without deploying it.
-   * Compares the reference contract to the new implementation contract to check for storage layout compatibility errors.
+   * @dev Validates a new implementation contract in comparison with a reference contract, but does not deploy it.
    *
-   * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-   * @param referenceContract Name of the reference contract to use for storage layout comparisons.
-   *  If empty, uses the `@custom:oz-upgrades-from <reference>` annotation from the contract as the reference contract.
-   * @param opts Options for validations
-   */
-  function validateUpgrade(string memory contractName, string memory referenceContract, Options memory opts) internal {
-    _validate(contractName, referenceContract, opts, true);
-  }
-
-  /**
-   * @dev Validates a new implementation contract without deploying it.
-   * Uses the `@custom:oz-upgrades-from <reference>` annotation from the contract to use as the reference contract for storage layout comparisons.
+   * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
    *
    * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param opts Options for validations
    */
   function validateUpgrade(string memory contractName, Options memory opts) internal {
-    validateUpgrade(contractName, "", opts);
+    _validate(contractName, opts, true);
   }
 
   /**
-   * @dev Validates and deploys a new implementation contract, and returns its address.
-   * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
+   * @dev Validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract,
+   * and returns its address.
    *
-   * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-   * @param referenceContract Name of the reference contract to use for storage layout comparisons.
-   *  If empty, uses the `@custom:oz-upgrades-from <reference>` annotation from the contract as the reference contract.
-   * @param opts Options for validations
-   */
-  function prepareUpgrade(string memory contractName, string memory referenceContract, Options memory opts) internal returns (address) {
-    validateUpgrade(contractName, referenceContract, opts);
-    return _deploy(contractName);
-  }
-
-  /**
-   * @dev Validates and deploys a new implementation contract, and returns its address.
-   * Uses the `@custom:oz-upgrades-from <reference>` annotation from the contract to use as the reference contract for storage layout comparisons.
+   * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
    * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
    *
    * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param opts Options for validations
    */
   function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
-    return prepareUpgrade(contractName, "", opts);
+    validateUpgrade(contractName, opts);
+    return _deploy(contractName);
   }
 
   /**
-   * @dev Validates and deploys a new implementation contract, and returns its address.
+   * @dev Validates and deploys an implementation contract, and returns its address.
    *
    * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param opts Options for validations
