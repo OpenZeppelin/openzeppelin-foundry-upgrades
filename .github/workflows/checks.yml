@@ -1,4 +1,4 @@
-name: test
+name: checks
 
 on: workflow_dispatch
 
@@ -6,27 +6,35 @@ env:
   FOUNDRY_PROFILE: ci
 
 jobs:
-  check:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup Node environment
+      uses: ./.github/actions/setup
+
+    - name: Run linter
+      run: npm lint
+
+  tests:
     strategy:
       fail-fast: true
 
-    name: Foundry project
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: 'npm'
+      - name: Setup Node environment
+        uses: ./.github/actions/setup
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
-
-      - name: Install NPM dependencies
-        run: npm install
 
       - name: Run Forge build
         run: |
