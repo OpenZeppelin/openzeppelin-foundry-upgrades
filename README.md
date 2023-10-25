@@ -25,7 +25,7 @@ This library uses the [OpenZeppelin Upgrades Core CLI](https://docs.openzeppelin
 - Run `forge clean` before running your Foundry script or tests.
 - Include `--ffi` in your `forge script` or `forge test` command.
 
-If you do not want to run upgrade safety checks, use the `unsafeSkipChecks` option from the `Options` struct when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety checks, use the `unsafeSkipAllChecks` option from the `Options` struct when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
 
 ## Usage
 

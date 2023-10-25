@@ -15,17 +15,29 @@ import {console} from "forge-std/Console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
 struct Options {
-  // Foundry options
+  // Foundry output directory
   string outDir;
 
-  // Foundry Upgrades options
-  bool unsafeSkipChecks;
+  /**
+   * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1".
+   * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
+   */
   string referenceContract;
 
-  // @openzeppelin/upgrades-core CLI options
+  /**
+   * Selectively disable one or more validation errors. Comma-separated list that must be compatible with the
+   * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#usage
+   */
   string unsafeAllow;
+
+  // Configure storage layout check to allow variable renaming
   bool unsafeAllowRenames;
+
+  // Skips checking for storage layout compatibility errors. This is a dangerous option meant to be used as a last resort.
   bool unsafeSkipStorageCheck;
+
+  // Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
+  bool unsafeSkipAllChecks;
 }
 
 /**
@@ -37,7 +49,7 @@ library Upgrades {
   address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
   function _validate(string memory contractName, Options memory opts, bool requireReference) private {
-    if (opts.unsafeSkipChecks) {
+    if (opts.unsafeSkipAllChecks) {
       return;
     }
 
@@ -103,7 +115,7 @@ library Upgrades {
       return name.split(":".toSlice()).toString();
     } else {
       // TODO support artifact file name
-      revert(string.concat("Contract name ", contractName, " must be in File.sol:Name or File.sol format"));
+      revert(string.concat("Contract name ", contractName, " must be in the format MyContract.sol:MyContract or MyContract.sol"));
     }
   }
 
