@@ -56,14 +56,15 @@ library Upgrades {
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @param opts Options for validations
+     * @return Proxy address
      */
     function deployUUPSProxy(
         string memory contractName,
         bytes memory data,
         Options memory opts
-    ) internal returns (ERC1967Proxy) {
+    ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return new ERC1967Proxy(impl, data);
+        return address(new ERC1967Proxy(impl, data));
     }
 
     /**
@@ -71,8 +72,9 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @return Proxy address
      */
-    function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (ERC1967Proxy) {
+    function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (address) {
         Options memory opts;
         return deployUUPSProxy(contractName, data, opts);
     }
@@ -84,15 +86,16 @@ library Upgrades {
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @param opts Options for validations
+     * @return Proxy address
      */
     function deployTransparentProxy(
         string memory contractName,
         address initialOwner,
         bytes memory data,
         Options memory opts
-    ) internal returns (TransparentUpgradeableProxy) {
+    ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return new TransparentUpgradeableProxy(impl, initialOwner, data);
+        return address(new TransparentUpgradeableProxy(impl, initialOwner, data));
     }
 
     /**
@@ -101,12 +104,13 @@ library Upgrades {
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @return Proxy address
      */
     function deployTransparentProxy(
         string memory contractName,
         address initialOwner,
         bytes memory data
-    ) internal returns (TransparentUpgradeableProxy) {
+    ) internal returns (address) {
         Options memory opts;
         return deployTransparentProxy(contractName, initialOwner, data, opts);
     }
@@ -203,14 +207,15 @@ library Upgrades {
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
      * @param opts Options for validations
+     * @return Beacon address
      */
     function deployBeacon(
         string memory contractName,
         address initialOwner,
         Options memory opts
-    ) internal returns (IBeacon) {
+    ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return new UpgradeableBeacon(impl, initialOwner);
+        return address(new UpgradeableBeacon(impl, initialOwner));
     }
 
     /**
@@ -218,8 +223,9 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+     * @return Beacon address
      */
-    function deployBeacon(string memory contractName, address initialOwner) internal returns (IBeacon) {
+    function deployBeacon(string memory contractName, address initialOwner) internal returns (address) {
         Options memory opts;
         return deployBeacon(contractName, initialOwner, opts);
     }
@@ -295,9 +301,10 @@ library Upgrades {
      *
      * @param beacon Address of the beacon to use
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @return Proxy address
      */
-    function deployBeaconProxy(address beacon, bytes memory data) internal returns (BeaconProxy) {
-        return new BeaconProxy(beacon, data);
+    function deployBeaconProxy(address beacon, bytes memory data) internal returns (address) {
+        return address(new BeaconProxy(beacon, data));
     }
 
     /**
@@ -315,6 +322,7 @@ library Upgrades {
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param opts Options for validations
+     * @return Address of the implementation contract
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
@@ -343,6 +351,7 @@ library Upgrades {
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param opts Options for validations
+     * @return Address of the new implementation contract
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
         validateUpgrade(contractName, opts);
@@ -353,6 +362,7 @@ library Upgrades {
      * @dev Gets the admin address of a transparent proxy from its ERC1967 admin storage slot.
      *
      * @param proxy Address of a transparent proxy
+     * @return Admin address
      */
     function getAdminAddress(address proxy) internal view returns (address) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
@@ -365,6 +375,7 @@ library Upgrades {
      * @dev Gets the implementation address of a transparent or UUPS proxy from its ERC1967 implementation storage slot.
      *
      * @param proxy Address of a transparent or UUPS proxy
+     * @return Implementation address
      */
     function getImplementationAddress(address proxy) internal view returns (address) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
@@ -377,6 +388,7 @@ library Upgrades {
      * @dev Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
      *
      * @param proxy Address of a beacon proxy
+     * @return Beacon address
      */
     function getBeaconAddress(address proxy) internal view returns (address) {
         Vm vm = Vm(CHEATCODE_ADDRESS);

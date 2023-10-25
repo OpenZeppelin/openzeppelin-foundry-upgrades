@@ -17,21 +17,17 @@ contract UpgradesScript is Script {
         vm.startBroadcast();
 
         // example deployment and upgrade of a transparent proxy
-        address transparentProxy = address(
-            Upgrades.deployTransparentProxy(
-                "MyToken.sol",
-                msg.sender,
-                abi.encodeCall(MyToken.initialize, ("hello", msg.sender))
-            )
+        address transparentProxy = Upgrades.deployTransparentProxy(
+            "MyToken.sol",
+            msg.sender,
+            abi.encodeCall(MyToken.initialize, ("hello", msg.sender))
         );
         Upgrades.upgradeProxy(transparentProxy, "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()));
 
         // example deployment and upgrade of a UUPS proxy
-        address uupsProxy = address(
-            Upgrades.deployUUPSProxy(
-                "MyTokenProxiable.sol",
-                abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender))
-            )
+        address uupsProxy = Upgrades.deployUUPSProxy(
+            "MyTokenProxiable.sol",
+            abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender))
         );
         Upgrades.upgradeProxy(
             uupsProxy,
@@ -40,7 +36,7 @@ contract UpgradesScript is Script {
         );
 
         // example deployment of a beacon proxy and upgrade of the beacon
-        address beacon = address(Upgrades.deployBeacon("MyToken.sol", msg.sender));
+        address beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
         Upgrades.deployBeaconProxy(beacon, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
         Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol");
 
