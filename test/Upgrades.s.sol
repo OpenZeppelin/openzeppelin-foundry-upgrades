@@ -8,7 +8,7 @@ import {MyTokenV2} from "./contracts/MyTokenV2.sol";
 import {MyTokenProxiable} from "./contracts/MyTokenProxiable.sol";
 import {MyTokenProxiableV2} from "./contracts/MyTokenProxiableV2.sol";
 
-import {Upgrades} from "@openzeppelin/foundry-upgrades/Upgrades.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 contract UpgradesScript is Script {
     function setUp() public {}
