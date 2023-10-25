@@ -8,11 +8,15 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 
 ## Installing
 
+Run the command:
 ```
-$ forge install OpenZeppelin/openzeppelin-foundry-upgrades
+forge install OpenZeppelin/openzeppelin-foundry-upgrades
 ```
 
-Add `@openzeppelin/foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/` in `remappings.txt`.
+Then add the following in `remappings.txt`:
+```
+@openzeppelin/foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/
+```
 
 ## Version limitations
 
