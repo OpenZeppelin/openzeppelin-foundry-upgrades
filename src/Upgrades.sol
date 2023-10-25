@@ -167,7 +167,7 @@ library Upgrades {
       addr := create(0, add(bytecode, 32), mload(bytecode))
     }
     return addr;
-   }
+  }
 
   /**
    * @dev Deploys a UUPS proxy using the given contract as the implementation.
@@ -253,6 +253,8 @@ library Upgrades {
   /**
    * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
    *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
    * @param proxy Address of the proxy to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
@@ -276,6 +278,8 @@ library Upgrades {
   /**
    * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
    *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
    * @param proxy Address of the proxy to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
@@ -287,14 +291,17 @@ library Upgrades {
 
   /**
    * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
-   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the proxy or its ProxyAdmin.
+   *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
+   * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+   * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
    *
    * @param proxy Address of the proxy to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
    * @param opts Options for validations
-   * @param tryCaller Address to use as the caller of the upgrade function.
-   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
    */
   function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts, address tryCaller) internal tryPrank(tryCaller) {
     upgradeProxy(proxy, contractName, data, opts);
@@ -302,13 +309,16 @@ library Upgrades {
 
   /**
    * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
-   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the proxy or its ProxyAdmin.
+   *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
+   * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+   * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
    *
    * @param proxy Address of the proxy to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
-   * @param tryCaller Address to use as the caller of the upgrade function.
-   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
    */
   function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal tryPrank(tryCaller) {
     Options memory opts;
@@ -317,6 +327,8 @@ library Upgrades {
 
   /**
    * @dev Upgrades a beacon to a new implementation contract.
+   *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
    *
    * @param beacon Address of the beacon to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
@@ -330,6 +342,8 @@ library Upgrades {
   /**
    * @dev Upgrades a beacon to a new implementation contract.
    *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
    * @param beacon Address of the beacon to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    */
@@ -340,13 +354,16 @@ library Upgrades {
 
   /**
    * @dev Upgrades a beacon to a new implementation contract.
-   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the beacon.
+   *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
+   * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+   * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
    *
    * @param beacon Address of the beacon to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
    * @param opts Options for validations
-   * @param tryCaller Address to use as the caller of the upgrade function.
-   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
    */
   function upgradeBeacon(address beacon, string memory contractName, Options memory opts, address tryCaller) internal tryPrank(tryCaller) {
     upgradeBeacon(beacon, contractName, opts);
@@ -354,12 +371,15 @@ library Upgrades {
 
   /**
    * @dev Upgrades a beacon to a new implementation contract.
-   * This function provides an additional `tryCaller` parameter to test an upgrade using an address that owns the beacon.
+   *
+   * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+   *
+   * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+   * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
    *
    * @param beacon Address of the beacon to upgrade
    * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-   * @param tryCaller Address to use as the caller of the upgrade function.
-   *  This uses Foundry's `prank` cheatcode to temporarily set the caller of the upgrade function to this address.
+   * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
    */
   function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
     Options memory opts;
@@ -367,7 +387,7 @@ library Upgrades {
   }
 
   /**
-   * @dev Gets the admin address of a transparent proxy according to its ERC1967 admin storage slot.
+   * @dev Gets the admin address of a transparent proxy from its ERC1967 admin storage slot.
    *
    * @param proxy Address of a transparent proxy
    */
@@ -379,7 +399,7 @@ library Upgrades {
   }
 
   /**
-   * @dev Gets the implementation address of a transparent or UUPS proxy according to its ERC1967 implementation storage slot.
+   * @dev Gets the implementation address of a transparent or UUPS proxy from its ERC1967 implementation storage slot.
    *
    * @param proxy Address of a transparent or UUPS proxy
    */
@@ -391,7 +411,7 @@ library Upgrades {
   }
 
   /**
-   * @dev Gets the beacon address of a beacon proxy according to its ERC1967 beacon storage slot.
+   * @dev Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
    *
    * @param proxy Address of a beacon proxy
    */
