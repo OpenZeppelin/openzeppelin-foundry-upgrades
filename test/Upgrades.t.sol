@@ -13,7 +13,7 @@ import {MyTokenV2} from "./contracts/MyTokenV2.sol";
 import {MyTokenProxiable} from "./contracts/MyTokenProxiable.sol";
 import {MyTokenProxiableV2} from "./contracts/MyTokenProxiableV2.sol";
 
-contract MyTokenTest is Test {
+contract UpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function testUUPS() public {
