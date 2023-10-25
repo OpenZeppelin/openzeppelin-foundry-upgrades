@@ -64,7 +64,11 @@ instance.myFunction();
 
 Upgrade a transparent or UUPS proxy and call an arbitrary function (such as a reinitializer) during the upgrade process:
 ```
-Upgrades.upgradeProxy(transparentProxy, "MyContractV2.sol", abi.encodeCall(MyContractV2.foo, ("arguments for foo")));
+Upgrades.upgradeProxy(
+    transparentProxy,
+    "MyContractV2.sol",
+    abi.encodeCall(MyContractV2.foo, ("arguments for foo"))
+);
 ```
 
 Deploy an upgradeable beacon:
@@ -74,7 +78,10 @@ address beacon = Upgrades.deployBeacon("MyContract.sol", INITIAL_OWNER_ADDRESS_F
 
 Deploy a beacon proxy:
 ```
-address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(MyContract.initialize, ("arguments for the initialize function")));
+address proxy = Upgrades.deployBeaconProxy(
+    beacon,
+    abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
+);
 ```
 
 Upgrade a beacon:
