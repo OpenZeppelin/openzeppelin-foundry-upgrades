@@ -12,6 +12,8 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 $ forge install OpenZeppelin/openzeppelin-foundry-upgrades
 ```
 
+Add `@openzeppelin/foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/` in `remappings.txt`.
+
 ## Version limitations
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts 5.0 or higher.
