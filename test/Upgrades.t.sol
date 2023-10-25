@@ -168,9 +168,9 @@ contract MyTokenTest is Test {
     }
   }
 
-  function testUnsafeSkipChecks() public {
+  function testUnsafeSkipAllChecks() public {
     Options memory opts;
-    opts.unsafeSkipChecks = true;
+    opts.unsafeSkipAllChecks = true;
     Upgrades.validateImplementation("Validations.sol:Unsafe", opts);
   }
 
