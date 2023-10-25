@@ -37,6 +37,51 @@ import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
 
+### Examples
+
+Deploy a UUPS proxy:
+```
+address proxy = Upgrades.deployUUPSProxy(
+    "MyContract.sol",
+    abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
+);
+```
+
+Deploy a transparent proxy:
+```
+address proxy = Upgrades.deployTransparentProxy(
+    "MyContract.sol",
+    INITIAL_OWNER_ADDRESS_FOR_PROXY_ADMIN,
+    abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
+);
+```
+
+Call your contract's functions as normal, but remember to always use the proxy address:
+```
+MyContract instance = MyContract(proxy);
+instance.myFunction();
+```
+
+Upgrade a transparent or UUPS proxy and call an arbitrary function (such as a reinitializer) during the upgrade process:
+```
+Upgrades.upgradeProxy(transparentProxy, "MyContractV2.sol", abi.encodeCall(MyContractV2.foo, ("arguments for foo")));
+```
+
+Deploy an upgradeable beacon:
+```
+address beacon = Upgrades.deployBeacon("MyContract.sol", INITIAL_OWNER_ADDRESS_FOR_BEACON);
+```
+
+Deploy a beacon proxy:
+```
+address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(MyContract.initialize, ("arguments for the initialize function")));
+```
+
+Upgrade a beacon:
+```
+Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
+```
+
 ## Contributing
 
 ### Running tests
