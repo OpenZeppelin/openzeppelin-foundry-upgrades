@@ -24,7 +24,7 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
-"@openzeppelin/upgrades-core@1.31.0":
+"@openzeppelin/upgrades-core@^1.31.0":
   version "1.31.0"
   resolved "https://registry.yarnpkg.com/@openzeppelin/upgrades-core/-/upgrades-core-1.31.0.tgz#cc262e2618d90540a8ad4dfafbdf06afdb17b8fa"
   integrity sha512-E1Cz8lVpo2mnBeFWxiGDLWtuTYMFNTEWwbnhle4dZ+5UHX6xTRO+Q/CaWBHm33HHhuuiUbRwgGNnAR9zOu+fyQ==
