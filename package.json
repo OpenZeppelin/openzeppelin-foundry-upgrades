@@ -5,7 +5,9 @@
   "scripts": {
     "clean": "forge clean",
     "compile": "forge build",
-    "test": "forge test --ffi",
+    "test": "npm run forge:test && npm run forge:script",
+    "forge:test": "forge test -vvv --ffi",
+    "forge:script": "forge script test/Upgrades.s.sol --ffi",
     "lint": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --check && solhint 'src/**/*.sol'",
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write"
   },

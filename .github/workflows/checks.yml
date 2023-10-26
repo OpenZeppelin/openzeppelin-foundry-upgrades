@@ -46,12 +46,7 @@ jobs:
           forge build --sizes
         id: build
 
-      - name: Run Forge tests
+      - name: Run tests
         run: |
-          forge test -vvv --ffi
+          yarn test
         id: test
-
-      - name: Run example Forge script
-        run: |
-          forge script test/Upgrades.s.sol --ffi
-        id: script
