@@ -158,6 +158,8 @@ library Upgrades {
     }
 
     /**
+     * @notice For tests only.
+     *
      * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
      *
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
@@ -182,6 +184,8 @@ library Upgrades {
     }
 
     /**
+     * @notice For tests only.
+     *
      * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
      *
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
@@ -261,6 +265,8 @@ library Upgrades {
     }
 
     /**
+     * @notice For tests only.
+     *
      * @dev Upgrades a beacon to a new implementation contract.
      *
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
@@ -283,6 +289,8 @@ library Upgrades {
     }
 
     /**
+     * @notice For tests only.
+     *
      * @dev Upgrades a beacon to a new implementation contract.
      *
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
@@ -401,6 +409,7 @@ library Upgrades {
     }
 
     /**
+     * @notice For tests only.
      * @dev Runs a function as a prank, or just runs the function normally if the prank could not be started.
      */
     modifier tryPrank(address deployer) {
