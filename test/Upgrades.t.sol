@@ -13,7 +13,7 @@ import {MyToken} from "./contracts/MyToken.sol";
 import {MyTokenV2} from "./contracts/MyTokenV2.sol";
 import {MyTokenProxiable} from "./contracts/MyTokenProxiable.sol";
 import {MyTokenProxiableV2} from "./contracts/MyTokenProxiableV2.sol";
-import {WithConstructor} from "./contracts/WithConstructor.sol";
+import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
 
 contract UpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
@@ -225,6 +225,13 @@ contract UpgradesTest is Test {
         );
         assertEq(WithConstructor(proxy).a(), 123);
         assertEq(WithConstructor(proxy).b(), 456);
+    }
+
+    function testNoInitializer() public {
+        Options memory opts;
+        opts.constructorData = abi.encode(123);
+        address proxy = Upgrades.deployTransparentProxy("WithConstructor.sol:NoInitializer", msg.sender, "", opts);
+        assertEq(WithConstructor(proxy).a(), 123);
     }
 }
 

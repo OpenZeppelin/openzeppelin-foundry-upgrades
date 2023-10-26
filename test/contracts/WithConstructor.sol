@@ -18,3 +18,13 @@ contract WithConstructor {
         b = _b;
     }
 }
+
+contract NoInitializer {
+    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+    uint256 public immutable a;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor(uint256 _a) {
+        a = _a;
+    }
+}
