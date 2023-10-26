@@ -209,9 +209,9 @@ contract UpgradesTest is Test {
     }
 
     function testSkipStorageCheckNoReference() public {
-      Options memory opts;
-      opts.unsafeSkipStorageCheck = true;
-      Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts);
+        Options memory opts;
+        opts.unsafeSkipStorageCheck = true;
+        Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts);
     }
 
     function testWithConstructor() public {
