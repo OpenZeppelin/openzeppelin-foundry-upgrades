@@ -208,12 +208,11 @@ contract UpgradesTest is Test {
         Upgrades.validateImplementation("Validations.sol:LayoutV2_Renamed", opts);
     }
 
-    // TODO fix this in upgrades-core
-    // function testSkipStorageCheckNoReference() public {
-    //   Options memory opts;
-    //   opts.unsafeSkipStorageCheck = true;
-    //   Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts);
-    // }
+    function testSkipStorageCheckNoReference() public {
+      Options memory opts;
+      opts.unsafeSkipStorageCheck = true;
+      Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts);
+    }
 
     function testWithConstructor() public {
         Options memory opts;

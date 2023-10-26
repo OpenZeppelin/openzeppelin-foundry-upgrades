@@ -445,28 +445,32 @@ library Upgrades {
         string[] memory inputBuilder = new string[](255);
 
         uint8 i = 0;
+
         inputBuilder[i++] = "npx";
         inputBuilder[i++] = "@openzeppelin/upgrades-core";
         inputBuilder[i++] = "validate";
         inputBuilder[i++] = string.concat(outDir, "/build-info");
         inputBuilder[i++] = "--contract";
         inputBuilder[i++] = _toShortName(contractName);
+
         if (bytes(opts.referenceContract).length != 0) {
             inputBuilder[i++] = "--reference";
             inputBuilder[i++] = _toShortName(opts.referenceContract);
         }
-        if (requireReference) {
+
+        if (opts.unsafeSkipStorageCheck) {
+            inputBuilder[i++] = "--unsafeSkipStorageCheck";
+        } else if (requireReference) {
             inputBuilder[i++] = "--requireReference";
         }
+
         if (bytes(opts.unsafeAllow).length != 0) {
             inputBuilder[i++] = "--unsafeAllow";
             inputBuilder[i++] = opts.unsafeAllow;
         }
+
         if (opts.unsafeAllowRenames) {
             inputBuilder[i++] = "--unsafeAllowRenames";
-        }
-        if (opts.unsafeSkipStorageCheck) {
-            inputBuilder[i++] = "--unsafeSkipStorageCheck";
         }
 
         // Create a copy of inputs but with the correct length
