@@ -526,6 +526,4 @@ library Upgrades {
         }
         return addr;
     }
-
-    // TODO support etherscan verify - consider https://book.getfoundry.sh/reference/forge/forge-verify-contract
 }
