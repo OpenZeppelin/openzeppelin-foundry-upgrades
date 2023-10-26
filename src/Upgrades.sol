@@ -57,29 +57,29 @@ library Upgrades {
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @param opts Common options
      * @return Proxy address
      */
     function deployUUPSProxy(
         string memory contractName,
-        bytes memory data,
+        bytes memory initializerData,
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new ERC1967Proxy(impl, data));
+        return address(new ERC1967Proxy(impl, initializerData));
     }
 
     /**
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @return Proxy address
      */
-    function deployUUPSProxy(string memory contractName, bytes memory data) internal returns (address) {
+    function deployUUPSProxy(string memory contractName, bytes memory initializerData) internal returns (address) {
         Options memory opts;
-        return deployUUPSProxy(contractName, data, opts);
+        return deployUUPSProxy(contractName, initializerData, opts);
     }
 
     /**
@@ -87,18 +87,18 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @param opts Common options
      * @return Proxy address
      */
     function deployTransparentProxy(
         string memory contractName,
         address initialOwner,
-        bytes memory data,
+        bytes memory initializerData,
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new TransparentUpgradeableProxy(impl, initialOwner, data));
+        return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
     }
 
     /**
@@ -106,16 +106,16 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @return Proxy address
      */
     function deployTransparentProxy(
         string memory contractName,
         address initialOwner,
-        bytes memory data
+        bytes memory initializerData
     ) internal returns (address) {
         Options memory opts;
-        return deployTransparentProxy(contractName, initialOwner, data, opts);
+        return deployTransparentProxy(contractName, initialOwner, initializerData, opts);
     }
 
     /**
@@ -125,7 +125,7 @@ library Upgrades {
      *
      * @param proxy Address of the proxy to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param opts Common options
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
@@ -150,7 +150,7 @@ library Upgrades {
      *
      * @param proxy Address of the proxy to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
         Options memory opts;
@@ -167,7 +167,7 @@ library Upgrades {
      *
      * @param proxy Address of the proxy to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param opts Common options
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
@@ -191,7 +191,7 @@ library Upgrades {
      *
      * @param proxy Address of the proxy to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
     function upgradeProxy(
