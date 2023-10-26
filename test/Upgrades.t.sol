@@ -218,7 +218,12 @@ contract UpgradesTest is Test {
     function testWithConstructor() public {
         Options memory opts;
         opts.constructorData = abi.encode(123);
-        address proxy = Upgrades.deployTransparentProxy("WithConstructor.sol", msg.sender, abi.encodeCall(WithConstructor.initialize, (456)), opts);
+        address proxy = Upgrades.deployTransparentProxy(
+            "WithConstructor.sol",
+            msg.sender,
+            abi.encodeCall(WithConstructor.initialize, (456)),
+            opts
+        );
         assertEq(WithConstructor(proxy).a(), 123);
         assertEq(WithConstructor(proxy).b(), 456);
     }

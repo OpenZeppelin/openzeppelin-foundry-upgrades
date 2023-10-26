@@ -502,7 +502,15 @@ library Upgrades {
         bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
         address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
         if (deployedAddress == address(0)) {
-            revert(string.concat("Failed to deploy contract ", contractName, " using constructor data \"", string(constructorData), "\""));
+            revert(
+                string.concat(
+                    "Failed to deploy contract ",
+                    contractName,
+                    ' using constructor data "',
+                    string(constructorData),
+                    '"'
+                )
+            );
         }
         return deployedAddress;
     }
