@@ -101,7 +101,7 @@ Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 Use `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
 
 > **Important**
-> Include the `--sender <SENDER_ADDRESS>` flag for the `forge script` command when performing upgrades, using an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
+> Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, using an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
 
 ### Verifying source code on Etherscan
 

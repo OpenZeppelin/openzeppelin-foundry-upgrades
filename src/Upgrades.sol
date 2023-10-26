@@ -158,7 +158,7 @@ library Upgrades {
     }
 
     /**
-     * @notice For tests only.
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
      *
      * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
      *
@@ -184,7 +184,7 @@ library Upgrades {
     }
 
     /**
-     * @notice For tests only.
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
      *
      * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
      *
@@ -265,7 +265,7 @@ library Upgrades {
     }
 
     /**
-     * @notice For tests only.
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
      *
      * @dev Upgrades a beacon to a new implementation contract.
      *
@@ -289,7 +289,7 @@ library Upgrades {
     }
 
     /**
-     * @notice For tests only.
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
      *
      * @dev Upgrades a beacon to a new implementation contract.
      *
@@ -409,7 +409,8 @@ library Upgrades {
     }
 
     /**
-     * @notice For tests only.
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+     *
      * @dev Runs a function as a prank, or just runs the function normally if the prank could not be started.
      */
     modifier tryPrank(address deployer) {
