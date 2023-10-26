@@ -14,9 +14,6 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
-/**
- * @dev Options for validations
- */
 struct Options {
     /**
      * Foundry output directory
@@ -27,6 +24,12 @@ struct Options {
      * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
      */
     string referenceContract;
+    /**
+     * Encoded constructor arguments for the implementation contract.
+     * Note that these are different from initializer arguments, and will be used in the deployment of the implementation contract itself.
+     * Can be used to initialize immutable variables.
+     */
+    bytes constructorData;
     /**
      * Selectively disable one or more validation errors. Comma-separated list that must be compatible with the
      * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#usage
@@ -55,7 +58,7 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
-     * @param opts Options for validations
+     * @param opts Common options
      * @return Proxy address
      */
     function deployUUPSProxy(
@@ -85,7 +88,7 @@ library Upgrades {
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
      * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
-     * @param opts Options for validations
+     * @param opts Common options
      * @return Proxy address
      */
     function deployTransparentProxy(
@@ -123,7 +126,7 @@ library Upgrades {
      * @param proxy Address of the proxy to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
-     * @param opts Options for validations
+     * @param opts Common options
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
@@ -165,7 +168,7 @@ library Upgrades {
      * @param proxy Address of the proxy to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no upgrade function is required
-     * @param opts Options for validations
+     * @param opts Common options
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
     function upgradeProxy(
@@ -206,7 +209,7 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
      * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
-     * @param opts Options for validations
+     * @param opts Common options
      * @return Beacon address
      */
     function deployBeacon(
@@ -237,7 +240,7 @@ library Upgrades {
      *
      * @param beacon Address of the beacon to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
+     * @param opts Common options
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
@@ -267,7 +270,7 @@ library Upgrades {
      *
      * @param beacon Address of the beacon to upgrade
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
+     * @param opts Common options
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
      */
     function upgradeBeacon(
@@ -311,7 +314,7 @@ library Upgrades {
      * @dev Validates an implementation contract, but does not deploy it.
      *
      * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
+     * @param opts Common options
      */
     function validateImplementation(string memory contractName, Options memory opts) internal {
         _validate(contractName, opts, false);
@@ -321,12 +324,12 @@ library Upgrades {
      * @dev Validates and deploys an implementation contract, and returns its address.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
+     * @param opts Common options
      * @return Address of the implementation contract
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
-        return _deploy(contractName);
+        return _deploy(contractName, opts.constructorData);
     }
 
     /**
@@ -335,7 +338,7 @@ library Upgrades {
      * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
      * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
+     * @param opts Common options
      */
     function validateUpgrade(string memory contractName, Options memory opts) internal {
         _validate(contractName, opts, true);
@@ -350,12 +353,12 @@ library Upgrades {
      * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
-     * @param opts Options for validations
+     * @param opts Common options
      * @return Address of the new implementation contract
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
         validateUpgrade(contractName, opts);
-        return _deploy(contractName);
+        return _deploy(contractName, opts.constructorData);
     }
 
     /**
@@ -495,9 +498,13 @@ library Upgrades {
         }
     }
 
-    function _deploy(string memory contractName) private returns (address) {
-        bytes memory code = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-        return _deployFromBytecode(code);
+    function _deploy(string memory contractName, bytes memory constructorData) private returns (address) {
+        bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+        address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
+        if (deployedAddress == address(0)) {
+            revert(string.concat("Failed to deploy contract ", contractName, " using constructor data \"", string(constructorData), "\""));
+        }
+        return deployedAddress;
     }
 
     function _deployFromBytecode(bytes memory bytecode) private returns (address) {
@@ -507,4 +514,6 @@ library Upgrades {
         }
         return addr;
     }
+
+    // TODO support etherscan verify - consider https://book.getfoundry.sh/reference/forge/forge-verify-contract
 }

@@ -13,6 +13,7 @@ import {MyToken} from "./contracts/MyToken.sol";
 import {MyTokenV2} from "./contracts/MyTokenV2.sol";
 import {MyTokenProxiable} from "./contracts/MyTokenProxiable.sol";
 import {MyTokenProxiableV2} from "./contracts/MyTokenProxiableV2.sol";
+import {WithConstructor} from "./contracts/WithConstructor.sol";
 
 contract UpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
@@ -210,6 +211,14 @@ contract UpgradesTest is Test {
     //   opts.unsafeSkipStorageCheck = true;
     //   Upgrades.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts);
     // }
+
+    function testWithConstructor() public {
+        Options memory opts;
+        opts.constructorData = abi.encode(123);
+        address proxy = Upgrades.deployTransparentProxy("WithConstructor.sol", msg.sender, abi.encodeCall(WithConstructor.initialize, (456)), opts);
+        assertEq(WithConstructor(proxy).a(), 123);
+        assertEq(WithConstructor(proxy).b(), 456);
+    }
 }
 
 contract Validator {
