@@ -21,6 +21,12 @@ contract LayoutV2_Bad {
 }
 
 /// @custom:oz-upgrades-from LayoutV1
+contract LayoutV2_Renamed {
+    uint256 _old_a;
+    uint256 b;
+}
+
+/// @custom:oz-upgrades-from LayoutV1
 contract LayoutV2_UpgradesFrom_Bad {
     uint256 a;
     uint256 c;

@@ -202,8 +202,11 @@ contract UpgradesTest is Test {
         Upgrades.validateImplementation("Validations.sol:Unsafe", opts);
     }
 
-    // TODO
-    // function testUnsafeAllowRenames()
+    function testUnsafeAllowRenames() public {
+        Options memory opts;
+        opts.unsafeAllowRenames = true;
+        Upgrades.validateImplementation("Validations.sol:LayoutV2_Renamed", opts);
+    }
 
     // TODO fix this in upgrades-core
     // function testSkipStorageCheckNoReference() public {
