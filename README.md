@@ -20,14 +20,14 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 ```
 
-## Version limitations
+## Version Limitations
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts 5.0 or higher.
 
 ## Requirements
 
 This library uses the [OpenZeppelin Upgrades Core CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks. In order for safety checks to work, the following are required:
-- Node.js must be installed.
+- [Node.js](https://nodejs.org/) must be installed.
 - Configure your `foundry.toml` according to the [CLI Prerequisites](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#foundry).
 - If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
 - Run `forge clean` before running your Foundry script or tests.
@@ -96,7 +96,7 @@ Upgrade a beacon:
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ```
 
-### Deploying
+### Deploying and Verifying
 
 Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
 
@@ -105,19 +105,3 @@ Run your script with `forge script` to broadcast and deploy. See Foundry's [Soli
 
 > **Note**
 > Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
-
-## Contributing
-
-### Running tests
-
-```
-forge clean && forge test --ffi
-```
-
-### Running example script
-
-You can simulate deployments and upgrades of the various kinds of proxies by running the script:
-
-```
-forge clean && forge script test/Upgrades.s.sol --ffi
-```
