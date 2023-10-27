@@ -9,10 +9,10 @@ import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 
-import {MyToken} from "./contracts/MyToken.sol";
-import {MyTokenV2} from "./contracts/MyTokenV2.sol";
-import {MyTokenProxiable} from "./contracts/MyTokenProxiable.sol";
-import {MyTokenProxiableV2} from "./contracts/MyTokenProxiableV2.sol";
+import {Greeter} from "./contracts/Greeter.sol";
+import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
+import {GreeterV2} from "./contracts/GreeterV2.sol";
+import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
 
 contract UpgradesTest is Test {
@@ -20,20 +20,18 @@ contract UpgradesTest is Test {
 
     function testUUPS() public {
         address proxy = Upgrades.deployUUPSProxy(
-            "MyTokenProxiable.sol",
-            abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender))
+            "GreeterProxiable.sol",
+            abi.encodeCall(Greeter.initialize, ("hello"))
         );
-        MyToken instance = MyToken(proxy);
+        Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
 
-        assertEq(instance.name(), "MyToken");
         assertEq(instance.greeting(), "hello");
-        assertEq(instance.owner(), msg.sender);
 
         Upgrades.upgradeProxy(
             proxy,
-            "MyTokenProxiableV2.sol",
-            abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()),
+            "GreeterV2Proxiable.sol",
+            abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()),
             msg.sender
         );
         address implAddressV2 = Upgrades.getImplementationAddress(proxy);
@@ -44,21 +42,19 @@ contract UpgradesTest is Test {
 
     function testTransparent() public {
         address proxy = Upgrades.deployTransparentProxy(
-            "MyToken.sol",
+            "Greeter.sol",
             msg.sender,
-            abi.encodeCall(MyToken.initialize, ("hello", msg.sender))
+            abi.encodeCall(Greeter.initialize, ("hello"))
         );
-        MyToken instance = MyToken(proxy);
+        Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
         address adminAddress = Upgrades.getAdminAddress(proxy);
 
         assertFalse(adminAddress == address(0));
 
-        assertEq(instance.name(), "MyToken");
         assertEq(instance.greeting(), "hello");
-        assertEq(instance.owner(), msg.sender);
 
-        Upgrades.upgradeProxy(proxy, "MyTokenV2.sol", abi.encodeCall(MyTokenV2.resetGreeting, ()), msg.sender);
+        Upgrades.upgradeProxy(proxy, "GreeterV2.sol", abi.encodeCall(GreeterV2.resetGreeting, ()), msg.sender);
         address implAddressV2 = Upgrades.getImplementationAddress(proxy);
 
         assertEq(Upgrades.getAdminAddress(proxy), adminAddress);
@@ -68,22 +64,20 @@ contract UpgradesTest is Test {
     }
 
     function testBeacon() public {
-        address beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
+        address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
         address implAddressV1 = IBeacon(beacon).implementation();
 
-        address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(MyToken.initialize, ("hello", msg.sender)));
-        MyToken instance = MyToken(proxy);
+        address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")));
+        Greeter instance = Greeter(proxy);
 
         assertEq(Upgrades.getBeaconAddress(proxy), beacon);
 
-        assertEq(instance.name(), "MyToken");
         assertEq(instance.greeting(), "hello");
-        assertEq(instance.owner(), msg.sender);
 
-        Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol", msg.sender);
+        Upgrades.upgradeBeacon(beacon, "GreeterV2.sol", msg.sender);
         address implAddressV2 = IBeacon(beacon).implementation();
 
-        MyTokenV2(address(instance)).resetGreeting();
+        GreeterV2(address(instance)).resetGreeting();
 
         assertEq(instance.greeting(), "resetted");
         assertFalse(implAddressV2 == implAddressV1);
@@ -91,22 +85,22 @@ contract UpgradesTest is Test {
 
     function testUpgradeProxyWithoutCaller() public {
         address proxy = Upgrades.deployUUPSProxy(
-            "MyTokenProxiable.sol",
-            abi.encodeCall(MyTokenProxiable.initialize, ("hello", msg.sender))
+            "GreeterProxiable.sol",
+            abi.encodeCall(GreeterProxiable.initialize, ("hello"))
         );
 
         Vm vm = Vm(CHEATCODE_ADDRESS);
         vm.startPrank(msg.sender);
-        Upgrades.upgradeProxy(proxy, "MyTokenProxiableV2.sol", abi.encodeCall(MyTokenProxiableV2.resetGreeting, ()));
+        Upgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()));
         vm.stopPrank();
     }
 
     function testUpgradeBeaconWithoutCaller() public {
-        address beacon = Upgrades.deployBeacon("MyToken.sol", msg.sender);
+        address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
 
         Vm vm = Vm(CHEATCODE_ADDRESS);
         vm.startPrank(msg.sender);
-        Upgrades.upgradeBeacon(beacon, "MyTokenV2.sol");
+        Upgrades.upgradeBeacon(beacon, "GreeterV2.sol");
         vm.stopPrank();
     }
 
