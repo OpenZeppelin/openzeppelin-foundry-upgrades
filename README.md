@@ -45,12 +45,12 @@ If you do not want to run upgrade safety checks, use the `unsafeSkipAllChecks` o
 
 ## Usage
 
-Import the library:
+Import the library in your Foundry scripts or tests:
 ```
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
 
-Then call functions from [Upgrades.sol](src/Upgrades.sol) in your Foundry scripts or tests to run validations, deployments, or upgrades.
+Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
 
 ### Examples
 
