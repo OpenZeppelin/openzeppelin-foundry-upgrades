@@ -27,11 +27,16 @@ This library only supports proxy contracts and upgrade interfaces from OpenZeppe
 ## Requirements
 
 This library uses the [OpenZeppelin Upgrades Core CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks. In order for safety checks to work, the following are required:
-- [Node.js](https://nodejs.org/) must be installed.
-- Configure your `foundry.toml` according to the [CLI Prerequisites](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#foundry).
-- If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
-- Run `forge clean` before running your Foundry script or tests.
-- Include `--ffi` in your `forge script` or `forge test` command.
+1. [Node.js](https://nodejs.org/) must be installed.
+2. Configure your `foundry.toml` to include build info and storage layout:
+```
+[profile.default]
+build_info = true
+extra_output = ["storageLayout"]
+```
+3. If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
+4. Run `forge clean` before running your Foundry script or tests.
+5. Include `--ffi` in your `forge script` or `forge test` command.
 
 If you do not want to run upgrade safety checks, use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
 
