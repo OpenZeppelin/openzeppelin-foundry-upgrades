@@ -20,6 +20,9 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 ```
 
+> **Note**
+> The above remappings mean that both `@openzeppelin/contracts/` and `@openzeppelin/contracts-upgradeable/` are coming from the `openzeppelin-contracts-upgradeable` submodule and its subdirectories (which includes its own transitive copy of `openzeppelin-contracts` of the same release version number). Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
+
 ## Version Limitations
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts 5.0 or higher.
