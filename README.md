@@ -24,7 +24,7 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts 5.0 or higher.
 
-## Prerequisites
+## Requirements
 
 This library uses the [OpenZeppelin Upgrades Core CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks. In order for safety checks to work, the following are required:
 - Node.js must be installed.
