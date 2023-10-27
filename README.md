@@ -11,7 +11,7 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 Run these commands:
 ```
 forge install OpenZeppelin/openzeppelin-foundry-upgrades
-forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v5.0.0
+forge install OpenZeppelin/openzeppelin-contracts-upgradeable
 ```
 
 Set the following in `remappings.txt`, replacing any previous definitions of these remappings:
