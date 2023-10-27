@@ -19,10 +19,7 @@ contract UpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function testUUPS() public {
-        address proxy = Upgrades.deployUUPSProxy(
-            "GreeterProxiable.sol",
-            abi.encodeCall(Greeter.initialize, ("hello"))
-        );
+        address proxy = Upgrades.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(Greeter.initialize, ("hello")));
         Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
 

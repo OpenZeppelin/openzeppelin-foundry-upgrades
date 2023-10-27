@@ -32,7 +32,7 @@ contract Proxiable {
 
     function _checkNonPayable() private {
         if (msg.value > 0) {
-            revert('non-payable upgrade call');
+            revert("non-payable upgrade call");
         }
     }
 
