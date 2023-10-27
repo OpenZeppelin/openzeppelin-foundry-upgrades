@@ -14,6 +14,8 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
+import {Versions} from "./Versions.sol";
+
 struct Options {
     /**
      * Foundry output directory
@@ -457,7 +459,7 @@ library Upgrades {
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = "@openzeppelin/upgrades-core";
+        inputBuilder[i++] = string.concat("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE);
         inputBuilder[i++] = "validate";
         inputBuilder[i++] = string.concat(outDir, "/build-info");
         inputBuilder[i++] = "--contract";
