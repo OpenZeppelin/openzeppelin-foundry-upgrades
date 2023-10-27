@@ -3,7 +3,7 @@
 Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
 
 > **Warning**
-> Experimental code. This is provided as a technology preview and its functionality may be subject to change.
+> This repository contains highly experimental code. It is in pre-alpha and its functionality may be subject to change.
 > **Use at your own risk.**
 
 ## Installing
