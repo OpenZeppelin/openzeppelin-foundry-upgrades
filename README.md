@@ -42,7 +42,7 @@ Import the library:
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
 
-Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
+Then call functions from [Upgrades.sol](src/Upgrades.sol) in your Foundry scripts or tests to run validations, deployments, or upgrades.
 
 ### Examples
 
@@ -96,16 +96,15 @@ Upgrade a beacon:
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ```
 
-### Deploying to a network
+### Deploying
 
-Use `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
+Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
 
 > **Important**
-> Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, using an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
+> Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
 
-### Verifying source code on Etherscan
-
-Include the `--verify` flag when running `forge script`. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
+> **Note**
+> Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
 
 ## Contributing
 
