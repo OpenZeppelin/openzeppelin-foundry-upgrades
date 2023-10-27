@@ -11,19 +11,13 @@ contract Proxiable {
         _setImplementation(newImplementation);
         if (data.length > 0) {
             /**
-             * Using address(this).call is dangerous as the call can impersonate the proxy being upgraded.
-             * a better option is to use a delegate call with an oz-upgrades-unsafe-allow, but this is not
-             * supported by the early version of solidity used here.
-             *
-             * /// @custom:oz-upgrades-unsafe-allow delegatecall
-             * (bool success, ) = newImplementation.delegatecall(data);
-             *
              * Note that using delegate call can make your implementation contract vulnerable if this function
-             * is not protected with the `onlyProxy` modifier. Again, This contract is for testing only, it is
+             * is not protected with the `onlyProxy` modifier. Again, this contract is for testing only, it is
              * not safe for use in production. Instead, use the `UUPSUpgradeable` contract available in
              * @openzeppelin/contracts-upgradeable
              */
-            (bool success, ) = address(this).call(data);
+            /// @custom:oz-upgrades-unsafe-allow delegatecall
+            (bool success, ) = newImplementation.delegatecall(data);
             require(success, "upgrade call reverted");
         } else {
             _checkNonPayable();
