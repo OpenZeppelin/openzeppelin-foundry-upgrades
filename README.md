@@ -96,11 +96,12 @@ Upgrades.upgradeProxy(
 ```
 
 > **Warning**
-> When upgrading a proxy, ensure that the new contract either has its `@custom:oz-upgrades-from <reference>` annotation set to the current implementation contract used by the proxy, or set it using the `referenceContract` option, for example:
+> When upgrading a proxy or beacon, ensure that the new contract either has its `@custom:oz-upgrades-from <reference>` annotation set to the current implementation contract used by the proxy or beacon, or set it with the `referenceContract` option, for example:
 > ```
 > Options memory opts;
 > opts.referenceContract = "MyContractV1.sol";
 > Upgrades.upgradeProxy(proxy, "MyContractV2.sol", "", opts);
+> // or Upgrades.upgradeBeacon(beacon, "MyContractV2.sol", opts);
 > ```
 
 Deploy an upgradeable beacon:
