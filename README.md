@@ -21,7 +21,7 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 ```
 
 > **Note**
-> The above remappings mean that both `@openzeppelin/contracts/` and `@openzeppelin/contracts-upgradeable/` are coming from the `openzeppelin-contracts-upgradeable` submodule and its subdirectories (which includes its own transitive copy of `openzeppelin-contracts` of the same release version number). This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
+> The above remappings mean that both `@openzeppelin/contracts/` (including proxy contracts deployed by this library) and `@openzeppelin/contracts-upgradeable/` come from your installation of the `openzeppelin-contracts-upgradeable` submodule and its subdirectories, which include its own transitive copy of `openzeppelin-contracts` of the same release version number. This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
 
 ## Version Limitations
 
@@ -29,7 +29,7 @@ This library only supports proxy contracts and upgrade interfaces from OpenZeppe
 
 ## Requirements
 
-This library uses the [OpenZeppelin Upgrades Core CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks. In order for safety checks to work, the following are required:
+This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks. In order for safety checks to work, the following are required:
 1. [Node.js](https://nodejs.org/) must be installed.
 2. Configure your `foundry.toml` to include build info and storage layout:
 ```
