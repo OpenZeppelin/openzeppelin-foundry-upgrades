@@ -1,6 +1,10 @@
 pragma solidity ^0.8.20;
 
-// This contract is for testing only, it is not safe for use in production.
+// These contracts are for testing only, they are not safe for use in production.
+
+interface IERC1822Proxiable {
+    function proxiableUUID() external view returns (bytes32);
+}
 
 contract Proxiable {
     bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
@@ -8,6 +12,10 @@ contract Proxiable {
     string public constant UPGRADE_INTERFACE_VERSION = "5.0.0";
 
     function upgradeToAndCall(address newImplementation, bytes calldata data) external {
+      try IERC1822Proxiable(newImplementation).proxiableUUID() returns (bytes32 slot) {
+        if (slot != _IMPLEMENTATION_SLOT) {
+          revert("slot is unsupported as a uuid");
+        }
         _setImplementation(newImplementation);
         if (data.length > 0) {
             /**
@@ -22,6 +30,13 @@ contract Proxiable {
         } else {
             _checkNonPayable();
         }
+      } catch {
+        revert("the implementation is not UUPS");
+      }
+    }
+
+    function proxiableUUID() external view virtual returns (bytes32) {
+        return _IMPLEMENTATION_SLOT;
     }
 
     function _checkNonPayable() private {
