@@ -86,6 +86,23 @@ Upgrades.upgradeProxy(
 );
 ```
 
+Upgrade a transparent or UUPS proxy without calling any additional function:
+```
+Upgrades.upgradeProxy(
+    transparentProxy,
+    "MyContractV2.sol",
+    ""
+);
+```
+
+> **Warning**
+> When upgrading a proxy, ensure that the new contract either has its `@custom:oz-upgrades-from <reference>` annotation set to the current implementation contract used by the proxy, or set it using the `referenceContract` option, for example:
+> ```
+> Options memory opts;
+> opts.referenceContract = "MyContractV1.sol";
+> Upgrades.upgradeProxy(proxy, "MyContractV2.sol", "", opts);
+> ```
+
 Deploy an upgradeable beacon:
 ```
 address beacon = Upgrades.deployBeacon("MyContract.sol", INITIAL_OWNER_ADDRESS_FOR_BEACON);
