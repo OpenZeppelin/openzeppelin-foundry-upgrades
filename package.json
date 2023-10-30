@@ -12,10 +12,11 @@
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write"
   },
   "devDependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
     "@openzeppelin/upgrades-core": "^1.31.0",
     "prettier": "^3.0.0",
     "prettier-plugin-solidity": "^1.1.0",
     "solhint": "^3.3.6",
-    "solhint-plugin-openzeppelin": "file:lib/openzeppelin-contracts/scripts/solhint-custom"
+    "solhint-plugin-openzeppelin": "file:scripts/solhint-custom"
   }
 }

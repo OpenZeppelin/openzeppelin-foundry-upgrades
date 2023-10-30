@@ -1,2 +1,1 @@
-@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 openzeppelin-foundry-upgrades/=src/
