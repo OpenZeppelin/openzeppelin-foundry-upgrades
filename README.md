@@ -26,9 +26,11 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts versions 5.0 or higher.
 
-## Requirements
+## Before Running
 
-This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks. In order for safety checks to work, the following are required:
+This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks, which are run by default prior to deployments and upgrades.
+
+If you want to be able to run upgrade safety checks, the following are needed:
 1. [Node.js](https://nodejs.org/) must be installed.
 2. Configure your `foundry.toml` to include build info and storage layout:
 ```
@@ -40,7 +42,7 @@ extra_output = ["storageLayout"]
 4. Run `forge clean` before running your Foundry script or tests.
 5. Include `--ffi` in your `forge script` or `forge test` command.
 
-If you do not want to run upgrade safety checks, use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
 
 ## Usage
 
