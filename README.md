@@ -31,7 +31,7 @@ This library only supports proxy contracts and upgrade interfaces from OpenZeppe
 This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks, which are run by default during deployments and upgrades.
 
 If you want to be able to run upgrade safety checks, the following are needed:
-1. [Node.js](https://nodejs.org/) must be installed.
+1. Install [Node.js](https://nodejs.org/).
 2. Configure your `foundry.toml` to include build info and storage layout:
 ```
 [profile.default]
