@@ -28,7 +28,7 @@ This library only supports proxy contracts and upgrade interfaces from OpenZeppe
 
 ## Before Running
 
-This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks, which are run by default prior to deployments and upgrades.
+This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks, which are run by default during deployments and upgrades.
 
 If you want to be able to run upgrade safety checks, the following are needed:
 1. [Node.js](https://nodejs.org/) must be installed.
