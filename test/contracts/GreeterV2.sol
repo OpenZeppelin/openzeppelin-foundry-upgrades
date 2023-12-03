@@ -7,10 +7,8 @@ pragma solidity ^0.8.20;
 contract GreeterV2 {
     string public greeting;
 
-    function initialize(string memory _greeting) public {
-        greeting = _greeting;
-    }
 
+    // For production usage, you may want to add `reinitializer(2)` from the openzepplin `Initializable` contract for the 2nd initialization function.
     function resetGreeting() public {
         greeting = "resetted";
     }

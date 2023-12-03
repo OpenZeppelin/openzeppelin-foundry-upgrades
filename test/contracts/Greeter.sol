@@ -6,6 +6,7 @@ pragma solidity ^0.8.20;
 contract Greeter {
     string public greeting;
 
+    // For production usage, you may want to add `initializer` from the openzepplin `Initializable` contract.
     function initialize(string memory _greeting) public {
         greeting = _greeting;
     }

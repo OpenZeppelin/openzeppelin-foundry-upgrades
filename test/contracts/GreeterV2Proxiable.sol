@@ -9,10 +9,7 @@ import {Proxiable} from "./Proxiable.sol";
 contract GreeterV2Proxiable is Proxiable {
     string public greeting;
 
-    function initialize(string memory _greeting) public {
-        greeting = _greeting;
-    }
-
+    // For production usage, you may want to add `reinitializer(2)` from the openzepplin `Initializable` contract for the 2nd initialization function.
     function resetGreeting() public {
         greeting = "resetted";
     }

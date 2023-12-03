@@ -8,6 +8,7 @@ import {Proxiable} from "./Proxiable.sol";
 contract GreeterProxiable is Proxiable {
     string public greeting;
 
+    // For production usage, you may want to add `initializer` from the openzepplin `Initializable` contract.
     function initialize(string memory _greeting) public {
         greeting = _greeting;
     }
