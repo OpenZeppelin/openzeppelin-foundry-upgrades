@@ -49,6 +49,10 @@ struct Options {
      * Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
      */
     bool unsafeSkipAllChecks;
+    /**
+     * add's salt to proxy address if present
+     */
+    bytes32 salt;
 }
 
 /**
@@ -69,7 +73,11 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new ERC1967Proxy(impl, initializerData));
+        if (opts.salt != 0) {
+            return address(new ERC1967Proxy{salt: opts.salt}(impl, initializerData));
+        } else {
+            return address(new ERC1967Proxy(impl, initializerData));
+        }
     }
 
     /**
