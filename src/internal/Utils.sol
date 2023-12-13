@@ -1,70 +1,43 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
-import {ITransparentUpgradeableProxy, TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
-import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
-import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
-import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
-
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
-import {Versions} from "./Versions.sol";
-
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
+ * @dev Internal helper methods used by Upgrades and Defender libraries.
  */
-library Defender {
+library Utils {
     
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
-    function deployContract(
+    function getFullyQualifiedName(
+        string memory outDir,
         string memory contractName
-    ) internal {
+    ) internal view returns (string memory) {
+        (string memory shortName, string memory contractPath) = getContractNameComponents(outDir, contractName);
+        return string.concat(contractPath, ":", shortName);
+    }
+
+    function getContractNameComponents(
+        string memory outDir,
+        string memory contractName
+    ) internal view returns (string memory, string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        console.log("Deploying ", contractName);
-
         string memory shortName = _toShortName(contractName);
-        console.log("Short name: ", shortName);
-
         string memory contractFileName = _toContractFileName(contractName);
-        console.log("Contract file name: ", contractFileName);
 
-        string memory outDir = _getOutDir();
-        console.log("Out dir: ", outDir);
-
-        // get json file at out/contractFileName/shortName
-        // concat projectRoot() in front
         string memory artifactPath = string.concat(vm.projectRoot(), "/", outDir, "/", contractFileName, "/", shortName, ".json");
+        string memory artifactJson = vm.readFile(artifactPath);
 
-        console.log("artifactPath ", artifactPath);
-
-
-
-        // get ast.absolutePath from json
-        string memory json = vm.readFile(artifactPath);
-        // console.log(json);
-
-        bytes memory absolutePath = vm.parseJson(json, ".ast.absolutePath");
-        console.log("absolutePath ", string(absolutePath));
+        string memory contractPath = string(vm.parseJson(artifactJson, ".ast.absolutePath"));
+        
+        return (shortName, contractPath);
     }
 
     using strings for *;
-
-    function _getOutDir() private returns (string memory) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-        string memory foundryTomlPath = string.concat(vm.projectRoot(), "/foundry.toml");
-        string memory foundryToml = vm.readFile(foundryTomlPath);
-        console.log("foundry.toml ", foundryToml);
-
-        return "out";
-    }
 
     function _toContractFileName(string memory contractName) private pure returns (string memory) {
         strings.slice memory name = contractName.toSlice();
@@ -104,5 +77,4 @@ library Defender {
             );
         }
     }
-
 }

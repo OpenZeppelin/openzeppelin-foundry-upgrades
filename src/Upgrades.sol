@@ -14,7 +14,8 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
-import {Versions} from "./Versions.sol";
+import {Versions} from "./internal/Versions.sol";
+import {Utils} from "./internal/Utils.sol";
 
 struct Options {
     /**
@@ -447,7 +448,7 @@ library Upgrades {
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) private pure returns (string[] memory) {
+    ) private view returns (string[] memory) {
         // TODO get defaults from foundry.toml
         string memory outDir = opts.outDir;
         if (bytes(outDir).length == 0) {
@@ -463,11 +464,11 @@ library Upgrades {
         inputBuilder[i++] = "validate";
         inputBuilder[i++] = string.concat(outDir, "/build-info");
         inputBuilder[i++] = "--contract";
-        inputBuilder[i++] = _toShortName(contractName);
+        inputBuilder[i++] = Utils.getFullyQualifiedName(outDir, contractName);
 
         if (bytes(opts.referenceContract).length != 0) {
             inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = _toShortName(opts.referenceContract);
+            inputBuilder[i++] = Utils.getFullyQualifiedName(outDir, opts.referenceContract);
         }
 
         if (opts.unsafeSkipStorageCheck) {
@@ -492,26 +493,6 @@ library Upgrades {
         }
 
         return inputs;
-    }
-
-    function _toShortName(string memory contractName) private pure returns (string memory) {
-        strings.slice memory name = contractName.toSlice();
-        if (name.endsWith(".sol".toSlice())) {
-            return name.until(".sol".toSlice()).toString();
-        } else if (name.count(":".toSlice()) == 1) {
-            // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
-            name.split(":".toSlice());
-            return name.split(":".toSlice()).toString();
-        } else {
-            // TODO support artifact file name
-            revert(
-                string.concat(
-                    "Contract name ",
-                    contractName,
-                    " must be in the format MyContract.sol:MyContract or MyContract.sol"
-                )
-            );
-        }
     }
 
     function _deploy(string memory contractName, bytes memory constructorData) private returns (address) {
