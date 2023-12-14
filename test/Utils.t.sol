@@ -7,21 +7,30 @@ import {Utils} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
 contract UpgradesTest is Test {
     function testGetFullyQualifiedNameComponents_from_file() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedNameComponents("Greeter.sol", "");
+        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedNameComponents(
+            "Greeter.sol",
+            ""
+        );
 
         assertEq(shortName, "Greeter");
         assertEq(contractPath, "test/contracts/Greeter.sol");
     }
 
     function testGetFullyQualifiedNameComponents_from_fileAndName() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedNameComponents("MyContractFile.sol:MyContractName", "");
+        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedNameComponents(
+            "MyContractFile.sol:MyContractName",
+            ""
+        );
 
         assertEq(shortName, "MyContractName");
         assertEq(contractPath, "test/contracts/MyContractFile.sol");
     }
 
     function testGetFullyQualifiedNameComponents_from_artifact() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedNameComponents("out/MyContractFile.sol/MyContractName.json", "");
+        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedNameComponents(
+            "out/MyContractFile.sol/MyContractName.json",
+            ""
+        );
 
         assertEq(shortName, "MyContractName");
         assertEq(contractPath, "test/contracts/MyContractFile.sol");
@@ -32,7 +41,10 @@ contract UpgradesTest is Test {
         try c.getFullyQualifiedNameComponents("Foo", "") {
             fail();
         } catch Error(string memory reason) {
-            assertEq(reason, "Contract name Foo must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json");
+            assertEq(
+                reason,
+                "Contract name Foo must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
+            );
         }
     }
 
@@ -40,8 +52,7 @@ contract UpgradesTest is Test {
         Caller c = new Caller();
         try c.getFullyQualifiedNameComponents("Greeter.sol", "invalidoutdir") {
             fail();
-        } catch {
-        }
+        } catch {}
     }
 
     function testGetFullyQualifiedName_from_file() public {
@@ -67,7 +78,10 @@ contract UpgradesTest is Test {
         try c.getFullyQualifiedName("Foo", "") {
             fail();
         } catch Error(string memory reason) {
-            assertEq(reason, "Contract name Foo must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json");
+            assertEq(
+                reason,
+                "Contract name Foo must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
+            );
         }
     }
 
@@ -75,8 +89,7 @@ contract UpgradesTest is Test {
         Caller c = new Caller();
         try c.getFullyQualifiedNameComponents("Greeter.sol", "invalidoutdir") {
             fail();
-        } catch {
-        }
+        } catch {}
     }
 
     function testGetOutDirWithDefaults() public {

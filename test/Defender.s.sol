@@ -16,7 +16,10 @@ contract UpgradesScript is Script {
     function setUp() public {}
 
     function run() public {
-        (string memory shortName, string memory contractPath) = Utils.getFullyQualifiedNameComponents("out/Foo.sol/MyFoo.json", "out"); // "Foo.sol:MyFoo");
+        (string memory shortName, string memory contractPath) = Utils.getFullyQualifiedNameComponents(
+            "out/Foo.sol/MyFoo.json",
+            "out"
+        ); // "Foo.sol:MyFoo");
         console.log("shortName", shortName);
         console.log("contractPath", contractPath);
 

@@ -20,16 +20,12 @@ import {Versions} from "./internal/Versions.sol";
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
  */
 library Defender {
-    
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
-    function deployContract(
-        string memory contractName
-    ) internal {
+    function deployContract(string memory contractName) internal {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         console.log("Deploying ", contractName);
-
     }
 
     using strings for *;

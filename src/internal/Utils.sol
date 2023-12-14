@@ -9,7 +9,6 @@ import {strings} from "solidity-stringutils/strings.sol";
  * @dev Internal helper methods used by Upgrades and Defender libraries.
  */
 library Utils {
-    
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     /**
@@ -45,7 +44,16 @@ library Utils {
 
         string memory fileName = _toFileName(contractName);
 
-        string memory artifactPath = string.concat(vm.projectRoot(), "/", getOutDirWithDefaults(outDir), "/", fileName, "/", shortName, ".json");
+        string memory artifactPath = string.concat(
+            vm.projectRoot(),
+            "/",
+            getOutDirWithDefaults(outDir),
+            "/",
+            fileName,
+            "/",
+            shortName,
+            ".json"
+        );
         string memory artifactJson = vm.readFile(artifactPath);
 
         contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
@@ -67,7 +75,10 @@ library Utils {
 
     using strings for *;
 
-    function _split(strings.slice memory inputSlice, strings.slice memory delimSlice) private pure returns (string[] memory) {
+    function _split(
+        strings.slice memory inputSlice,
+        strings.slice memory delimSlice
+    ) private pure returns (string[] memory) {
         string[] memory parts = new string[](inputSlice.count(delimSlice) + 1);
         for (uint i = 0; i < parts.length; i++) {
             parts[i] = inputSlice.split(delimSlice).toString();
