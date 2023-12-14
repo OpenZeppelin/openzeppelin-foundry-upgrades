@@ -13,6 +13,45 @@ library Utils {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     /**
+     * @dev Gets the fully qualified name of a contract.
+     *
+     * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
+     * @param outDir Foundry output directory to search in if contractName is not an artifact path. Defaults to "out" if empty.
+     * @return Fully qualified name of the contract, e.g. "src/MyContract.sol:MyContract"
+     */
+    function getFullyQualifiedName(
+        string memory contractName,
+        string memory outDir
+    ) internal view returns (string memory) {
+        (string memory contractPath, string memory shortName) = getFullyQualifiedNameComponents(contractName, outDir);
+        return string.concat(contractPath, ":", shortName);
+    }
+
+    /**
+     * @dev Gets the short name and contract path as components of a fully qualified contract name.
+     *
+     * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
+     * @param outDir Foundry output directory to search in if contractName is not an artifact path. Defaults to "out" if empty.
+     * @return contractPath Contract path, e.g. "src/MyContract.sol"
+     * @return shortName Contract short name, e.g. "MyContract"
+     */
+    function getFullyQualifiedNameComponents(
+        string memory contractName,
+        string memory outDir
+    ) internal view returns (string memory contractPath, string memory shortName) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+
+        shortName = _toShortName(contractName);
+
+        string memory fileName = _toFileName(contractName);
+
+        string memory artifactPath = string.concat(vm.projectRoot(), "/", getOutDirWithDefaults(outDir), "/", fileName, "/", shortName, ".json");
+        string memory artifactJson = vm.readFile(artifactPath);
+
+        contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
+    }
+
+    /**
      * @dev Gets the output directory to search for artifacts in.
      *
      * @param outDir Override for the output directory. Defaults to "out" if empty.
@@ -24,46 +63,6 @@ library Utils {
             result = "out";
         }
         return result;
-    }
-
-    /**
-     * @dev Gets the fully qualified name of a contract.
-     *
-     * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or "out/MyContract.sol/MyContract.json"
-     * @param outDir Foundry output directory to search in if contractName is not an artifact path. Defaults to "out" if empty.
-     * @return Fully qualified name of the contract, e.g. "contracts/MyContract.sol:MyContract"
-     */
-    function getFullyQualifiedName(
-        string memory contractName,
-        string memory outDir
-    ) internal view returns (string memory) {
-        (string memory shortName, string memory contractPath) = getContractNameComponents(outDir, contractName);
-        return string.concat(contractPath, ":", shortName);
-    }
-
-    /**
-     * @dev Gets the short name and contract path as components of a fully qualified contract name.
-     *
-     * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or "out/MyContract.sol/MyContract.json"
-     * @param outDir Foundry output directory to search in if contractName is not an artifact path. Defaults to "out" if empty.
-     * @return shortName Short name of the contract, e.g. "MyContract"
-     * @return contractPath Path to the contract, e.g. "contracts/MyContract.sol"
-     */
-    function getContractNameComponents(
-        string memory contractName,
-        string memory outDir
-    ) internal view returns (string memory, string memory) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        string memory shortName = _toShortName(contractName);
-        string memory fileName = _toFileName(contractName);
-
-        string memory artifactPath = string.concat(vm.projectRoot(), "/", getOutDirWithDefaults(outDir), "/", fileName, "/", shortName, ".json");
-        string memory artifactJson = vm.readFile(artifactPath);
-
-        string memory contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
-        
-        return (shortName, contractPath);
     }
 
     using strings for *;

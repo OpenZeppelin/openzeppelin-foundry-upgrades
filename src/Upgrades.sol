@@ -59,7 +59,7 @@ library Upgrades {
     /**
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @param opts Common options
      * @return Proxy address
@@ -76,7 +76,7 @@ library Upgrades {
     /**
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @return Proxy address
      */
@@ -88,7 +88,7 @@ library Upgrades {
     /**
      * @dev Deploys a transparent proxy using the given contract as the implementation.
      *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
      * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @param opts Common options
@@ -107,7 +107,7 @@ library Upgrades {
     /**
      * @dev Deploys a transparent proxy using the given contract as the implementation.
      *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
      * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
      * @return Proxy address
@@ -127,7 +127,7 @@ library Upgrades {
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
      * @param proxy Address of the proxy to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param opts Common options
      */
@@ -152,7 +152,7 @@ library Upgrades {
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
      * @param proxy Address of the proxy to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
@@ -171,7 +171,7 @@ library Upgrades {
      * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
      *
      * @param proxy Address of the proxy to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param opts Common options
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
@@ -197,7 +197,7 @@ library Upgrades {
      * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
      *
      * @param proxy Address of the proxy to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
@@ -214,7 +214,7 @@ library Upgrades {
     /**
      * @dev Deploys an upgradeable beacon using the given contract as the implementation.
      *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
      * @param opts Common options
      * @return Beacon address
@@ -231,7 +231,7 @@ library Upgrades {
     /**
      * @dev Deploys an upgradeable beacon using the given contract as the implementation.
      *
-     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
      * @return Beacon address
      */
@@ -246,7 +246,7 @@ library Upgrades {
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
      * @param beacon Address of the beacon to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
@@ -260,7 +260,7 @@ library Upgrades {
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
      * @param beacon Address of the beacon to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      */
     function upgradeBeacon(address beacon, string memory contractName) internal {
         Options memory opts;
@@ -278,7 +278,7 @@ library Upgrades {
      * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
      *
      * @param beacon Address of the beacon to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
      */
@@ -302,7 +302,7 @@ library Upgrades {
      * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
      *
      * @param beacon Address of the beacon to upgrade
-     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
      */
     function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
@@ -324,7 +324,7 @@ library Upgrades {
     /**
      * @dev Validates an implementation contract, but does not deploy it.
      *
-     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options
      */
     function validateImplementation(string memory contractName, Options memory opts) internal {
@@ -334,7 +334,7 @@ library Upgrades {
     /**
      * @dev Validates and deploys an implementation contract, and returns its address.
      *
-     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options
      * @return Address of the implementation contract
      */
@@ -348,7 +348,7 @@ library Upgrades {
      *
      * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
-     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options
      */
     function validateUpgrade(string memory contractName, Options memory opts) internal {
@@ -363,7 +363,7 @@ library Upgrades {
      *
      * Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment.
      *
-     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract"
+     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options
      * @return Address of the new implementation contract
      */
@@ -460,11 +460,11 @@ library Upgrades {
         inputBuilder[i++] = "validate";
         inputBuilder[i++] = string.concat(outDir, "/build-info");
         inputBuilder[i++] = "--contract";
-        inputBuilder[i++] = Utils.getFullyQualifiedName(outDir, contractName);
+        inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
 
         if (bytes(opts.referenceContract).length != 0) {
             inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = Utils.getFullyQualifiedName(outDir, opts.referenceContract);
+            inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
         }
 
         if (opts.unsafeSkipStorageCheck) {
