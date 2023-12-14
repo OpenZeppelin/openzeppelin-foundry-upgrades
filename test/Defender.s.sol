@@ -17,7 +17,7 @@ contract UpgradesScript is Script {
 
     function run() public {
         (string memory shortName, string memory contractPath) = Utils.getContractNameComponents("out", "Foo.sol:Greeter");
-        console.log("shortName ", shortName);
-        console.log("contractPath ", contractPath);
+        console.log("shortName", shortName);
+        console.log("contractPath", contractPath);
     }
 }

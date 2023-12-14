@@ -14,7 +14,7 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
-import {Versions} from "./Versions.sol";
+import {Versions} from "./internal/Versions.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -30,29 +30,6 @@ library Defender {
 
         console.log("Deploying ", contractName);
 
-        string memory shortName = _toShortName(contractName);
-        console.log("Short name: ", shortName);
-
-        string memory contractFileName = _toContractFileName(contractName);
-        console.log("Contract file name: ", contractFileName);
-
-        string memory outDir = _getOutDir();
-        console.log("Out dir: ", outDir);
-
-        // get json file at out/contractFileName/shortName
-        // concat projectRoot() in front
-        string memory artifactPath = string.concat(vm.projectRoot(), "/", outDir, "/", contractFileName, "/", shortName, ".json");
-
-        console.log("artifactPath ", artifactPath);
-
-
-
-        // get ast.absolutePath from json
-        string memory json = vm.readFile(artifactPath);
-        // console.log(json);
-
-        bytes memory absolutePath = vm.parseJson(json, ".ast.absolutePath");
-        console.log("absolutePath ", string(absolutePath));
     }
 
     using strings for *;
@@ -65,44 +42,4 @@ library Defender {
 
         return "out";
     }
-
-    function _toContractFileName(string memory contractName) private pure returns (string memory) {
-        strings.slice memory name = contractName.toSlice();
-        if (name.endsWith(".sol".toSlice())) {
-            return name.toString();
-        } else if (name.count(":".toSlice()) == 1) {
-            return name.split(":".toSlice()).toString();
-        } else {
-            // TODO support artifact file name
-            revert(
-                string.concat(
-                    "Contract name ",
-                    contractName,
-                    " must be in the format MyContract.sol:MyContract or MyContract.sol"
-                )
-            );
-        }
-
-    }
-
-    function _toShortName(string memory contractName) private pure returns (string memory) {
-        strings.slice memory name = contractName.toSlice();
-        if (name.endsWith(".sol".toSlice())) {
-            return name.until(".sol".toSlice()).toString();
-        } else if (name.count(":".toSlice()) == 1) {
-            // TODO lookup artifact file and return fully qualified name to support identical contract names in different files
-            name.split(":".toSlice());
-            return name.split(":".toSlice()).toString();
-        } else {
-            // TODO support artifact file name
-            revert(
-                string.concat(
-                    "Contract name ",
-                    contractName,
-                    " must be in the format MyContract.sol:MyContract or MyContract.sol"
-                )
-            );
-        }
-    }
-
 }

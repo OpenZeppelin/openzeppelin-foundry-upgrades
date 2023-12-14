@@ -32,7 +32,7 @@ library Utils {
         string memory artifactPath = string.concat(vm.projectRoot(), "/", outDir, "/", contractFileName, "/", shortName, ".json");
         string memory artifactJson = vm.readFile(artifactPath);
 
-        string memory contractPath = string(vm.parseJson(artifactJson, ".ast.absolutePath"));
+        string memory contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
         
         return (shortName, contractPath);
     }
