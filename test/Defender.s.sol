@@ -16,8 +16,11 @@ contract UpgradesScript is Script {
     function setUp() public {}
 
     function run() public {
-        (string memory shortName, string memory contractPath) = Utils.getContractNameComponents("out", "Foo.sol:Greeter");
+        (string memory shortName, string memory contractPath) = Utils.getContractNameComponents("out/Foo.sol/MyFoo.json", "out"); // "Foo.sol:MyFoo");
         console.log("shortName", shortName);
         console.log("contractPath", contractPath);
+
+        bytes memory usingVmGetCode = vm.getCode("out/Foo.sol/MyFoo.json");
+        console.log("usingVmGetCode", usingVmGetCode.length);
     }
 }

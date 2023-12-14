@@ -449,11 +449,7 @@ library Upgrades {
         Options memory opts,
         bool requireReference
     ) private view returns (string[] memory) {
-        // TODO get defaults from foundry.toml
-        string memory outDir = opts.outDir;
-        if (bytes(outDir).length == 0) {
-            outDir = "out";
-        }
+        string memory outDir = Utils.getOutDirWithDefaults(opts.outDir);
 
         string[] memory inputBuilder = new string[](255);
 
