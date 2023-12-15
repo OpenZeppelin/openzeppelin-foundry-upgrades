@@ -60,17 +60,13 @@ library Utils {
     }
 
     /**
-     * @dev Gets the output directory from the FOUNDRY_OUT environment variable, or defaults to "out" if not set or is empty.
+     * @dev Gets the output directory from the FOUNDRY_OUT environment variable, or defaults to "out" if not set.
      */
     function getOutDir() internal returns (string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         string memory defaultOutDir = "out";
-        string memory result = vm.envOr("FOUNDRY_OUT", defaultOutDir);
-        if (bytes(result).length == 0) {
-            result = defaultOutDir;
-        }
-        return result;
+        return vm.envOr("FOUNDRY_OUT", defaultOutDir);
     }
 
     using strings for *;
