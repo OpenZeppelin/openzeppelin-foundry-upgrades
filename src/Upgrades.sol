@@ -19,10 +19,6 @@ import {Utils} from "./internal/Utils.sol";
 
 struct Options {
     /**
-     * Foundry output directory
-     */
-    string outDir;
-    /**
      * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1".
      * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
      */
