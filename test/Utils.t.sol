@@ -7,14 +7,14 @@ import {Utils} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
 contract UpgradesTest is Test {
     function testGetFullyQualifiedComponents_from_file() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents("Greeter.sol", "out");
+        (string memory contractPath, string memory shortName, ) = Utils.getContractIdentifiers("Greeter.sol", "out");
 
         assertEq(shortName, "Greeter");
         assertEq(contractPath, "test/contracts/Greeter.sol");
     }
 
     function testGetFullyQualifiedComponents_from_fileAndName() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
+        (string memory contractPath, string memory shortName, ) = Utils.getContractIdentifiers(
             "MyContractFile.sol:MyContractName",
             "out"
         );
@@ -24,7 +24,7 @@ contract UpgradesTest is Test {
     }
 
     function testGetFullyQualifiedComponents_from_artifact() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
+        (string memory contractPath, string memory shortName, ) = Utils.getContractIdentifiers(
             "out/MyContractFile.sol/MyContractName.json",
             "out"
         );
@@ -46,10 +46,7 @@ contract UpgradesTest is Test {
     }
 
     function testGetFullyQualifiedComponents_outDirTrailingSlash() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
-            "Greeter.sol",
-            "out/"
-        );
+        (string memory contractPath, string memory shortName, ) = Utils.getContractIdentifiers("Greeter.sol", "out/");
 
         assertEq(shortName, "Greeter");
         assertEq(contractPath, "test/contracts/Greeter.sol");
@@ -106,7 +103,7 @@ contract UpgradesTest is Test {
 
 contract Invoker {
     function getFullyQualifiedComponents(string memory contractName, string memory outDir) public view {
-        Utils.getFullyQualifiedComponents(contractName, outDir);
+        Utils.getContractIdentifiers(contractName, outDir);
     }
 
     function getFullyQualifiedName(string memory contractName, string memory outDir) public view {

@@ -22,22 +22,23 @@ library Utils {
         string memory contractName,
         string memory outDir
     ) internal view returns (string memory) {
-        (string memory contractPath, string memory shortName) = getFullyQualifiedComponents(contractName, outDir);
+        (string memory contractPath, string memory shortName, ) = getContractIdentifiers(contractName, outDir);
         return string.concat(contractPath, ":", shortName);
     }
 
     /**
-     * @dev Gets the short name and contract path as components of a fully qualified contract name.
+     * @dev Gets the components that can be used identify a contract: short name, contract path, and bytecode string
      *
      * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return contractPath Contract path, e.g. "src/MyContract.sol"
      * @return shortName Contract short name, e.g. "MyContract"
+     * @return bytecode bytecode string from the compiled artifact
      */
-    function getFullyQualifiedComponents(
+    function getContractIdentifiers(
         string memory contractName,
         string memory outDir
-    ) internal view returns (string memory contractPath, string memory shortName) {
+    ) internal view returns (string memory contractPath, string memory shortName, string memory bytecode) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         shortName = _toShortName(contractName);
@@ -57,6 +58,41 @@ library Utils {
         string memory artifactJson = vm.readFile(artifactPath);
 
         contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
+        bytecode = vm.parseJsonString(artifactJson, ".bytecode.object");
+    }
+
+    using strings for *;
+
+    /**
+     * Gets the path to the build-info file that contains the given bytecode.
+     *
+     * @param bytecode Contract bytecode in string format, starting with 0x
+     * @param contractName Contract name to display in error message if build-info file is not found
+     * @param outDir Foundry output directory that contains a build-info directory
+     * @return The path to the build-info file that contains the given bytecode
+     */
+    function getBuildInfoFile(
+        string memory bytecode,
+        string memory contractName,
+        string memory outDir
+    ) internal returns (string memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+
+        string memory trimmedBytecode = bytecode.toSlice().beyond("0x".toSlice()).toString();
+
+        string[] memory inputs = new string[](4);
+        inputs[0] = "grep";
+        inputs[1] = "-rl";
+        inputs[2] = string.concat('"', trimmedBytecode, '"');
+        inputs[3] = string.concat(outDir, "/build-info");
+
+        string memory result = string(vm.ffi(inputs));
+
+        if (!result.toSlice().endsWith(".json".toSlice())) {
+            revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
+        }
+
+        return result;
     }
 
     /**
@@ -68,8 +104,6 @@ library Utils {
         string memory defaultOutDir = "out";
         return vm.envOr("FOUNDRY_OUT", defaultOutDir);
     }
-
-    using strings for *;
 
     function _split(
         strings.slice memory inputSlice,
