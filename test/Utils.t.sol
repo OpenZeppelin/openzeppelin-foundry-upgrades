@@ -45,6 +45,16 @@ contract UpgradesTest is Test {
         }
     }
 
+    function testGetFullyQualifiedComponents_outDirTrailingSlash() public {
+        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
+            "Greeter.sol",
+            "out/"
+        );
+
+        assertEq(shortName, "Greeter");
+        assertEq(contractPath, "test/contracts/Greeter.sol");
+    }
+
     function testGetFullyQualifiedComponents_invalidOutDir() public {
         Invoker c = new Invoker();
         try c.getFullyQualifiedComponents("Greeter.sol", "invalidoutdir") {
