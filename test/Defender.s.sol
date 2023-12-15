@@ -21,15 +21,7 @@ contract UpgradesScript is Script {
     using strings for *;
 
     function run() public {
-        string memory outDir = Utils.getOutDir();
-        (string memory contractPath, string memory shortName, string memory bytecode) = Utils.getContractIdentifiers(
-            "Greeter.sol",
-            outDir
-        );
-        string memory foundBuildInfoFile = Utils.getBuildInfoFile(bytecode, shortName, outDir);
-
-        console.log("shortName", shortName);
-        console.log("contractPath", contractPath);
-        console.log("foundBuildInfoFile", foundBuildInfoFile);
+        string memory deployed = Defender.deployContract("MyContractFile.sol:MyContractName");
+        console.log("Successfully deployed to address ", deployed);
     }
 }
