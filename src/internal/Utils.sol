@@ -15,7 +15,7 @@ library Utils {
      * @dev Gets the fully qualified name of a contract.
      *
      * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param outDir Foundry output directory to search in if contractName is not an artifact path. Defaults to "out" if empty.
+     * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return Fully qualified name of the contract, e.g. "src/MyContract.sol:MyContract"
      */
     function getFullyQualifiedName(
@@ -30,7 +30,7 @@ library Utils {
      * @dev Gets the short name and contract path as components of a fully qualified contract name.
      *
      * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param outDir Foundry output directory to search in if contractName is not an artifact path. Defaults to "out" if empty.
+     * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return contractPath Contract path, e.g. "src/MyContract.sol"
      * @return shortName Contract short name, e.g. "MyContract"
      */
@@ -47,7 +47,7 @@ library Utils {
         string memory artifactPath = string.concat(
             vm.projectRoot(),
             "/",
-            getOutDirWithDefaults(outDir),
+            outDir,
             "/",
             fileName,
             "/",
@@ -60,15 +60,15 @@ library Utils {
     }
 
     /**
-     * @dev Gets the output directory to search for artifacts in.
-     *
-     * @param outDir Override for the output directory. Defaults to "out" if empty.
+     * @dev Gets the output directory from the FOUNDRY_OUT environment variable, or defaults to "out" if not set or is empty.
      */
-    function getOutDirWithDefaults(string memory outDir) internal pure returns (string memory) {
-        // TODO get defaults from foundry.toml
-        string memory result = outDir;
-        if (bytes(outDir).length == 0) {
-            result = "out";
+    function getOutDir() internal returns (string memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+
+        string memory defaultOutDir = "out";
+        string memory result = vm.envOr("FOUNDRY_OUT", defaultOutDir);
+        if (bytes(result).length == 0) {
+            result = defaultOutDir;
         }
         return result;
     }

@@ -448,8 +448,8 @@ library Upgrades {
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) private view returns (string[] memory) {
-        string memory outDir = Utils.getOutDirWithDefaults(opts.outDir);
+    ) private returns (string[] memory) {
+        string memory outDir = Utils.getOutDir();
 
         string[] memory inputBuilder = new string[](255);
 

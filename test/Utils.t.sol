@@ -7,7 +7,7 @@ import {Utils} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
 contract UpgradesTest is Test {
     function testGetFullyQualifiedComponents_from_file() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents("Greeter.sol", "");
+        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents("Greeter.sol", "out");
 
         assertEq(shortName, "Greeter");
         assertEq(contractPath, "test/contracts/Greeter.sol");
@@ -16,7 +16,7 @@ contract UpgradesTest is Test {
     function testGetFullyQualifiedComponents_from_fileAndName() public {
         (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
             "MyContractFile.sol:MyContractName",
-            ""
+            "out"
         );
 
         assertEq(shortName, "MyContractName");
@@ -26,7 +26,7 @@ contract UpgradesTest is Test {
     function testGetFullyQualifiedComponents_from_artifact() public {
         (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
             "out/MyContractFile.sol/MyContractName.json",
-            ""
+            "out"
         );
 
         assertEq(shortName, "MyContractName");
@@ -35,7 +35,7 @@ contract UpgradesTest is Test {
 
     function testGetFullyQualifiedComponents_wrongNameFormat() public {
         Invoker c = new Invoker();
-        try c.getFullyQualifiedComponents("Foo", "") {
+        try c.getFullyQualifiedComponents("Foo", "out") {
             fail();
         } catch Error(string memory reason) {
             assertEq(
@@ -53,26 +53,26 @@ contract UpgradesTest is Test {
     }
 
     function testGetFullyQualifiedName_from_file() public {
-        string memory fqName = Utils.getFullyQualifiedName("Greeter.sol", "");
+        string memory fqName = Utils.getFullyQualifiedName("Greeter.sol", "out");
 
         assertEq(fqName, "test/contracts/Greeter.sol:Greeter");
     }
 
     function testGetFullyQualifiedName_from_fileAndName() public {
-        string memory fqName = Utils.getFullyQualifiedName("MyContractFile.sol:MyContractName", "");
+        string memory fqName = Utils.getFullyQualifiedName("MyContractFile.sol:MyContractName", "out");
 
         assertEq(fqName, "test/contracts/MyContractFile.sol:MyContractName");
     }
 
     function testGetFullyQualifiedName_from_artifact() public {
-        string memory fqName = Utils.getFullyQualifiedName("out/MyContractFile.sol/MyContractName.json", "");
+        string memory fqName = Utils.getFullyQualifiedName("out/MyContractFile.sol/MyContractName.json", "out");
 
         assertEq(fqName, "test/contracts/MyContractFile.sol:MyContractName");
     }
 
     function testGetFullyQualifiedName_wrongNameFormat() public {
         Invoker i = new Invoker();
-        try i.getFullyQualifiedName("Foo", "") {
+        try i.getFullyQualifiedName("Foo", "out") {
             fail();
         } catch Error(string memory reason) {
             assertEq(
@@ -89,10 +89,8 @@ contract UpgradesTest is Test {
         } catch {}
     }
 
-    function testGetOutDirWithDefaults() public {
-        assertEq(Utils.getOutDirWithDefaults(""), "out");
-        assertEq(Utils.getOutDirWithDefaults("out"), "out");
-        assertEq(Utils.getOutDirWithDefaults("foo"), "foo");
+    function testGetOutDir() public {
+        assertEq(Utils.getOutDir(), "out");
     }
 }
 
