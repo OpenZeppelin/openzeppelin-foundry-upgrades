@@ -18,6 +18,10 @@ library Defender {
     using strings for *;
 
     function deployContract(string memory contractName) internal returns (string memory) {
+        return _deploy(contractName);
+    }
+
+    function _deploy(string memory contractName) private returns (string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         string memory outDir = Utils.getOutDir();
@@ -41,7 +45,7 @@ library Defender {
         }
     }
 
-    function _buildDeployCommand(string memory shortName, string memory contractPath, string memory buildInfoFile) internal view returns (string[] memory) {
+    function _buildDeployCommand(string memory shortName, string memory contractPath, string memory buildInfoFile) private view returns (string[] memory) {
         string[] memory inputBuilder = new string[](255);
 
         uint8 i = 0;
