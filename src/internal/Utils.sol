@@ -5,6 +5,25 @@ import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/strings.sol";
 
+struct ContractInfo {
+    /**
+     * Contract path, e.g. "src/MyContract.sol"
+     */
+    string contractPath;
+    /**
+     * Contract short name, e.g. "MyContract"
+     */
+    string shortName;
+    /**
+     * Bytecode string from the compiled artifact
+     */
+    string bytecode;
+    /**
+     * License identifier from the compiled artifact
+     */
+    string license;
+}
+
 /**
  * @dev Internal helper methods used by Upgrades and Defender libraries.
  */
@@ -22,26 +41,26 @@ library Utils {
         string memory contractName,
         string memory outDir
     ) internal view returns (string memory) {
-        (string memory contractPath, string memory shortName, ) = getContractIdentifiers(contractName, outDir);
-        return string.concat(contractPath, ":", shortName);
+        ContractInfo memory info = getContractInfo(contractName, outDir);
+        return string.concat(info.contractPath, ":", info.shortName);
     }
 
     /**
-     * @dev Gets the components that can be used identify a contract: short name, contract path, and bytecode string
+     * @dev Gets information about a contract from its Foundry artifact.
      *
      * @param contractName Contract name in the format "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param outDir Foundry output directory to search in if contractName is not an artifact path
-     * @return contractPath Contract path, e.g. "src/MyContract.sol"
-     * @return shortName Contract short name, e.g. "MyContract"
-     * @return bytecode bytecode string from the compiled artifact
+     * @return ContractInfo struct containing information about the contract
      */
-    function getContractIdentifiers(
+    function getContractInfo(
         string memory contractName,
         string memory outDir
-    ) internal view returns (string memory contractPath, string memory shortName, string memory bytecode) {
+    ) internal view returns (ContractInfo memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        shortName = _toShortName(contractName);
+        ContractInfo memory info;
+
+        info.shortName = _toShortName(contractName);
 
         string memory fileName = _toFileName(contractName);
 
@@ -52,13 +71,16 @@ library Utils {
             "/",
             fileName,
             "/",
-            shortName,
+            info.shortName,
             ".json"
         );
         string memory artifactJson = vm.readFile(artifactPath);
 
-        contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
-        bytecode = vm.parseJsonString(artifactJson, ".bytecode.object");
+        info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
+        info.license = vm.parseJsonString(artifactJson, ".ast.license");
+        info.bytecode = vm.parseJsonString(artifactJson, ".bytecode.object");
+
+        return info;
     }
 
     using strings for *;

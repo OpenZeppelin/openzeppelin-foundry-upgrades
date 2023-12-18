@@ -7,7 +7,7 @@ import {strings} from "solidity-stringutils/strings.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-import {Utils} from "./internal/Utils.sol";
+import {Utils, ContractInfo} from "./internal/Utils.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -25,13 +25,13 @@ library Defender {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         string memory outDir = Utils.getOutDir();
-        (string memory contractPath, string memory shortName, string memory bytecode) = Utils.getContractIdentifiers(
+        ContractInfo memory contractInfo = Utils.getContractInfo(
             contractName,
             outDir
         );
-        string memory buildInfoFile = Utils.getBuildInfoFile(bytecode, shortName, outDir);
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
 
-        string[] memory inputs = _buildDeployCommand(shortName, contractPath, buildInfoFile);
+        string[] memory inputs = _buildDeployCommand(contractInfo, buildInfoFile);
 
         string memory result = string(vm.ffi(inputs));
         console.log(result);
@@ -45,7 +45,7 @@ library Defender {
         }
     }
 
-    function _buildDeployCommand(string memory shortName, string memory contractPath, string memory buildInfoFile) private view returns (string[] memory) {
+    function _buildDeployCommand(ContractInfo memory contractInfo, string memory buildInfoFile) private view returns (string[] memory) {
         string[] memory inputBuilder = new string[](255);
 
         uint8 i = 0;
@@ -54,13 +54,15 @@ library Defender {
         inputBuilder[i++] = "defender-cli";
         inputBuilder[i++] = "deploy";
         inputBuilder[i++] = "--contractName";
-        inputBuilder[i++] = shortName;
+        inputBuilder[i++] = contractInfo.shortName;
         inputBuilder[i++] = "--contractPath";
-        inputBuilder[i++] = contractPath;
-        inputBuilder[i++] = "--network";
+        inputBuilder[i++] = contractInfo.contractPath;
+        inputBuilder[i++] = "--chainId";
         inputBuilder[i++] = Strings.toString(block.chainid);
-        inputBuilder[i++] = "--artifactPayload";
+        inputBuilder[i++] = "--artifactFile";
         inputBuilder[i++] = buildInfoFile;
+        inputBuilder[i++] = "--licenseType";
+        inputBuilder[i++] = contractInfo.license;
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
