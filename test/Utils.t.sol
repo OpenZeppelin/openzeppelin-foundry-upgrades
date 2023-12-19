@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
+import {strings} from "solidity-stringutils/strings.sol";
 
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
@@ -95,6 +96,16 @@ contract UpgradesTest is Test {
 
     function testGetOutDir() public {
         assertEq(Utils.getOutDir(), "out");
+    }
+
+    using strings for *;
+
+    function testGetBuildInfoFile() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("Greeter.sol", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out");
+
+        assertTrue(buildInfoFile.toSlice().startsWith("out/build-info".toSlice()));
+        assertTrue(buildInfoFile.toSlice().endsWith(".json".toSlice()));
     }
 }
 

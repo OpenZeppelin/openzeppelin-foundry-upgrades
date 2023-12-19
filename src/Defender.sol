@@ -1,79 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Vm} from "forge-std/Vm.sol";
-import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/strings.sol";
-
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-
-import {Utils, ContractInfo} from "./internal/Utils.sol";
-import {Versions} from "./internal/Versions.sol";
+import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 /**
  * @dev Library for interacting with OpenZeppelin Defender from Forge scripts or tests.
  */
 library Defender {
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
-    using strings for *;
-
+    /**
+     * @dev Deploys a contract to the current network using OpenZeppelin Defender.
+     *
+     * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
+     *
+     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
+     */
     function deployContract(string memory contractName) internal returns (string memory) {
-        return _deploy(contractName);
-    }
-
-    function _deploy(string memory contractName) private returns (string memory) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        string memory outDir = Utils.getOutDir();
-        ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
-
-        string[] memory inputs = _buildDeployCommand(contractInfo, buildInfoFile);
-
-        string memory result = string(vm.ffi(inputs));
-        console.log(result);
-
-        strings.slice memory delim = "Deployed to address: ".toSlice();
-        if (result.toSlice().contains(delim)) {
-            return result.toSlice().copy().find(delim).beyond(delim).toString();
-        } else {
-            // TODO extract stderr by using vm.tryFfi
-            revert(string.concat("Failed to deploy contract ", contractName, ". See error messages above."));
-        }
-    }
-
-    function _buildDeployCommand(
-        ContractInfo memory contractInfo,
-        string memory buildInfoFile
-    ) private view returns (string[] memory) {
-        string[] memory inputBuilder = new string[](255);
-
-        uint8 i = 0;
-
-        inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat(
-            "@openzeppelin/defender-deploy-client-cli@",
-            Versions.DEFENDER_DEPLOY_CLIENT_CLI
-        );
-        inputBuilder[i++] = "deploy";
-        inputBuilder[i++] = "--contractName";
-        inputBuilder[i++] = contractInfo.shortName;
-        inputBuilder[i++] = "--contractPath";
-        inputBuilder[i++] = contractInfo.contractPath;
-        inputBuilder[i++] = "--chainId";
-        inputBuilder[i++] = Strings.toString(block.chainid);
-        inputBuilder[i++] = "--artifactFile";
-        inputBuilder[i++] = buildInfoFile;
-        inputBuilder[i++] = "--licenseType";
-        inputBuilder[i++] = contractInfo.license;
-
-        // Create a copy of inputs but with the correct length
-        string[] memory inputs = new string[](i);
-        for (uint8 j = 0; j < i; j++) {
-            inputs[j] = inputBuilder[j];
-        }
-
-        return inputs;
+        return DefenderDeploy.deploy(contractName);
     }
 }
