@@ -22,6 +22,10 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 > **Note**
 > The above remappings mean that both `@openzeppelin/contracts/` (including proxy contracts deployed by this library) and `@openzeppelin/contracts-upgradeable/` come from your installation of the `openzeppelin-contracts-upgradeable` submodule and its subdirectories, which includes its own transitive copy of `openzeppelin-contracts` of the same release version number. This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
 
+## OpenZeppelin Defender integration
+
+See [DEFENDER.md](DEFENDER.md)
+
 ## Version Limitations
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts versions 5.0 or higher.
