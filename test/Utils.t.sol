@@ -11,6 +11,9 @@ contract UpgradesTest is Test {
 
         assertEq(info.shortName, "Greeter");
         assertEq(info.contractPath, "test/contracts/Greeter.sol");
+
+        assertEq(info.license, "MIT");
+        assertEq(info.bytecode, vm.toString(vm.getCode("Greeter.sol")));
     }
 
     function testGetContractInfo_from_fileAndName() public {
