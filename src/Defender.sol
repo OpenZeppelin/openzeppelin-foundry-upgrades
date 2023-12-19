@@ -11,7 +11,7 @@ import {Utils, ContractInfo} from "./internal/Utils.sol";
 import {Versions} from "./internal/Versions.sol";
 
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
+ * @dev Library for interacting with OpenZeppelin Defender from Forge scripts or tests.
  */
 library Defender {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
@@ -26,10 +26,7 @@ library Defender {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         string memory outDir = Utils.getOutDir();
-        ContractInfo memory contractInfo = Utils.getContractInfo(
-            contractName,
-            outDir
-        );
+        ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
         string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
 
         string[] memory inputs = _buildDeployCommand(contractInfo, buildInfoFile);
@@ -46,13 +43,19 @@ library Defender {
         }
     }
 
-    function _buildDeployCommand(ContractInfo memory contractInfo, string memory buildInfoFile) private view returns (string[] memory) {
+    function _buildDeployCommand(
+        ContractInfo memory contractInfo,
+        string memory buildInfoFile
+    ) private view returns (string[] memory) {
         string[] memory inputBuilder = new string[](255);
 
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat("@openzeppelin/defender-deploy-client-cli@", Versions.DEFENDER_DEPLOY_CLIENT_CLI);
+        inputBuilder[i++] = string.concat(
+            "@openzeppelin/defender-deploy-client-cli@",
+            Versions.DEFENDER_DEPLOY_CLIENT_CLI
+        );
         inputBuilder[i++] = "deploy";
         inputBuilder[i++] = "--contractName";
         inputBuilder[i++] = contractInfo.shortName;
@@ -73,5 +76,4 @@ library Defender {
 
         return inputs;
     }
-
 }

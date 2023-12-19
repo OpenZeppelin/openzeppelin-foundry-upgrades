@@ -17,20 +17,14 @@ contract UpgradesTest is Test {
     }
 
     function testGetContractInfo_from_fileAndName() public {
-        ContractInfo memory info = Utils.getContractInfo(
-            "MyContractFile.sol:MyContractName",
-            "out"
-        );
+        ContractInfo memory info = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
         assertEq(info.shortName, "MyContractName");
         assertEq(info.contractPath, "test/contracts/MyContractFile.sol");
     }
 
     function testGetContractInfo_from_artifact() public {
-        ContractInfo memory info = Utils.getContractInfo(
-            "out/MyContractFile.sol/MyContractName.json",
-            "out"
-        );
+        ContractInfo memory info = Utils.getContractInfo("out/MyContractFile.sol/MyContractName.json", "out");
 
         assertEq(info.shortName, "MyContractName");
         assertEq(info.contractPath, "test/contracts/MyContractFile.sol");
