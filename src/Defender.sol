@@ -8,6 +8,7 @@ import {strings} from "solidity-stringutils/strings.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./internal/Utils.sol";
+import {Versions} from "./internal/Versions.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -51,7 +52,7 @@ library Defender {
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = "defender-cli";
+        inputBuilder[i++] = string.concat("@openzeppelin/defender-deploy-client-cli@", Versions.DEFENDER_DEPLOY_CLIENT_CLI);
         inputBuilder[i++] = "deploy";
         inputBuilder[i++] = "--contractName";
         inputBuilder[i++] = contractInfo.shortName;
