@@ -1,5 +1,11 @@
 # OpenZeppelin Defender integration
 
+OpenZeppelin Foundry Upgrades be used for performing deployments through OpenZeppelin Defender.
+
+## Installing
+
+See [README.md#installing](README.md#installing)
+
 ## Prerequisites
 1. Install [Node.js](https://nodejs.org/).
 2. Configure your `foundry.toml` to include build info and storage layout:
