@@ -2,40 +2,38 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
+import {strings} from "solidity-stringutils/strings.sol";
 
-import {Utils} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
+import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
 contract UpgradesTest is Test {
-    function testGetFullyQualifiedComponents_from_file() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents("Greeter.sol", "out");
+    function testGetContractInfo_from_file() public {
+        ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out");
 
-        assertEq(shortName, "Greeter");
-        assertEq(contractPath, "test/contracts/Greeter.sol");
+        assertEq(info.shortName, "Greeter");
+        assertEq(info.contractPath, "test/contracts/Greeter.sol");
+
+        assertEq(info.license, "MIT");
+        assertEq(info.bytecode, vm.toString(vm.getCode("Greeter.sol")));
     }
 
-    function testGetFullyQualifiedComponents_from_fileAndName() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
-            "MyContractFile.sol:MyContractName",
-            "out"
-        );
+    function testGetContractInfo_from_fileAndName() public {
+        ContractInfo memory info = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
-        assertEq(shortName, "MyContractName");
-        assertEq(contractPath, "test/contracts/MyContractFile.sol");
+        assertEq(info.shortName, "MyContractName");
+        assertEq(info.contractPath, "test/contracts/MyContractFile.sol");
     }
 
-    function testGetFullyQualifiedComponents_from_artifact() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
-            "out/MyContractFile.sol/MyContractName.json",
-            "out"
-        );
+    function testGetContractInfo_from_artifact() public {
+        ContractInfo memory info = Utils.getContractInfo("out/MyContractFile.sol/MyContractName.json", "out");
 
-        assertEq(shortName, "MyContractName");
-        assertEq(contractPath, "test/contracts/MyContractFile.sol");
+        assertEq(info.shortName, "MyContractName");
+        assertEq(info.contractPath, "test/contracts/MyContractFile.sol");
     }
 
-    function testGetFullyQualifiedComponents_wrongNameFormat() public {
+    function testGetContractInfo_wrongNameFormat() public {
         Invoker c = new Invoker();
-        try c.getFullyQualifiedComponents("Foo", "out") {
+        try c.getContractInfo("Foo", "out") {
             fail();
         } catch Error(string memory reason) {
             assertEq(
@@ -45,19 +43,16 @@ contract UpgradesTest is Test {
         }
     }
 
-    function testGetFullyQualifiedComponents_outDirTrailingSlash() public {
-        (string memory contractPath, string memory shortName) = Utils.getFullyQualifiedComponents(
-            "Greeter.sol",
-            "out/"
-        );
+    function testGetContractInfo_outDirTrailingSlash() public {
+        ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out/");
 
-        assertEq(shortName, "Greeter");
-        assertEq(contractPath, "test/contracts/Greeter.sol");
+        assertEq(info.shortName, "Greeter");
+        assertEq(info.contractPath, "test/contracts/Greeter.sol");
     }
 
-    function testGetFullyQualifiedComponents_invalidOutDir() public {
+    function testGetContractInfo_invalidOutDir() public {
         Invoker c = new Invoker();
-        try c.getFullyQualifiedComponents("Greeter.sol", "invalidoutdir") {
+        try c.getContractInfo("Greeter.sol", "invalidoutdir") {
             fail();
         } catch {}
     }
@@ -102,11 +97,21 @@ contract UpgradesTest is Test {
     function testGetOutDir() public {
         assertEq(Utils.getOutDir(), "out");
     }
+
+    using strings for *;
+
+    function testGetBuildInfoFile() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("Greeter.sol", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out");
+
+        assertTrue(buildInfoFile.toSlice().startsWith("out/build-info".toSlice()));
+        assertTrue(buildInfoFile.toSlice().endsWith(".json".toSlice()));
+    }
 }
 
 contract Invoker {
-    function getFullyQualifiedComponents(string memory contractName, string memory outDir) public view {
-        Utils.getFullyQualifiedComponents(contractName, outDir);
+    function getContractInfo(string memory contractName, string memory outDir) public view {
+        Utils.getContractInfo(contractName, outDir);
     }
 
     function getFullyQualifiedName(string memory contractName, string memory outDir) public view {
