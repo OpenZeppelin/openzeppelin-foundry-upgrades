@@ -6,7 +6,7 @@ import {Script} from "forge-std/Script.sol";
 import {Defender} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {console} from "forge-std/console.sol";
 
-contract UpgradesScript is Script {
+contract DefenderScript is Script {
     function setUp() public {}
 
     function run() public {
