@@ -16,12 +16,10 @@ import {Versions} from "./Versions.sol";
  * DO NOT USE DIRECTLY. Use Defender.sol instead.
  */
 library DefenderDeploy {
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
     using strings for *;
 
     function deploy(string memory contractName) internal returns (string memory) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
