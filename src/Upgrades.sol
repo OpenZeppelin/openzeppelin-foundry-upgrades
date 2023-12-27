@@ -73,10 +73,10 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        if (opts.salt != 0) {
-            return address(new ERC1967Proxy{salt: opts.salt}(impl, initializerData));
-        } else {
+        if (opts.salt == 0) {
             return address(new ERC1967Proxy(impl, initializerData));
+        } else {
+            return address(new ERC1967Proxy{salt: opts.salt}(impl, initializerData));
         }
     }
 
@@ -108,7 +108,11 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
+        if (opts.salt == 0) {
+            return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
+        } else {
+            return address(new TransparentUpgradeableProxy{salt: opts.salt}(impl, initialOwner, initializerData));
+        }
     }
 
     /**
@@ -232,7 +236,11 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new UpgradeableBeacon(impl, initialOwner));
+        if (opts.salt == 0) {
+            return address(new UpgradeableBeacon(impl, initialOwner));
+        } else {
+            return address(new UpgradeableBeacon{salt: opts.salt}(impl, initialOwner));
+        }
     }
 
     /**
