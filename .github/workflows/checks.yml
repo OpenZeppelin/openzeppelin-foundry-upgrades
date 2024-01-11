@@ -40,11 +40,10 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Run Forge build
+      - name: Run Forge version
         run: |
           forge --version
-          forge build --sizes
-        id: build
+        id: version
 
       - name: Run tests
         run: |
