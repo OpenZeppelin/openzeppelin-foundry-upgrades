@@ -29,10 +29,10 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.0.tgz#ee0e4b4564f101a5c4ee398cd4d73c0bd92b289c"
   integrity sha512-bv2sdS6LKqVVMLI5+zqnNrNU/CA+6z6CmwFXm/MzmOPBRSO5reEJN7z0Gbzvs0/bv/MZZXNklubpwy3v2+azsw==
 
-"@openzeppelin/upgrades-core@^1.31.0":
-  version "1.31.0"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/upgrades-core/-/upgrades-core-1.31.0.tgz#cc262e2618d90540a8ad4dfafbdf06afdb17b8fa"
-  integrity sha512-E1Cz8lVpo2mnBeFWxiGDLWtuTYMFNTEWwbnhle4dZ+5UHX6xTRO+Q/CaWBHm33HHhuuiUbRwgGNnAR9zOu+fyQ==
+"@openzeppelin/upgrades-core@^1.32.3":
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/upgrades-core/-/upgrades-core-1.32.3.tgz#7f92aeab6f6c7300c8fa4c1cde14253b2bd62341"
+  integrity sha512-v04RbrBOTRiIhfkTRfY4M34I2wIcuz+K1cUk/6duulsMXvRpM6/IPWeXh+1Xr1K+xedJi7gcS/pNSXfYhYNXIg==
   dependencies:
     cbor "^9.0.0"
     chalk "^4.1.0"
