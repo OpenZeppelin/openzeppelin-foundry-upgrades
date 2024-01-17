@@ -27,7 +27,7 @@ library DefenderDeploy {
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
-        string memory result = string(vm.ffi(inputs));
+        string memory result = string(vm.ffi(Utils.toBashCommand(inputs)));
         console.log(result);
 
         strings.slice memory delim = "Deployed to address: ".toSlice();

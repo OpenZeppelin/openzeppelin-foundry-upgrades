@@ -108,7 +108,7 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        string memory result = string(vm.ffi(inputs));
+        string memory result = string(vm.ffi(toBashCommand(inputs)));
 
         if (!result.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
@@ -182,5 +182,22 @@ library Utils {
                 )
             );
         }
+    }
+
+    function toBashCommand(string[] memory inputs) internal pure returns (string[] memory) {
+        string memory commandString;
+        for (uint i = 0; i < inputs.length; i++) {
+            commandString = string.concat(commandString, inputs[i]);
+            if (i < inputs.length - 1) {
+                commandString = string.concat(commandString, " ");
+            }
+        }
+
+        string[] memory bashCommand = new string[](3);
+        bashCommand[0] = "bash";
+        bashCommand[1] = "-c";
+        bashCommand[2] = commandString;
+
+        return bashCommand;
     }
 }
