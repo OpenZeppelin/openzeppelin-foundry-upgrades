@@ -12,7 +12,7 @@ import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/strings.sol";
+import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Versions} from "./internal/Versions.sol";
 import {Utils} from "./internal/Utils.sol";
