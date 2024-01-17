@@ -98,8 +98,6 @@ library Utils {
         string memory contractName,
         string memory outDir
     ) internal returns (string memory) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
         string memory trimmedBytecode = bytecode.toSlice().beyond("0x".toSlice()).toString();
 
         string[] memory inputs = new string[](4);
