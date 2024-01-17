@@ -432,7 +432,7 @@ library Upgrades {
         }
 
         string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        string memory result = Utils.runBashCommand(inputs);
+        string memory result = Utils.runAsBashCommand(inputs);
 
         if (result.toSlice().endsWith("SUCCESS".toSlice())) {
             return;

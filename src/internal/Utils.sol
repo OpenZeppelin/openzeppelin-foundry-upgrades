@@ -106,7 +106,7 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        string memory result = runBashCommand(inputs);
+        string memory result = runAsBashCommand(inputs);
 
         if (!result.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
@@ -209,7 +209,7 @@ library Utils {
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
      * @return The output of the corresponding bash command
      */
-    function runBashCommand(string[] memory inputs) internal returns (string memory) {
+    function runAsBashCommand(string[] memory inputs) internal returns (string memory) {
         return string(Vm(CHEATCODE_ADDRESS).ffi(toBashCommand(inputs)));
     }
 }
