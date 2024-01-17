@@ -191,17 +191,16 @@ library Utils {
         string memory commandString;
         for (uint i = 0; i < inputs.length; i++) {
             commandString = string.concat(commandString, inputs[i]);
-            if (i < inputs.length - 1) {
+            if (i != inputs.length - 1) {
                 commandString = string.concat(commandString, " ");
             }
         }
 
-        string[] memory bashCommand = new string[](3);
-        bashCommand[0] = "bash";
-        bashCommand[1] = "-c";
-        bashCommand[2] = commandString;
-
-        return bashCommand;
+        string[] memory result = new string[](3);
+        result[0] = "bash";
+        result[1] = "-c";
+        result[2] = commandString;
+        return result;
     }
 
     /**
