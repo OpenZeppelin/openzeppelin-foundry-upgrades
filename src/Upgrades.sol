@@ -447,41 +447,49 @@ library Upgrades {
     ) private returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
-        string[] memory inputBuilder = new string[](255);
+        string[] memory inputs = new string[](3);
+        inputs[0] = "bash";
+        inputs[1] = "-c";
+
+        string[] memory cmdBuilder = new string[](255);
 
         uint8 i = 0;
 
-        inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE);
-        inputBuilder[i++] = "validate";
-        inputBuilder[i++] = string.concat(outDir, "/build-info");
-        inputBuilder[i++] = "--contract";
-        inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
+        cmdBuilder[i++] = "npx";
+        cmdBuilder[i++] = string.concat("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE);
+        cmdBuilder[i++] = "validate";
+        cmdBuilder[i++] = string.concat(outDir, "/build-info");
+        cmdBuilder[i++] = "--contract";
+        cmdBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
 
         if (bytes(opts.referenceContract).length != 0) {
-            inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
+            cmdBuilder[i++] = "--reference";
+            cmdBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
         }
 
         if (opts.unsafeSkipStorageCheck) {
-            inputBuilder[i++] = "--unsafeSkipStorageCheck";
+            cmdBuilder[i++] = "--unsafeSkipStorageCheck";
         } else if (requireReference) {
-            inputBuilder[i++] = "--requireReference";
+            cmdBuilder[i++] = "--requireReference";
         }
 
         if (bytes(opts.unsafeAllow).length != 0) {
-            inputBuilder[i++] = "--unsafeAllow";
-            inputBuilder[i++] = opts.unsafeAllow;
+            cmdBuilder[i++] = "--unsafeAllow";
+            cmdBuilder[i++] = opts.unsafeAllow;
         }
 
         if (opts.unsafeAllowRenames) {
-            inputBuilder[i++] = "--unsafeAllowRenames";
+            cmdBuilder[i++] = "--unsafeAllowRenames";
         }
 
-        // Create a copy of inputs but with the correct length
-        string[] memory inputs = new string[](i);
+        // convert cmdBuilder to a single string
         for (uint8 j = 0; j < i; j++) {
-            inputs[j] = inputBuilder[j];
+            if (j == 0) {
+                inputs[2] = cmdBuilder[j];
+                continue;
+            } else {
+                inputs[2] = string.concat(inputs[2], " ", cmdBuilder[j]);
+            }
         }
 
         return inputs;
