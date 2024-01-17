@@ -108,7 +108,7 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        string memory result = string(vm.ffi(toBashCommand(inputs)));
+        string memory result = runBashCommand(inputs);
 
         if (!result.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
@@ -184,6 +184,11 @@ library Utils {
         }
     }
 
+    /**
+     * @dev Converts an array of inputs to a bash command.
+     * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
+     * @return A bash command, e.g. ["bash", "-c", "grep -rl 0x1234 out/build-info"]
+     */
     function toBashCommand(string[] memory inputs) internal pure returns (string[] memory) {
         string memory commandString;
         for (uint i = 0; i < inputs.length; i++) {
@@ -199,5 +204,14 @@ library Utils {
         bashCommand[2] = commandString;
 
         return bashCommand;
+    }
+
+    /**
+     * @dev Runs an arbitrary command using bash.
+     * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
+     * @return The output of the corresponding bash command
+     */
+    function runBashCommand(string[] memory inputs) internal returns (string memory) {
+        return string(Vm(CHEATCODE_ADDRESS).ffi(toBashCommand(inputs)));
     }
 }

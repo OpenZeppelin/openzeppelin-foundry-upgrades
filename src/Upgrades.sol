@@ -432,12 +432,12 @@ library Upgrades {
         }
 
         string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(Utils.toBashCommand(inputs));
+        string memory result = Utils.runBashCommand(inputs);
 
-        if (string(result).toSlice().endsWith("SUCCESS".toSlice())) {
+        if (result.toSlice().endsWith("SUCCESS".toSlice())) {
             return;
         }
-        revert(string.concat("Upgrade safety validation failed: ", string(result)));
+        revert(string.concat("Upgrade safety validation failed: ", result));
     }
 
     function _buildValidateCommand(

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/src/strings.sol";
 
@@ -19,15 +18,13 @@ library DefenderDeploy {
     using strings for *;
 
     function deploy(string memory contractName) internal returns (string memory) {
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
         string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
-        string memory result = string(vm.ffi(Utils.toBashCommand(inputs)));
+        string memory result = string(Utils.runBashCommand(inputs));
         console.log(result);
 
         strings.slice memory delim = "Deployed to address: ".toSlice();
