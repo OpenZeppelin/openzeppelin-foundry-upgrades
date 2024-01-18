@@ -46,6 +46,10 @@ struct Options {
      * Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
      */
     bool unsafeSkipAllChecks;
+    /**
+     * Fully qualified path to the bash executable. If Windows, set this to the bash executable from Git Bash, for example: "C:\\Program Files\\Git\\bin\\bash"
+     */
+    string bashPath;
 }
 
 /**
@@ -432,7 +436,7 @@ library Upgrades {
         }
 
         string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        string memory result = Utils.runAsBashCommand(inputs);
+        string memory result = Utils.runAsBashCommand(inputs, opts.bashPath);
 
         if (result.toSlice().endsWith("SUCCESS".toSlice())) {
             return;

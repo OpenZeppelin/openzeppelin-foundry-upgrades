@@ -8,6 +8,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./Utils.sol";
 import {Versions} from "./Versions.sol";
+import {Options} from "../Upgrades.sol";
 
 /**
  * @dev Internal helper methods for Defender deployments.
@@ -17,14 +18,14 @@ import {Versions} from "./Versions.sol";
 library DefenderDeploy {
     using strings for *;
 
-    function deploy(string memory contractName) internal returns (string memory) {
+    function deploy(string memory contractName, Options memory opts) internal returns (string memory) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir, opts.bashPath);
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
-        string memory result = string(Utils.runAsBashCommand(inputs));
+        string memory result = string(Utils.runAsBashCommand(inputs, opts.bashPath));
         console.log(result);
 
         strings.slice memory delim = "Deployed to address: ".toSlice();

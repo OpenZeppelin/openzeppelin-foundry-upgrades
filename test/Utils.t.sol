@@ -102,7 +102,7 @@ contract UpgradesTest is Test {
 
     function testGetBuildInfoFile() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("Greeter.sol", "out");
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out", "");
 
         assertTrue(buildInfoFile.toSlice().startsWith("out/build-info".toSlice()));
         assertTrue(buildInfoFile.toSlice().endsWith(".json".toSlice()));
@@ -114,10 +114,24 @@ contract UpgradesTest is Test {
         inputs[1] = "param";
         inputs[2] = "--option";
 
-        string[] memory bashCommand = Utils.toBashCommand(inputs);
+        string[] memory bashCommand = Utils.toBashCommand(inputs, "");
 
         assertEq(bashCommand.length, 3);
         assertEq(bashCommand[0], "bash");
+        assertEq(bashCommand[1], "-c");
+        assertEq(bashCommand[2], "foo param --option");
+    }
+
+    function testToBashCommandWithPath() public {
+        string[] memory inputs = new string[](3);
+        inputs[0] = "foo";
+        inputs[1] = "param";
+        inputs[2] = "--option";
+
+        string[] memory bashCommand = Utils.toBashCommand(inputs, "C:\\Program Files\\Git\\bin\\bash");
+
+        assertEq(bashCommand.length, 3);
+        assertEq(bashCommand[0], "C:\\Program Files\\Git\\bin\\bash");
         assertEq(bashCommand[1], "-c");
         assertEq(bashCommand[2], "foo param --option");
     }

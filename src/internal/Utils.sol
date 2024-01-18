@@ -96,7 +96,8 @@ library Utils {
     function getBuildInfoFile(
         string memory bytecode,
         string memory contractName,
-        string memory outDir
+        string memory outDir,
+        string memory bashPath
     ) internal returns (string memory) {
         string memory trimmedBytecode = bytecode.toSlice().beyond("0x".toSlice()).toString();
 
@@ -106,7 +107,7 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        string memory result = runAsBashCommand(inputs);
+        string memory result = runAsBashCommand(inputs, bashPath);
 
         if (!result.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
@@ -187,7 +188,7 @@ library Utils {
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
      * @return A bash command, e.g. ["bash", "-c", "grep -rl 0x1234 out/build-info"]
      */
-    function toBashCommand(string[] memory inputs) internal pure returns (string[] memory) {
+    function toBashCommand(string[] memory inputs, string memory bashPath) internal pure returns (string[] memory) {
         string memory commandString;
         for (uint i = 0; i < inputs.length; i++) {
             commandString = string.concat(commandString, inputs[i]);
@@ -197,7 +198,11 @@ library Utils {
         }
 
         string[] memory result = new string[](3);
-        result[0] = "bash";
+        if (bytes(bashPath).length != 0) {
+            result[0] = bashPath;
+        } else {
+            result[0] = "bash";
+        }
         result[1] = "-c";
         result[2] = commandString;
         return result;
@@ -208,7 +213,14 @@ library Utils {
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
      * @return The output of the corresponding bash command
      */
-    function runAsBashCommand(string[] memory inputs) internal returns (string memory) {
-        return string(Vm(CHEATCODE_ADDRESS).ffi(toBashCommand(inputs)));
+    function runAsBashCommand(string[] memory inputs, string memory bashPath) internal returns (string memory) {
+        string[] memory bashCommand = toBashCommand(inputs, bashPath);
+        Vm.FfiResult memory result = Vm(CHEATCODE_ADDRESS).tryFfi(bashCommand);
+        if (result.exitCode != 0 && result.stdout.length == 0 && result.stderr.length == 0) {
+            // Throw this even if bashPath is set, in case it is set to the wrong path
+            revert(string.concat("Failed to run bash command with \"", bashCommand[0], "\". If you are using Windows, set the bashPath option to the fully qualified path of the bash executable when calling the library's function. For example:\nOptions memory opts;\nopts.bashPath = \"C:\\\\Program Files\\\\Git\\\\bin\\\\bash\";\nUpgrades.deployProxy(\"MyContract.sol\", opts);"));
+        } else {
+            return string(result.stdout);
+        }
     }
 }

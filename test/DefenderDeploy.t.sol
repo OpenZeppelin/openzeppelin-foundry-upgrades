@@ -10,7 +10,7 @@ import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
 contract DefenderDeployTest is Test {
     function testBuildDeployCommand() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out", "");
 
         string[] memory command = DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile);
 
