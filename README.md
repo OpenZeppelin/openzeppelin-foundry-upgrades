@@ -22,6 +22,14 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 > **Note**
 > The above remappings mean that both `@openzeppelin/contracts/` (including proxy contracts deployed by this library) and `@openzeppelin/contracts-upgradeable/` come from your installation of the `openzeppelin-contracts-upgradeable` submodule and its subdirectories, which includes its own transitive copy of `openzeppelin-contracts` of the same release version number. This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
 
+### Windows installations
+
+If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
+For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the .env file of your project (using forward-slashes):
+```
+OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
+```
+
 ## OpenZeppelin Defender integration
 
 See [DEFENDER.md](DEFENDER.md)
