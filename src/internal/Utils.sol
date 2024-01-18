@@ -218,7 +218,7 @@ library Utils {
         string[] memory bashCommand = toBashCommand(inputs, bashPath);
         Vm.FfiResult memory result = vm.tryFfi(bashCommand);
         if (result.exitCode != 0 && result.stdout.length == 0 && result.stderr.length == 0) {
-            // Throw this even if bashPath is set, in case it is set to the wrong path
+            // On Windows, using the bash executable from WSL leads to a non-zero exit code and no output
             revert(
                 string.concat(
                     'Failed to run bash command with "',
