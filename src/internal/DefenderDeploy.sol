@@ -26,17 +26,19 @@ library DefenderDeploy {
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
+        string memory stdout = string(result.stdout);
+
         if (result.exitCode == 0) {
-            console.log(string(result.stdout));
+            console.log(stdout);
         } else {
             revert(string.concat("Failed to deploy contract ", contractName, ": ", string(result.stderr)));
         }
 
         strings.slice memory delim = "Deployed to address: ".toSlice();
-        if (string(result.stdout).toSlice().contains(delim)) {
-            return string(result.stdout).toSlice().copy().find(delim).beyond(delim).toString();
+        if (stdout.toSlice().contains(delim)) {
+            return stdout.toSlice().copy().find(delim).beyond(delim).toString();
         } else {
-            revert(string.concat("Failed to parse deployment address from output: ", string(result.stdout)));
+            revert(string.concat("Failed to parse deployment address from output: ", stdout));
         }
     }
 

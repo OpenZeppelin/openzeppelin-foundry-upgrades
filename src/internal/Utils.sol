@@ -107,13 +107,13 @@ library Utils {
         inputs[3] = string.concat(outDir, "/build-info");
 
         Vm.FfiResult memory result = runAsBashCommand(inputs);
-        string memory output = string(result.stdout);
+        string memory stdout = string(result.stdout);
 
-        if (!output.toSlice().endsWith(".json".toSlice())) {
+        if (!stdout.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
         }
 
-        return output;
+        return stdout;
     }
 
     /**
