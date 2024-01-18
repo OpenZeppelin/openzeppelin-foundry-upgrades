@@ -46,10 +46,6 @@ struct Options {
      * Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
      */
     bool unsafeSkipAllChecks;
-    /**
-     * Fully qualified path to the bash executable. If Windows, set this to the bash executable from Git Bash, for example: "C:\\Program Files\\Git\\bin\\bash"
-     */
-    string bashPath;
 }
 
 /**
