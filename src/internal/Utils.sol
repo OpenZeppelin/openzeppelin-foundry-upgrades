@@ -187,7 +187,7 @@ library Utils {
      * @dev Converts an array of inputs to a bash command.
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
      * @param bashPath Path to the bash executable or just "bash" if it is in the PATH
-     * @return A bash command, e.g. ["bash", "-c", "grep -rl 0x1234 out/build-info"]
+     * @return A bash command that runs the given inputs, e.g. ["bash", "-c", "grep -rl 0x1234 out/build-info"]
      */
     function toBashCommand(string[] memory inputs, string memory bashPath) internal pure returns (string[] memory) {
         string memory commandString;
