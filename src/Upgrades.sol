@@ -447,7 +447,7 @@ library Upgrades {
         } else if (result.stderr.length > 0) {
             revert(string.concat("Failed to run upgrade safety validation: ", string(result.stderr)));
         } else {
-            revert(string.concat("Upgrade safety validation failed: ", stdout));
+            revert(string.concat("Upgrade safety validation failed:\n", stdout));
         }
     }
 
