@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/src/strings.sol";
 
@@ -21,19 +22,27 @@ library DefenderDeploy {
     function deploy(string memory contractName, Options memory opts) internal returns (string memory) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir, opts.bashPath);
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.bytecode,
+            contractInfo.shortName,
+            outDir,
+            opts.bashPath
+        );
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
-        string memory result = string(Utils.runAsBashCommand(inputs, opts.bashPath));
-        console.log(result);
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs, opts.bashPath);
+        if (result.exitCode == 0) {
+            console.log(string(result.stdout));
+        } else {
+            revert(string.concat("Failed to deploy contract ", contractName, ": ", string(result.stderr)));
+        }
 
         strings.slice memory delim = "Deployed to address: ".toSlice();
-        if (result.toSlice().contains(delim)) {
-            return result.toSlice().copy().find(delim).beyond(delim).toString();
+        if (string(result.stdout).toSlice().contains(delim)) {
+            return string(result.stdout).toSlice().copy().find(delim).beyond(delim).toString();
         } else {
-            // TODO extract stderr by using vm.tryFfi
-            revert(string.concat("Failed to deploy contract ", contractName, ". See error messages above."));
+            revert(string.concat("Failed to parse deployment address from output: ", string(result.stdout)));
         }
     }
 

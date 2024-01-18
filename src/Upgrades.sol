@@ -436,12 +436,19 @@ library Upgrades {
         }
 
         string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        string memory result = Utils.runAsBashCommand(inputs, opts.bashPath);
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs, opts.bashPath);
 
-        if (result.toSlice().endsWith("SUCCESS".toSlice())) {
+        // CLI validate command uses exit code to indicate if the validation passed or failed.
+        // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
+        string memory stdout = string(result.stdout);
+
+        if (result.exitCode == 0 && stdout.toSlice().contains("SUCCESS".toSlice())) {
             return;
+        } else if (result.stderr.length > 0) {
+            revert(string.concat("Failed to run upgrade safety validation: ", string(result.stderr)));
+        } else {
+            revert(string.concat("Upgrade safety validation failed: ", stdout));
         }
-        revert(string.concat("Upgrade safety validation failed: ", result));
     }
 
     function _buildValidateCommand(

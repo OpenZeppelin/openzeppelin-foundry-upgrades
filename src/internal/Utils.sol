@@ -107,13 +107,14 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        string memory result = runAsBashCommand(inputs, bashPath);
+        Vm.FfiResult memory result = runAsBashCommand(inputs, bashPath);
+        string memory output = string(result.stdout);
 
-        if (!result.toSlice().endsWith(".json".toSlice())) {
+        if (!output.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
         }
 
-        return result;
+        return output;
     }
 
     /**
@@ -211,16 +212,22 @@ library Utils {
     /**
      * @dev Runs an arbitrary command using bash.
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
-     * @return The output of the corresponding bash command
+     * @return The result of the corresponding bash command as a Vm.FfiResult struct
      */
-    function runAsBashCommand(string[] memory inputs, string memory bashPath) internal returns (string memory) {
+    function runAsBashCommand(string[] memory inputs, string memory bashPath) internal returns (Vm.FfiResult memory) {
         string[] memory bashCommand = toBashCommand(inputs, bashPath);
         Vm.FfiResult memory result = Vm(CHEATCODE_ADDRESS).tryFfi(bashCommand);
         if (result.exitCode != 0 && result.stdout.length == 0 && result.stderr.length == 0) {
             // Throw this even if bashPath is set, in case it is set to the wrong path
-            revert(string.concat("Failed to run bash command with \"", bashCommand[0], "\". If you are using Windows, set the bashPath option to the fully qualified path of the bash executable when calling the library's function. For example:\nOptions memory opts;\nopts.bashPath = \"C:\\\\Program Files\\\\Git\\\\bin\\\\bash\";\nUpgrades.deployProxy(\"MyContract.sol\", opts);"));
+            revert(
+                string.concat(
+                    'Failed to run bash command with "',
+                    bashCommand[0],
+                    '". If you are using Windows, set the bashPath option to the fully qualified path of the bash executable when calling the library\'s function. For example:\nOptions memory opts;\nopts.bashPath = "C:\\\\Program Files\\\\Git\\\\bin\\\\bash";\nUpgrades.deployUUPSProxy("MyContract.sol", opts);'
+                )
+            );
         } else {
-            return string(result.stdout);
+            return result;
         }
     }
 }
