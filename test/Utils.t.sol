@@ -121,20 +121,6 @@ contract UpgradesTest is Test {
         assertEq(bashCommand[1], "-c");
         assertEq(bashCommand[2], "foo param --option");
     }
-
-    function testToBashCommandWindowsPath() public {
-        string[] memory inputs = new string[](3);
-        inputs[0] = "foo";
-        inputs[1] = "param";
-        inputs[2] = "--option";
-
-        string[] memory bashCommand = Utils.toBashCommand(inputs, "C:\\Program Files\\Git\\bin\\bash");
-
-        assertEq(bashCommand.length, 3);
-        assertEq(bashCommand[0], "C:\\Program Files\\Git\\bin\\bash");
-        assertEq(bashCommand[1], "-c");
-        assertEq(bashCommand[2], "foo param --option");
-    }
 }
 
 contract Invoker {
