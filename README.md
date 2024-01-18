@@ -25,7 +25,7 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 ### Windows installations
 
 If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
-For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the .env file of your project (using forward-slashes):
+For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward-slashes):
 ```
 OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 ```
