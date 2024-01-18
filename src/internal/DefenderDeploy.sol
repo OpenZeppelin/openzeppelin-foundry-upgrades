@@ -9,7 +9,6 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./Utils.sol";
 import {Versions} from "./Versions.sol";
-import {Options} from "../Upgrades.sol";
 
 /**
  * @dev Internal helper methods for Defender deployments.
@@ -19,19 +18,14 @@ import {Options} from "../Upgrades.sol";
 library DefenderDeploy {
     using strings for *;
 
-    function deploy(string memory contractName, Options memory opts) internal returns (string memory) {
+    function deploy(string memory contractName) internal returns (string memory) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
-        string memory buildInfoFile = Utils.getBuildInfoFile(
-            contractInfo.bytecode,
-            contractInfo.shortName,
-            outDir,
-            opts.bashPath
-        );
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
-        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs, opts.bashPath);
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         if (result.exitCode == 0) {
             console.log(string(result.stdout));
         } else {

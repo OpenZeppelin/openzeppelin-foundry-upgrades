@@ -436,7 +436,7 @@ library Upgrades {
         }
 
         string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs, opts.bashPath);
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
 
         // CLI validate command uses exit code to indicate if the validation passed or failed.
         // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.

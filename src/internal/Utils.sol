@@ -96,8 +96,7 @@ library Utils {
     function getBuildInfoFile(
         string memory bytecode,
         string memory contractName,
-        string memory outDir,
-        string memory bashPath
+        string memory outDir
     ) internal returns (string memory) {
         string memory trimmedBytecode = bytecode.toSlice().beyond("0x".toSlice()).toString();
 
@@ -107,7 +106,7 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        Vm.FfiResult memory result = runAsBashCommand(inputs, bashPath);
+        Vm.FfiResult memory result = runAsBashCommand(inputs);
         string memory output = string(result.stdout);
 
         if (!output.toSlice().endsWith(".json".toSlice())) {
@@ -187,6 +186,7 @@ library Utils {
     /**
      * @dev Converts an array of inputs to a bash command.
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
+     * @param bashPath Path to the bash executable or just "bash" if it is in the PATH
      * @return A bash command, e.g. ["bash", "-c", "grep -rl 0x1234 out/build-info"]
      */
     function toBashCommand(string[] memory inputs, string memory bashPath) internal pure returns (string[] memory) {
@@ -199,11 +199,7 @@ library Utils {
         }
 
         string[] memory result = new string[](3);
-        if (bytes(bashPath).length != 0) {
-            result[0] = bashPath;
-        } else {
-            result[0] = "bash";
-        }
+        result[0] = bashPath;
         result[1] = "-c";
         result[2] = commandString;
         return result;
@@ -214,16 +210,20 @@ library Utils {
      * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
      * @return The result of the corresponding bash command as a Vm.FfiResult struct
      */
-    function runAsBashCommand(string[] memory inputs, string memory bashPath) internal returns (Vm.FfiResult memory) {
+    function runAsBashCommand(string[] memory inputs) internal returns (Vm.FfiResult memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+        string memory defaultBashPath = "bash";
+        string memory bashPath = vm.envOr("OPENZEPPELIN_BASH_PATH", defaultBashPath);
+
         string[] memory bashCommand = toBashCommand(inputs, bashPath);
-        Vm.FfiResult memory result = Vm(CHEATCODE_ADDRESS).tryFfi(bashCommand);
+        Vm.FfiResult memory result = vm.tryFfi(bashCommand);
         if (result.exitCode != 0 && result.stdout.length == 0 && result.stderr.length == 0) {
             // Throw this even if bashPath is set, in case it is set to the wrong path
             revert(
                 string.concat(
                     'Failed to run bash command with "',
                     bashCommand[0],
-                    '". If you are using Windows, set the bashPath option to the fully qualified path of the bash executable when calling the library\'s function. For example:\nOptions memory opts;\nopts.bashPath = "C:\\\\Program Files\\\\Git\\\\bin\\\\bash";\nUpgrades.deployUUPSProxy("MyContract.sol", opts);'
+                    '". If you are using Windows, set the OPENZEPPELIN_BASH_PATH environment variable to the fully qualified path of the bash executable. For example, in your .env file, add the following line:\nOPENZEPPELIN_BASH_PATH=C:\\Program Files\\Git\\bin\\bash'
                 )
             );
         } else {
