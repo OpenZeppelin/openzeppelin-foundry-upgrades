@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/strings.sol";
+import {strings} from "solidity-stringutils/src/strings.sol";
 
 struct ContractInfo {
     /**
@@ -98,8 +98,6 @@ library Utils {
         string memory contractName,
         string memory outDir
     ) internal returns (string memory) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
         string memory trimmedBytecode = bytecode.toSlice().beyond("0x".toSlice()).toString();
 
         string[] memory inputs = new string[](4);
@@ -108,13 +106,14 @@ library Utils {
         inputs[2] = string.concat('"', trimmedBytecode, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
-        string memory result = string(vm.ffi(inputs));
+        Vm.FfiResult memory result = runAsBashCommand(inputs);
+        string memory stdout = string(result.stdout);
 
-        if (!result.toSlice().endsWith(".json".toSlice())) {
+        if (!stdout.toSlice().endsWith(".json".toSlice())) {
             revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
         }
 
-        return result;
+        return stdout;
     }
 
     /**
@@ -181,6 +180,54 @@ library Utils {
                     " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
                 )
             );
+        }
+    }
+
+    /**
+     * @dev Converts an array of inputs to a bash command.
+     * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
+     * @param bashPath Path to the bash executable or just "bash" if it is in the PATH
+     * @return A bash command that runs the given inputs, e.g. ["bash", "-c", "grep -rl 0x1234 out/build-info"]
+     */
+    function toBashCommand(string[] memory inputs, string memory bashPath) internal pure returns (string[] memory) {
+        string memory commandString;
+        for (uint i = 0; i < inputs.length; i++) {
+            commandString = string.concat(commandString, inputs[i]);
+            if (i != inputs.length - 1) {
+                commandString = string.concat(commandString, " ");
+            }
+        }
+
+        string[] memory result = new string[](3);
+        result[0] = bashPath;
+        result[1] = "-c";
+        result[2] = commandString;
+        return result;
+    }
+
+    /**
+     * @dev Runs an arbitrary command using bash.
+     * @param inputs Inputs for a command, e.g. ["grep", "-rl", "0x1234", "out/build-info"]
+     * @return The result of the corresponding bash command as a Vm.FfiResult struct
+     */
+    function runAsBashCommand(string[] memory inputs) internal returns (Vm.FfiResult memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+        string memory defaultBashPath = "bash";
+        string memory bashPath = vm.envOr("OPENZEPPELIN_BASH_PATH", defaultBashPath);
+
+        string[] memory bashCommand = toBashCommand(inputs, bashPath);
+        Vm.FfiResult memory result = vm.tryFfi(bashCommand);
+        if (result.exitCode != 0 && result.stdout.length == 0 && result.stderr.length == 0) {
+            // On Windows, using the bash executable from WSL leads to a non-zero exit code and no output
+            revert(
+                string.concat(
+                    'Failed to run bash command with "',
+                    bashCommand[0],
+                    '". If you are using Windows, set the OPENZEPPELIN_BASH_PATH environment variable to the fully qualified path of the bash executable. For example, if you are using Git for Windows, add the following line in the .env file of your project (using forward slashes):\nOPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"'
+                )
+            );
+        } else {
+            return result;
         }
     }
 }
