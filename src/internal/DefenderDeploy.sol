@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/strings.sol";
+import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -19,23 +19,26 @@ library DefenderDeploy {
     using strings for *;
 
     function deploy(string memory contractName) internal returns (string memory) {
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
         string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
 
-        string memory result = string(vm.ffi(inputs));
-        console.log(result);
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
+        string memory stdout = string(result.stdout);
+
+        if (result.exitCode == 0) {
+            console.log(stdout);
+        } else {
+            revert(string.concat("Failed to deploy contract ", contractName, ": ", string(result.stderr)));
+        }
 
         strings.slice memory delim = "Deployed to address: ".toSlice();
-        if (result.toSlice().contains(delim)) {
-            return result.toSlice().copy().find(delim).beyond(delim).toString();
+        if (stdout.toSlice().contains(delim)) {
+            return stdout.toSlice().copy().find(delim).beyond(delim).toString();
         } else {
-            // TODO extract stderr by using vm.tryFfi
-            revert(string.concat("Failed to deploy contract ", contractName, ". See error messages above."));
+            revert(string.concat("Failed to parse deployment address from output: ", stdout));
         }
     }
 

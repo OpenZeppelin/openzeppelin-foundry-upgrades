@@ -12,7 +12,7 @@ import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/strings.sol";
+import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Versions} from "./internal/Versions.sol";
 import {Utils} from "./internal/Utils.sol";
@@ -448,12 +448,20 @@ library Upgrades {
         }
 
         string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        bytes memory result = Vm(CHEATCODE_ADDRESS).ffi(inputs);
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
+        string memory stdout = string(result.stdout);
 
-        if (string(result).toSlice().endsWith("SUCCESS".toSlice())) {
+        // CLI validate command uses exit code to indicate if the validation passed or failed.
+        // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
+        if (result.exitCode == 0 && stdout.toSlice().contains("SUCCESS".toSlice())) {
             return;
+        } else if (result.stderr.length > 0) {
+            // Validations failed to run
+            revert(string.concat("Failed to run upgrade safety validation: ", string(result.stderr)));
+        } else {
+            // Validations ran but some contracts were not upgrade safe
+            revert(string.concat("Upgrade safety validation failed:\n", stdout));
         }
-        revert(string.concat("Upgrade safety validation failed: ", string(result)));
     }
 
     function _buildValidateCommand(
