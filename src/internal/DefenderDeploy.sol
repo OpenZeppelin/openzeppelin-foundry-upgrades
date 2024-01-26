@@ -28,9 +28,7 @@ library DefenderDeploy {
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
 
-        if (result.exitCode == 0) {
-            console.log(stdout);
-        } else {
+        if (result.exitCode != 0) {
             revert(string.concat("Failed to deploy contract ", contractName, ": ", string(result.stderr)));
         }
 

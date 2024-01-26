@@ -71,7 +71,7 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new ERC1967Proxy(impl, initializerData));
+        return address(_deploy("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(impl, initializerData), opts.useDefenderDeploy));
     }
 
     /**
