@@ -36,7 +36,7 @@ Then call functions from [Defender.sol](src/Defender.sol) to deploy contracts th
 
 > **Note**
 > This is an experimental feature and its functionality is subject to change.
-> Deployments are currently limited to non-upgradeable contracts without constructor arguments. Additional enhancements are coming soon to expand upon this.
+> Deployments are currently limited to non-upgradeable contracts. Additional enhancements are coming soon to expand upon this.
 
 ## Example
 
@@ -47,4 +47,4 @@ Then run the following command:
 forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
 ```
 
-The script calls `Defender.deployContract(contractName)` to deploy the specified contract to the connected network using Defender. The function waits for deployment to complete, which may take a few minutes, then returns with the deployed address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
+The script calls `Defender.deployContract(contractName, constructorData)` to deploy the specified contract to the connected network using Defender. The function waits for deployment to complete, which may take a few minutes, then returns with the deployed address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
