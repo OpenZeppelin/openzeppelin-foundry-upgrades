@@ -5,12 +5,14 @@ import {Script} from "forge-std/Script.sol";
 
 import {Defender} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {console} from "forge-std/console.sol";
+import {WithConstructor} from "./contracts/WithConstructor.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 contract DefenderScript is Script {
     function setUp() public {}
 
     function run() public {
-        address deployed = Defender.deployContract("MyContractFile.sol:MyContractName");
-        console.log("Successfully deployed to address", deployed);
+        address deployed = Defender.deployContract("WithConstructor.sol:WithConstructor", abi.encode(123));
+        console.log("Successfully deployed to address ", deployed);
     }
 }

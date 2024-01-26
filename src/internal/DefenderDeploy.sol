@@ -18,7 +18,7 @@ import {Versions} from "./Versions.sol";
 library DefenderDeploy {
     using strings for *;
 
-    function deploy(string memory contractName, bytes memory constructorData) internal returns (string memory) {
+    function deploy(string memory contractName, bytes memory constructorData) internal returns (address) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
         string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
@@ -36,7 +36,8 @@ library DefenderDeploy {
 
         strings.slice memory delim = "Deployed to address: ".toSlice();
         if (stdout.toSlice().contains(delim)) {
-            return stdout.toSlice().copy().find(delim).beyond(delim).toString();
+            string memory deployedAddress = stdout.toSlice().copy().find(delim).beyond(delim).toString();
+            return Vm(Utils.CHEATCODE_ADDRESS).parseAddress(deployedAddress);
         } else {
             revert(string.concat("Failed to parse deployment address from output: ", stdout));
         }
