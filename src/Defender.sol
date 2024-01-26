@@ -20,7 +20,7 @@ library Defender {
     }
 
     /**
-     * @dev Deploys a contract to the current network using OpenZeppelin Defender, with constructor arguments.
+     * @dev Deploys a contract with constructor arguments to the current network using OpenZeppelin Defender.
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
