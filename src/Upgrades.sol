@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+// Some proxy imports are not used directly, but need to be included for compilation so that _deploy can deploy them by name.
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 import {ITransparentUpgradeableProxy, TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
@@ -8,7 +9,6 @@ import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.s
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
-import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
@@ -71,7 +71,10 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(_deploy("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(impl, initializerData), opts.useDefenderDeploy));
+        return
+            address(
+                _deploy("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(impl, initializerData), opts.useDefenderDeploy)
+            );
     }
 
     /**
@@ -102,7 +105,14 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
+        return
+            address(
+                _deploy(
+                    "TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
+                    abi.encode(impl, initialOwner, initializerData),
+                    opts.useDefenderDeploy
+                )
+            );
     }
 
     /**
@@ -226,7 +236,8 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new UpgradeableBeacon(impl, initialOwner));
+        return
+            _deploy("UpgradeableBeacon.sol:UpgradeableBeacon", abi.encode(impl, initialOwner), opts.useDefenderDeploy);
     }
 
     /**
@@ -319,7 +330,20 @@ library Upgrades {
      * @return Proxy address
      */
     function deployBeaconProxy(address beacon, bytes memory data) internal returns (address) {
-        return address(new BeaconProxy(beacon, data));
+        Options memory opts;
+        return deployBeaconProxy(beacon, data, opts);
+    }
+
+    /**
+     * @dev Deploys a beacon proxy using the given beacon and call data.
+     *
+     * @param beacon Address of the beacon to use
+     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @param opts Common options
+     * @return Proxy address
+     */
+    function deployBeaconProxy(address beacon, bytes memory data, Options memory opts) internal returns (address) {
+        return _deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts.useDefenderDeploy);
     }
 
     /**
@@ -500,7 +524,11 @@ library Upgrades {
         return inputs;
     }
 
-    function _deploy(string memory contractName, bytes memory constructorData, bool useDefenderDeploy) private returns (address) {
+    function _deploy(
+        string memory contractName,
+        bytes memory constructorData,
+        bool useDefenderDeploy
+    ) private returns (address) {
         if (useDefenderDeploy) {
             return DefenderDeploy.deploy(contractName, constructorData);
         } else {
