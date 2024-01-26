@@ -18,12 +18,12 @@ import {Versions} from "./Versions.sol";
 library DefenderDeploy {
     using strings for *;
 
-    function deploy(string memory contractName) internal returns (string memory) {
+    function deploy(string memory contractName, bytes memory constructorData) internal returns (string memory) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
         string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
 
-        string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile);
+        string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile, constructorData);
 
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
@@ -44,7 +44,8 @@ library DefenderDeploy {
 
     function buildDeployCommand(
         ContractInfo memory contractInfo,
-        string memory buildInfoFile
+        string memory buildInfoFile,
+        bytes memory constructorData
     ) internal view returns (string[] memory) {
         string[] memory inputBuilder = new string[](255);
 
@@ -66,6 +67,10 @@ library DefenderDeploy {
         inputBuilder[i++] = buildInfoFile;
         inputBuilder[i++] = "--licenseType";
         inputBuilder[i++] = contractInfo.license;
+        if (constructorData.length > 0) {
+            inputBuilder[i++] = "--constructorBytecode";
+            inputBuilder[i++] = Vm(Utils.CHEATCODE_ADDRESS).toString(constructorData);
+        }
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
