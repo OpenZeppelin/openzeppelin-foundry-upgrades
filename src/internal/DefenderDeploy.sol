@@ -21,7 +21,7 @@ library DefenderDeploy {
     function deploy(string memory contractName, bytes memory constructorData) internal returns (address) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, outDir);
+        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.sourceCodeHash, contractInfo.shortName, outDir);
 
         string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile, constructorData);
 
