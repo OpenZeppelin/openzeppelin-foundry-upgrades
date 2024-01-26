@@ -16,6 +16,7 @@ import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Versions} from "./internal/Versions.sol";
 import {Utils} from "./internal/Utils.sol";
+import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 struct Options {
     /**
@@ -46,6 +47,10 @@ struct Options {
      * Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
      */
     bool unsafeSkipAllChecks;
+    /**
+     * Deploys contracts using OpenZeppelin Defender instead of broadcasting deployments through Forge. See DEFENDER.md.
+     */
+    bool useDefenderDeploy;
 }
 
 /**
@@ -336,7 +341,7 @@ library Upgrades {
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
-        return _deploy(contractName, opts.constructorData);
+        return _deploy(contractName, opts.constructorData, opts.useDefenderDeploy);
     }
 
     /**
@@ -365,7 +370,7 @@ library Upgrades {
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
         validateUpgrade(contractName, opts);
-        return _deploy(contractName, opts.constructorData);
+        return _deploy(contractName, opts.constructorData, opts.useDefenderDeploy);
     }
 
     /**
@@ -495,21 +500,25 @@ library Upgrades {
         return inputs;
     }
 
-    function _deploy(string memory contractName, bytes memory constructorData) private returns (address) {
-        bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-        address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
-        if (deployedAddress == address(0)) {
-            revert(
-                string.concat(
-                    "Failed to deploy contract ",
-                    contractName,
-                    ' using constructor data "',
-                    string(constructorData),
-                    '"'
-                )
-            );
+    function _deploy(string memory contractName, bytes memory constructorData, bool useDefenderDeploy) private returns (address) {
+        if (useDefenderDeploy) {
+            return DefenderDeploy.deploy(contractName, constructorData);
+        } else {
+            bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+            address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
+            if (deployedAddress == address(0)) {
+                revert(
+                    string.concat(
+                        "Failed to deploy contract ",
+                        contractName,
+                        ' using constructor data "',
+                        string(constructorData),
+                        '"'
+                    )
+                );
+            }
+            return deployedAddress;
         }
-        return deployedAddress;
     }
 
     function _deployFromBytecode(bytes memory bytecode) private returns (address) {
