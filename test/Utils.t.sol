@@ -102,7 +102,11 @@ contract UpgradesTest is Test {
 
     function testGetBuildInfoFile() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("Greeter.sol", "out");
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.sourceCodeHash, contractInfo.shortName, "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
 
         assertTrue(buildInfoFile.toSlice().startsWith("out/build-info".toSlice()));
         assertTrue(buildInfoFile.toSlice().endsWith(".json".toSlice()));

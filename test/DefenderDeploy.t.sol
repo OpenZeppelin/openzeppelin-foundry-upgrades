@@ -22,7 +22,11 @@ contract DefenderDeployTest is Test {
 
     function testBuildDeployCommand() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.sourceCodeHash, contractInfo.shortName, "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
 
         string memory commandString = _toString(DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, ""));
 
@@ -40,7 +44,11 @@ contract DefenderDeployTest is Test {
 
     function testBuildDeployCommandWithConstructorData() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("WithConstructor.sol:WithConstructor", "out");
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.sourceCodeHash, contractInfo.shortName, "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
 
         bytes memory constructorData = abi.encode(123);
 

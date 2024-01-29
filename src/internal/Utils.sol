@@ -78,7 +78,10 @@ library Utils {
 
         info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
         info.license = vm.parseJsonString(artifactJson, ".ast.license");
-        info.sourceCodeHash = vm.parseJsonString(artifactJson, string.concat(".metadata.sources.['", info.contractPath, "'].keccak256"));
+        info.sourceCodeHash = vm.parseJsonString(
+            artifactJson,
+            string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")
+        );
 
         return info;
     }
@@ -108,7 +111,12 @@ library Utils {
         string memory stdout = string(result.stdout);
 
         if (!stdout.toSlice().endsWith(".json".toSlice())) {
-            revert(string.concat("Could not find build-info file with matching source code hash for contract ", contractName));
+            revert(
+                string.concat(
+                    "Could not find build-info file with matching source code hash for contract ",
+                    contractName
+                )
+            );
         }
 
         return stdout;
