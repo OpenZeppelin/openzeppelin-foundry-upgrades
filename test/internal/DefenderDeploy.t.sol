@@ -6,7 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDeploy.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
-import {WithConstructor} from "./contracts/WithConstructor.sol";
+import {WithConstructor} from "../contracts/WithConstructor.sol";
 
 contract DefenderDeployTest is Test {
     function _toString(string[] memory arr) private pure returns (string memory) {
