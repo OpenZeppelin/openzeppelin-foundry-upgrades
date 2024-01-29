@@ -6,7 +6,10 @@ import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
-contract UpgradesTest is Test {
+/**
+ * @dev Tests the Utils internal library.
+ */
+contract UtilsTest is Test {
     function testGetContractInfo_from_file() public {
         ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out");
 

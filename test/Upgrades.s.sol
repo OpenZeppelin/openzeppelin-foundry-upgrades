@@ -10,6 +10,9 @@ import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
+/**
+ * @dev Sample script to deploy and upgrade contracts using transparent, UUPS, and beacon proxies.
+ */
 contract UpgradesScript is Script {
     function setUp() public {}
 

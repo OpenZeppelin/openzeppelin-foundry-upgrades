@@ -8,6 +8,9 @@ import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDep
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 
+/**
+ * @dev Tests the DefenderDeploy internal library.
+ */
 contract DefenderDeployTest is Test {
     function _toString(string[] memory arr) private pure returns (string memory) {
         string memory result;

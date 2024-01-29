@@ -6,6 +6,9 @@ import {Script} from "forge-std/Script.sol";
 import {Defender} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {console} from "forge-std/console.sol";
 
+/**
+ * @dev Sample script to deploy a contract using Defender.
+ */
 contract DefenderScript is Script {
     function setUp() public {}
 
