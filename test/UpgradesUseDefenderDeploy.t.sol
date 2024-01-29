@@ -6,14 +6,10 @@ import {Vm} from "forge-std/Vm.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
-import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
-import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
-
 import {Greeter} from "./contracts/Greeter.sol";
 import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
-import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
 
 import {strings} from "solidity-stringutils/src/strings.sol";
 
@@ -36,7 +32,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         Options memory opts;
         opts.useDefenderDeploy = true;
 
-        try d.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(Greeter.initialize, ("hello")), opts) {
+        try d.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(GreeterProxiable.initialize, ("hello")), opts) {
             fail();
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
