@@ -472,7 +472,7 @@ library Upgrades {
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) private returns (string[] memory) {
+    ) private view returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
         string[] memory inputBuilder = new string[](255);
