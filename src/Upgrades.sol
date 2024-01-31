@@ -49,7 +49,7 @@ struct Options {
     /**
      * add's salt to proxy address if present
      */
-    uint256 salt;
+    bytes32 salt;
 }
 
 /**
@@ -69,11 +69,10 @@ library Upgrades {
         bytes memory initializerData,
         Options memory opts
     ) internal returns (address) {
+        address impl = deployImplementation(contractName, opts);
         if (opts.salt == 0) {
-            address impl = deployImplementation(contractName, opts);
             return address(new ERC1967Proxy(impl, initializerData));
         } else {
-            address impl = deployImplementation(contractName, opts);
             return address(new ERC1967Proxy{salt: opts.salt}(impl, initializerData));
         }
     }
@@ -541,9 +540,9 @@ library Upgrades {
         return addr;
     }
 
-    function _deployWithCreate2(string memory contractName, bytes memory constructorData, uint256 salt) private returns (address) {
+    function _deployWithCreate2(string memory contractName, bytes memory constructorData, bytes32 salt) private returns (address) {
         bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-        address deployedAddress = _deployFromBytecodeWithCreate2(abi.encodePacked(creationCode, constructorData), salt);
+        address deployedAddress = _deployFromBytecodeWithCreate2(abi.encodePacked(creationCode, constructorData), uint256(salt));
         if (deployedAddress == address(0)) {
             revert(
                 string.concat(
