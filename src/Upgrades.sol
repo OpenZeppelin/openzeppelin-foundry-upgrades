@@ -49,7 +49,7 @@ struct Options {
     /**
      * add's salt to proxy address if present
      */
-    bytes32 salt;
+    uint256 salt;
 }
 
 /**
@@ -69,10 +69,11 @@ library Upgrades {
         bytes memory initializerData,
         Options memory opts
     ) internal returns (address) {
-        address impl = deployImplementation(contractName, opts);
         if (opts.salt == 0) {
+            address impl = deployImplementation(contractName, opts);
             return address(new ERC1967Proxy(impl, initializerData));
         } else {
+            address impl = deployImplementation(contractName, opts);
             return address(new ERC1967Proxy{salt: opts.salt}(impl, initializerData));
         }
     }
@@ -352,7 +353,11 @@ library Upgrades {
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
-        return _deploy(contractName, opts.constructorData);
+        if (opts.salt == 0) {
+            return _deploy(contractName, opts.constructorData);
+        } else {
+            return _deployWithCreate2(contractName, opts.constructorData, opts.salt);
+        }
     }
 
     /**
@@ -535,4 +540,29 @@ library Upgrades {
         }
         return addr;
     }
+
+    function _deployWithCreate2(string memory contractName, bytes memory constructorData, uint256 salt) private returns (address) {
+        bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+        address deployedAddress = _deployFromBytecodeWithCreate2(abi.encodePacked(creationCode, constructorData), salt);
+        if (deployedAddress == address(0)) {
+            revert(
+                string.concat(
+                    "Failed to deploy contract ",
+                    contractName,
+                    ' using constructor data "',
+                    string(constructorData),
+                    '"'
+                )
+            );
+        }
+        return deployedAddress;
+    }
+
+    function _deployFromBytecodeWithCreate2(bytes memory bytecode, uint256 salt) private returns (address) {
+        address addr;
+        assembly {
+            addr := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        return addr;
+    }    
 }

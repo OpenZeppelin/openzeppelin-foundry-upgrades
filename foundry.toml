@@ -4,3 +4,4 @@ out = "out"
 libs = ["node_modules", "lib"]
 build_info = true
 extra_output = ["storageLayout"]
+solc_version = '0.8.23'
