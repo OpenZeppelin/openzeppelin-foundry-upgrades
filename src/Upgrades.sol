@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-// Some proxy imports are not used directly, but need to be included for compilation so that _deploy can deploy them by name.
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 import {ITransparentUpgradeableProxy, TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
@@ -555,5 +553,18 @@ library Upgrades {
             addr := create(0, add(bytecode, 32), mload(bytecode))
         }
         return addr;
+    }
+
+    /**
+     * @dev Precompile proxy contracts so that they can be deployed by name via the `_deploy` function.
+     *
+     * This function is never called and has no effect, but must be included to ensure that the proxy contracts are included in the compilation output.
+     */
+    function _precompileProxyContracts() private pure {
+        // Do not delete, even though the following have no effect
+        type(ERC1967Proxy);
+        type(TransparentUpgradeableProxy);
+        type(UpgradeableBeacon);
+        type(BeaconProxy);
     }
 }
