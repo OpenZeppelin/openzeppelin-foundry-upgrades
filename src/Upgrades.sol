@@ -558,13 +558,13 @@ library Upgrades {
     /**
      * @dev Precompile proxy contracts so that they can be deployed by name via the `_deploy` function.
      *
-     * This function is never called and has no effect, but must be included to ensure that the proxy contracts are included in the compilation output.
+     * NOTE: This function is never called and has no effect, but must be kept to ensure that the proxy contracts are included in the compilation.
      */
     function _precompileProxyContracts() private pure {
-        // Do not delete, even though the following have no effect
-        type(ERC1967Proxy);
-        type(TransparentUpgradeableProxy);
-        type(UpgradeableBeacon);
-        type(BeaconProxy);
+        bytes memory dummy;
+        dummy = type(ERC1967Proxy).creationCode;
+        dummy = type(TransparentUpgradeableProxy).creationCode;
+        dummy = type(UpgradeableBeacon).creationCode;
+        dummy = type(BeaconProxy).creationCode;
     }
 }
