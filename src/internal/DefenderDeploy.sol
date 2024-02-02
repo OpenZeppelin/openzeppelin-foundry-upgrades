@@ -43,32 +43,23 @@ library DefenderDeploy {
         ContractInfo memory contractInfo,
         string memory buildInfoFile
     ) internal view returns (string[] memory) {
-        string[] memory inputBuilder = new string[](255);
+        string[] memory inputs = new string[](13);
 
         uint8 i = 0;
 
-        inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat(
-            "@openzeppelin/defender-deploy-client-cli@",
-            Versions.DEFENDER_DEPLOY_CLIENT_CLI
-        );
-        inputBuilder[i++] = "deploy";
-        inputBuilder[i++] = "--contractName";
-        inputBuilder[i++] = contractInfo.shortName;
-        inputBuilder[i++] = "--contractPath";
-        inputBuilder[i++] = contractInfo.contractPath;
-        inputBuilder[i++] = "--chainId";
-        inputBuilder[i++] = Strings.toString(block.chainid);
-        inputBuilder[i++] = "--artifactFile";
-        inputBuilder[i++] = buildInfoFile;
-        inputBuilder[i++] = "--licenseType";
-        inputBuilder[i++] = contractInfo.license;
-
-        // Create a copy of inputs but with the correct length
-        string[] memory inputs = new string[](i);
-        for (uint8 j = 0; j < i; j++) {
-            inputs[j] = inputBuilder[j];
-        }
+        inputs[i++] = "npx";
+        inputs[i++] = string.concat("@openzeppelin/defender-deploy-client-cli@", Versions.DEFENDER_DEPLOY_CLIENT_CLI);
+        inputs[i++] = "deploy";
+        inputs[i++] = "--contractName";
+        inputs[i++] = contractInfo.shortName;
+        inputs[i++] = "--contractPath";
+        inputs[i++] = contractInfo.contractPath;
+        inputs[i++] = "--chainId";
+        inputs[i++] = Strings.toString(block.chainid);
+        inputs[i++] = "--artifactFile";
+        inputs[i++] = buildInfoFile;
+        inputs[i++] = "--licenseType";
+        inputs[i++] = contractInfo.license;
 
         return inputs;
     }
