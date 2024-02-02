@@ -29,10 +29,7 @@ library Defender {
      * @param opts Defender deployment options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
      * @return Address of the deployed contract
      */
-    function deployContract(
-        string memory contractName,
-        DefenderOptions memory opts
-    ) internal returns (address) {
+    function deployContract(string memory contractName, DefenderOptions memory opts) internal returns (address) {
         return deployContract(contractName, "", opts);
     }
 
