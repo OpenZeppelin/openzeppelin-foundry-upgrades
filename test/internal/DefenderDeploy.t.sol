@@ -6,6 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDeploy.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
+import {Options} from "openzeppelin-foundry-upgrades/Options.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 
 /**
@@ -31,7 +32,10 @@ contract DefenderDeployTest is Test {
             "out"
         );
 
-        string memory commandString = _toString(DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, ""));
+        Options memory opts;
+        string memory commandString = _toString(
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
+        );
 
         assertEq(
             commandString,
@@ -55,8 +59,9 @@ contract DefenderDeployTest is Test {
 
         bytes memory constructorData = abi.encode(123);
 
+        Options memory opts;
         string memory commandString = _toString(
-            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData)
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
         assertEq(
@@ -67,6 +72,38 @@ contract DefenderDeployTest is Test {
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --artifactFile ",
                 buildInfoFile,
                 " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
+            )
+        );
+    }
+
+    function testBuildDeployCommandAllCliOptions() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("WithConstructor.sol:WithConstructor", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        bytes memory constructorData = abi.encode(123);
+
+        Options memory opts;
+        opts.useDefenderDeploy = true;
+        opts.skipVerifySourceCode = true;
+        opts.relayerId = "my-relayer-id";
+        opts.salt = 0xabc0000000000000000000000000000000000000000000000000000000000123;
+
+        string memory commandString = _toString(
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --artifactFile ",
+                buildInfoFile,
+                " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123"
             )
         );
     }

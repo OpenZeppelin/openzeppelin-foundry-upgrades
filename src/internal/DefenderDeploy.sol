@@ -9,6 +9,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./Utils.sol";
 import {Versions} from "./Versions.sol";
+import {Options} from "../Upgrades.sol";
 
 /**
  * @dev Internal helper methods for Defender deployments.
@@ -18,7 +19,11 @@ import {Versions} from "./Versions.sol";
 library DefenderDeploy {
     using strings for *;
 
-    function deploy(string memory contractName, bytes memory constructorData) internal returns (address) {
+    function deploy(
+        string memory contractName,
+        bytes memory constructorData,
+        Options memory opts
+    ) internal returns (address) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
         string memory buildInfoFile = Utils.getBuildInfoFile(
@@ -27,7 +32,7 @@ library DefenderDeploy {
             outDir
         );
 
-        string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile, constructorData);
+        string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts);
 
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
@@ -48,8 +53,11 @@ library DefenderDeploy {
     function buildDeployCommand(
         ContractInfo memory contractInfo,
         string memory buildInfoFile,
-        bytes memory constructorData
+        bytes memory constructorData,
+        Options memory opts
     ) internal view returns (string[] memory) {
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+
         string[] memory inputBuilder = new string[](255);
 
         uint8 i = 0;
@@ -72,7 +80,19 @@ library DefenderDeploy {
         inputBuilder[i++] = contractInfo.license;
         if (constructorData.length > 0) {
             inputBuilder[i++] = "--constructorBytecode";
-            inputBuilder[i++] = Vm(Utils.CHEATCODE_ADDRESS).toString(constructorData);
+            inputBuilder[i++] = vm.toString(constructorData);
+        }
+        if (opts.skipVerifySourceCode) {
+            inputBuilder[i++] = "--verifySourceCode";
+            inputBuilder[i++] = "false";
+        }
+        if (!(opts.relayerId).toSlice().empty()) {
+            inputBuilder[i++] = "--relayerId";
+            inputBuilder[i++] = opts.relayerId;
+        }
+        if (opts.salt != 0) {
+            inputBuilder[i++] = "--salt";
+            inputBuilder[i++] = vm.toString(opts.salt);
         }
 
         // Create a copy of inputs but with the correct length
