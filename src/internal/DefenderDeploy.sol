@@ -9,7 +9,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./Utils.sol";
 import {Versions} from "./Versions.sol";
-import {Options} from "../Upgrades.sol";
+import {DefenderOptions} from "../Options.sol";
 
 /**
  * @dev Internal helper methods for Defender deployments.
@@ -22,7 +22,7 @@ library DefenderDeploy {
     function deploy(
         string memory contractName,
         bytes memory constructorData,
-        Options memory opts
+        DefenderOptions memory opts
     ) internal returns (address) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
@@ -54,7 +54,7 @@ library DefenderDeploy {
         ContractInfo memory contractInfo,
         string memory buildInfoFile,
         bytes memory constructorData,
-        Options memory opts
+        DefenderOptions memory opts
     ) internal view returns (string[] memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 

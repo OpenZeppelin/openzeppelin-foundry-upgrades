@@ -31,7 +31,14 @@ struct Options {
      */
     bool unsafeSkipAllChecks;
     /**
-     * Deploys contracts using OpenZeppelin Defender instead of broadcasting deployments through Forge. See DEFENDER.md.
+     * Options for OpenZeppelin Defender deployments.
+     */
+    DefenderOptions defender;
+}
+
+struct DefenderOptions {
+    /**
+     * Deploys contracts using OpenZeppelin Defender instead of broadcasting deployments through Forge. Defaults to `false` except when called from Defender.sol. See DEFENDER.md.
      */
     bool useDefenderDeploy;
     /**

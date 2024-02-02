@@ -14,7 +14,7 @@ import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {strings} from "solidity-stringutils/src/strings.sol";
 
 /**
- * @dev Tests that the `useDefenderDeploy` flag is recognized in the Upgrades library.
+ * @dev Tests that the `defender.useDefenderDeploy` flag is recognized in the Upgrades library.
  * These do not perform any actual deployments, but just checks that the Defender CLI is invoked and catches its error message since we are using a dev network.
  */
 contract UpgradesUseDefenderDeployTest is Test {
@@ -30,7 +30,7 @@ contract UpgradesUseDefenderDeployTest is Test {
 
     function testDeployUUPSProxy() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try d.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(GreeterProxiable.initialize, ("hello")), opts) {
             fail();
@@ -43,7 +43,7 @@ contract UpgradesUseDefenderDeployTest is Test {
 
     function testDeployTransparentProxy() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try d.deployTransparentProxy("Greeter.sol", msg.sender, abi.encodeCall(Greeter.initialize, ("hello")), opts) {
             fail();
@@ -58,7 +58,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         address proxy = Upgrades.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(Greeter.initialize, ("hello")));
 
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try
             d.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()), opts)
@@ -73,7 +73,7 @@ contract UpgradesUseDefenderDeployTest is Test {
 
     function testDeployBeacon() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try d.deployBeacon("Greeter.sol", msg.sender, opts) {
             fail();
@@ -88,7 +88,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
 
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try d.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")), opts) {
             fail();
@@ -104,7 +104,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
 
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try d.upgradeBeacon(beacon, "GreeterV2.sol", opts) {
             fail();
@@ -117,7 +117,7 @@ contract UpgradesUseDefenderDeployTest is Test {
 
     function testPrepareUpgrade() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         try d.prepareUpgrade("GreeterV2.sol", opts) {
             fail();
@@ -130,7 +130,7 @@ contract UpgradesUseDefenderDeployTest is Test {
 
     function testValidateImplementation() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         // The above flag should be ignored when calling this function
         Upgrades.validateImplementation("Greeter.sol", opts);
@@ -138,7 +138,7 @@ contract UpgradesUseDefenderDeployTest is Test {
 
     function testValidateUpgrade() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         // The above flag should be ignored when calling this function
         Upgrades.validateUpgrade("GreeterV2.sol", opts);

@@ -489,8 +489,8 @@ library Upgrades {
         bytes memory constructorData,
         Options memory opts
     ) private returns (address) {
-        if (opts.useDefenderDeploy) {
-            return DefenderDeploy.deploy(contractName, constructorData, opts);
+        if (opts.defender.useDefenderDeploy) {
+            return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
         } else {
             bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
             address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));

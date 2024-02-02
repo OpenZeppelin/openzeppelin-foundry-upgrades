@@ -6,7 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDeploy.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
-import {Options} from "openzeppelin-foundry-upgrades/Options.sol";
+import {DefenderOptions} from "openzeppelin-foundry-upgrades/Options.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 
 /**
@@ -32,7 +32,7 @@ contract DefenderDeployTest is Test {
             "out"
         );
 
-        Options memory opts;
+        DefenderOptions memory opts;
         string memory commandString = _toString(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
@@ -59,7 +59,7 @@ contract DefenderDeployTest is Test {
 
         bytes memory constructorData = abi.encode(123);
 
-        Options memory opts;
+        DefenderOptions memory opts;
         string memory commandString = _toString(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
@@ -86,7 +86,7 @@ contract DefenderDeployTest is Test {
 
         bytes memory constructorData = abi.encode(123);
 
-        Options memory opts;
+        DefenderOptions memory opts;
         opts.useDefenderDeploy = true;
         opts.skipVerifySourceCode = true;
         opts.relayerId = "my-relayer-id";
