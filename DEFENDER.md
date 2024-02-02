@@ -32,7 +32,7 @@ DEFENDER_SECRET<Your API secret>
 
 ### Upgradeable Contracts
 
-If you are deploying upgradeable contracts, use the `Upgrades` library as described in [README.md#usage](README.md#usage) but set the option `useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
+If you are deploying upgradeable contracts, use the `Upgrades` library as described in [README.md#usage](README.md#usage) but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
 
 **Example:**
 
@@ -52,7 +52,7 @@ contract DefenderScript is Script {
 
     function run() public {
         Options memory opts;
-        opts.useDefenderDeploy = true;
+        opts.defender.useDefenderDeploy = true;
 
         address proxy = Upgrades.deployUUPSProxy(
             "MyContract.sol",
@@ -70,7 +70,7 @@ Then run the following command:
 forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
 ```
 
-The above example calls the `Upgrades.deployUUPSProxy` function with the `useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
+The above example calls the `Upgrades.deployUUPSProxy` function with the `defender.useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
 
 ### Non-Upgradeable Contracts
 
