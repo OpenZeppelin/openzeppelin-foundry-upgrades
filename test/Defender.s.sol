@@ -10,7 +10,7 @@ contract DefenderScript is Script {
     function setUp() public {}
 
     function run() public {
-        string memory deployed = Defender.deployContract("MyContractFile.sol:MyContractName");
+        address deployed = Defender.deployContract("WithConstructor.sol:WithConstructor", abi.encode(123));
         console.log("Successfully deployed to address ", deployed);
     }
 }

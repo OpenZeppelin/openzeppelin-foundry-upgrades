@@ -13,8 +13,22 @@ library Defender {
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
+     * @return Address of the deployed contract
      */
-    function deployContract(string memory contractName) internal returns (string memory) {
-        return DefenderDeploy.deploy(contractName);
+    function deployContract(string memory contractName) internal returns (address) {
+        return deployContract(contractName, "");
+    }
+
+    /**
+     * @dev Deploys a contract with constructor arguments to the current network using OpenZeppelin Defender.
+     *
+     * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
+     *
+     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
+     * @param constructorData Encoded constructor arguments
+     * @return Address of the deployed contract
+     */
+    function deployContract(string memory contractName, bytes memory constructorData) internal returns (address) {
+        return DefenderDeploy.deploy(contractName, constructorData);
     }
 }
