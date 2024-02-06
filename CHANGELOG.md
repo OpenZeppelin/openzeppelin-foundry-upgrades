@@ -7,6 +7,8 @@
 
 ### Breaking changes
 - `Defender.deployContract` functions now return `address` instead of `string`.
+- Defender deployments now require metadata to be included in compiler output.
+- Defender deployments no longer print console output on successful deployments.
 
 ## 0.0.1 (2024-02-06)
 

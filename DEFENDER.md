@@ -21,6 +21,7 @@ See [README.md#installing](README.md#installing)
 build_info = true
 extra_output = ["storageLayout"]
 ```
+**Note**: Metadata must also be included in the compiler output, which it is by default.
 3. Include `--ffi` in your `forge script` or `forge test` command.
 4. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
 ```
