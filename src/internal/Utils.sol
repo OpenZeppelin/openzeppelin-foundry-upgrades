@@ -23,9 +23,9 @@ struct ContractInfo {
      */
     string sourceCodeHash;
     /**
-     * Contract ABI
+     * Artifact file path e.g. the path of the file 'out/MyContract.sol/MyContract.json'
      */
-    string abi;
+    string artifactPath;
 }
 
 /**
@@ -86,7 +86,7 @@ library Utils {
             artifactJson,
             string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")
         );
-        info.abi = vm.parseJsonString(artifactJson, ".abi");
+        info.artifactPath = artifactPath;
 
         return info;
     }

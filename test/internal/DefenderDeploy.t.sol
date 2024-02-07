@@ -6,7 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDeploy.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
-import {DefenderOptions} from "openzeppelin-foundry-upgrades/Options.sol";
+import {Options, DefenderOptions} from "openzeppelin-foundry-upgrades/Options.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 
 /**
@@ -104,6 +104,31 @@ contract DefenderDeployTest is Test {
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --artifactFile ",
                 buildInfoFile,
                 " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123"
+            )
+        );
+    }
+
+    function testBuildProposeUpgradeCommand() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
+
+        Options memory opts;
+        string memory commandString = _toString(
+            DefenderDeploy.buildProposeUpgradeCommand(
+                address(0x1230000000000000000000000000000000000456),
+                address(0),
+                address(0x1110000000000000000000000000000000000222),
+                contractInfo,
+                opts
+            )
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --abiFile ",
+                contractInfo.artifactPath
             )
         );
     }

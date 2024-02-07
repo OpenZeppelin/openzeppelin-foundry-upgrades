@@ -185,8 +185,8 @@ library DefenderDeploy {
         inputBuilder[i++] = vm.toString(newImplementationAddress);
         inputBuilder[i++] = "--chainId";
         inputBuilder[i++] = Strings.toString(block.chainid);
-        inputBuilder[i++] = "--newImplementationABI";
-        inputBuilder[i++] = contractInfo.abi;
+        inputBuilder[i++] = "--abiFile";
+        inputBuilder[i++] = contractInfo.artifactPath;
         if (proxyAdminAddress != address(0)) {
             inputBuilder[i++] = "--proxyAdminAddress";
             inputBuilder[i++] = vm.toString(proxyAdminAddress);
