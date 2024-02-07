@@ -146,13 +146,19 @@ library DefenderDeploy {
         ProposeUpgradeResponse memory response;
 
         strings.slice memory idDelim = "Proposal ID: ".toSlice();
+        strings.slice memory urlDelim = "Proposal URL: ".toSlice();
+
         if (stdout.toSlice().contains(idDelim)) {
-            response.proposalId = stdout.toSlice().copy().find(idDelim).beyond(idDelim).toString();
+            strings.slice memory idSlice = stdout.toSlice().copy().find(idDelim).beyond(idDelim);
+            // Remove any following lines, such as the Proposal URL line
+            if (idSlice.contains("\n".toSlice())) {
+                idSlice = idSlice.split("\n".toSlice());
+            }
+            response.proposalId = idSlice.toString();
         } else {
             revert(string.concat("Failed to parse proposal ID from output: ", stdout));
         }
 
-        strings.slice memory urlDelim = "Proposal URL: ".toSlice();
         if (stdout.toSlice().contains(urlDelim)) {
             response.url = stdout.toSlice().copy().find(urlDelim).beyond(urlDelim).toString();
         }

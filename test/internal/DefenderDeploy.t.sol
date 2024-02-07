@@ -7,6 +7,7 @@ import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.
 import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDeploy.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
 import {Options, DefenderOptions} from "openzeppelin-foundry-upgrades/Options.sol";
+import {ProposeUpgradeResponse} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 
 /**
@@ -131,5 +132,30 @@ contract DefenderDeployTest is Test {
                 contractInfo.artifactPath
             )
         );
+    }
+
+    function testParseProposeUpgradeResponse() public {
+        string memory output = string.concat(
+            "Upgrade proposal created.\n",
+            "Proposal ID: 123\n",
+            "Proposal URL: https://my.url/my-tx"
+        );
+
+        ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
+
+        assertEq(response.proposalId, "123");
+        assertEq(response.url, "https://my.url/my-tx");
+    }
+
+    function testParseProposeUpgradeResponseNoUrl() public {
+        string memory output = string.concat(
+            "Upgrade proposal created.\n",
+            "Proposal ID: 123"
+        );
+
+        ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
+
+        assertEq(response.proposalId, "123");
+        assertEq(response.url, "");
     }
 }
