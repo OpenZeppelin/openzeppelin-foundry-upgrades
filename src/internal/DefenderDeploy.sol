@@ -9,7 +9,8 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./Utils.sol";
 import {Versions} from "./Versions.sol";
-import {DefenderOptions} from "../Options.sol";
+import {Options, DefenderOptions} from "../Options.sol";
+import {ProposeUpgradeResponse} from "../Defender.sol";
 
 /**
  * @dev Internal helper methods for Defender deployments.
@@ -93,6 +94,106 @@ library DefenderDeploy {
         if (opts.salt != 0) {
             inputBuilder[i++] = "--salt";
             inputBuilder[i++] = vm.toString(opts.salt);
+        }
+
+        // Create a copy of inputs but with the correct length
+        string[] memory inputs = new string[](i);
+        for (uint8 j = 0; j < i; j++) {
+            inputs[j] = inputBuilder[j];
+        }
+
+        return inputs;
+    }
+
+    function proposeUpgrade(
+        address proxyAddress,
+        address proxyAdminAddress,
+        address newImplementationAddress,
+        string memory newImplementationContractName,
+        Options memory opts
+    ) internal returns (ProposeUpgradeResponse memory) {
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+
+        string memory outDir = Utils.getOutDir();
+        ContractInfo memory contractInfo = Utils.getContractInfo(newImplementationContractName, outDir);
+
+        string[] memory inputs = buildProposeUpgradeCommand(
+            proxyAddress,
+            proxyAdminAddress,
+            newImplementationAddress,
+            contractInfo,
+            opts
+        );
+
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
+        string memory stdout = string(result.stdout);
+
+        if (result.exitCode != 0) {
+            revert(
+                string.concat(
+                    "Failed to propose upgrade for proxy ",
+                    vm.toString(proxyAddress),
+                    ": ",
+                    string(result.stderr)
+                )
+            );
+        }
+
+        return parseProposeUpgradeResponse(stdout);
+    }
+
+    function parseProposeUpgradeResponse(string memory stdout) internal pure returns (ProposeUpgradeResponse memory) {
+        ProposeUpgradeResponse memory response;
+
+        strings.slice memory idDelim = "Proposal ID: ".toSlice();
+        if (stdout.toSlice().contains(idDelim)) {
+            response.proposalId = stdout.toSlice().copy().find(idDelim).beyond(idDelim).toString();
+        } else {
+            revert(string.concat("Failed to parse proposal ID from output: ", stdout));
+        }
+
+        strings.slice memory urlDelim = "Proposal URL: ".toSlice();
+        if (stdout.toSlice().contains(urlDelim)) {
+            response.url = stdout.toSlice().copy().find(urlDelim).beyond(urlDelim).toString();
+        }
+
+        return response;
+    }
+
+    function buildProposeUpgradeCommand(
+        address proxyAddress,
+        address proxyAdminAddress,
+        address newImplementationAddress,
+        ContractInfo memory contractInfo,
+        Options memory opts
+    ) internal view returns (string[] memory) {
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+
+        string[] memory inputBuilder = new string[](255);
+
+        uint8 i = 0;
+
+        inputBuilder[i++] = "npx";
+        inputBuilder[i++] = string.concat(
+            "@openzeppelin/defender-deploy-client-cli@",
+            Versions.DEFENDER_DEPLOY_CLIENT_CLI
+        );
+        inputBuilder[i++] = "proposeUpgrade";
+        inputBuilder[i++] = "--proxyAddress";
+        inputBuilder[i++] = vm.toString(proxyAddress);
+        inputBuilder[i++] = "--newImplementationAddress";
+        inputBuilder[i++] = vm.toString(newImplementationAddress);
+        inputBuilder[i++] = "--chainId";
+        inputBuilder[i++] = Strings.toString(block.chainid);
+        inputBuilder[i++] = "--newImplementationABI";
+        inputBuilder[i++] = contractInfo.abi;
+        if (proxyAdminAddress != address(0)) {
+            inputBuilder[i++] = "--proxyAdminAddress";
+            inputBuilder[i++] = vm.toString(proxyAdminAddress);
+        }
+        if (!(opts.defender.upgradeApprovalProcessId).toSlice().empty()) {
+            inputBuilder[i++] = "--approvalProcessId";
+            inputBuilder[i++] = opts.defender.upgradeApprovalProcessId;
         }
 
         // Create a copy of inputs but with the correct length

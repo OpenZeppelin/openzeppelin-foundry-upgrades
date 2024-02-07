@@ -22,6 +22,10 @@ struct ContractInfo {
      * keccak256 hash of the source code from metadata
      */
     string sourceCodeHash;
+    /**
+     * Contract ABI
+     */
+    string abi;
 }
 
 /**
@@ -82,6 +86,7 @@ library Utils {
             artifactJson,
             string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")
         );
+        info.abi = vm.parseJsonString(artifactJson, ".abi");
 
         return info;
     }

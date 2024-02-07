@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {DefenderOptions} from "./Options.sol";
+import {Options, DefenderOptions} from "./Options.sol";
+import {Upgrades} from "./Upgrades.sol";
 import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 /**
@@ -64,4 +65,43 @@ library Defender {
     ) internal returns (address) {
         return DefenderDeploy.deploy(contractName, constructorData, opts);
     }
+
+    /**
+     * @dev Similar to `Upgrades.prepareUpgrade` but uses OpenZeppelin Defender for deployment and proposal.
+     *
+     * This function validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract using OpenZeppelin Defender,
+     * and proposes an upgrade to the new implementation contract using an upgrade approval process on OpenZeppelin Defender.
+     *
+     * Supported for UUPS or Transparent proxies. Not currently supported for beacon proxies or beacons.
+     * For beacons, use `Upgrades.prepareUpgrade` along with a transaction proposal on Defender to upgrade the beacon to the deployed implementation.
+     *
+     * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
+     *
+     * @param proxyAddress The proxy address
+     * @param newImplementationContractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
+     * @param opts Common options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
+     * @return Struct containing the proposal ID and URL for the upgrade proposal
+     */
+    function proposeUpgrade(
+        address proxyAddress,
+        string memory newImplementationContractName,
+        Options memory opts
+    ) internal returns (ProposeUpgradeResponse memory) {
+        opts.defender.useDefenderDeploy = true;
+        address proxyAdminAddress = Upgrades.getAdminAddress(proxyAddress);
+        address newImplementationAddress = Upgrades.prepareUpgrade(newImplementationContractName, opts);
+        return
+            DefenderDeploy.proposeUpgrade(
+                proxyAddress,
+                proxyAdminAddress,
+                newImplementationAddress,
+                newImplementationContractName,
+                opts
+            );
+    }
+}
+
+struct ProposeUpgradeResponse {
+    string proposalId;
+    string url;
 }

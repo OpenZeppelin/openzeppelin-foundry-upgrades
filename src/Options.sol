@@ -58,4 +58,9 @@ struct DefenderOptions {
      * WARNING: CREATE2 affects `msg.sender` behavior. See https://docs.openzeppelin.com/defender/v2/tutorial/deploy#deploy-caveat for more information.
      */
     bytes32 salt;
+    /**
+     * The ID of the upgrade approval process to use when proposing an upgrade.
+     * Defaults to the upgrade approval process configured for your deployment environment on Defender.
+     */
+    string upgradeApprovalProcessId;
 }
