@@ -77,6 +77,9 @@ library Defender {
      *
      * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
+     * WARNING: Ensure that the reference contract is the same contract that the proxy is currently pointing to.
+     * This function does not validate that the reference contract is the same as the current implementation.
+     *
      * @param proxyAddress The proxy address
      * @param newImplementationContractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param opts Common options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
