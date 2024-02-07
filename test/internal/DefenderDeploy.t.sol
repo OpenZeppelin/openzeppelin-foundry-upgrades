@@ -135,11 +135,7 @@ contract DefenderDeployTest is Test {
     }
 
     function testParseProposeUpgradeResponse() public {
-        string memory output = string.concat(
-            "Upgrade proposal created.\n",
-            "Proposal ID: 123\n",
-            "Proposal URL: https://my.url/my-tx"
-        );
+        string memory output = "Upgrade proposal created.\nProposal ID: 123\nProposal URL: https://my.url/my-tx";
 
         ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
 
@@ -148,10 +144,7 @@ contract DefenderDeployTest is Test {
     }
 
     function testParseProposeUpgradeResponseNoUrl() public {
-        string memory output = string.concat(
-            "Upgrade proposal created.\n",
-            "Proposal ID: 123"
-        );
+        string memory output = "Upgrade proposal created.\nProposal ID: 123";
 
         ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
 
