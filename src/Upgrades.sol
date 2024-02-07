@@ -5,48 +5,17 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 import {ITransparentUpgradeableProxy, TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
-import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/src/strings.sol";
 
+import {Options} from "./Options.sol";
 import {Versions} from "./internal/Versions.sol";
 import {Utils} from "./internal/Utils.sol";
-
-struct Options {
-    /**
-     * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1".
-     * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
-     */
-    string referenceContract;
-    /**
-     * Encoded constructor arguments for the implementation contract.
-     * Note that these are different from initializer arguments, and will be used in the deployment of the implementation contract itself.
-     * Can be used to initialize immutable variables.
-     */
-    bytes constructorData;
-    /**
-     * Selectively disable one or more validation errors. Comma-separated list that must be compatible with the
-     * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#usage
-     */
-    string unsafeAllow;
-    /**
-     * Configure storage layout check to allow variable renaming
-     */
-    bool unsafeAllowRenames;
-    /**
-     * Skips checking for storage layout compatibility errors. This is a dangerous option meant to be used as a last resort.
-     */
-    bool unsafeSkipStorageCheck;
-    /**
-     * Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
-     */
-    bool unsafeSkipAllChecks;
-}
+import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -66,7 +35,7 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new ERC1967Proxy(impl, initializerData));
+        return address(_deploy("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(impl, initializerData), opts));
     }
 
     /**
@@ -97,7 +66,14 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
+        return
+            address(
+                _deploy(
+                    "TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
+                    abi.encode(impl, initialOwner, initializerData),
+                    opts
+                )
+            );
     }
 
     /**
@@ -221,7 +197,7 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(new UpgradeableBeacon(impl, initialOwner));
+        return _deploy("UpgradeableBeacon.sol:UpgradeableBeacon", abi.encode(impl, initialOwner), opts);
     }
 
     /**
@@ -314,7 +290,20 @@ library Upgrades {
      * @return Proxy address
      */
     function deployBeaconProxy(address beacon, bytes memory data) internal returns (address) {
-        return address(new BeaconProxy(beacon, data));
+        Options memory opts;
+        return deployBeaconProxy(beacon, data, opts);
+    }
+
+    /**
+     * @dev Deploys a beacon proxy using the given beacon and call data.
+     *
+     * @param beacon Address of the beacon to use
+     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @param opts Common options
+     * @return Proxy address
+     */
+    function deployBeaconProxy(address beacon, bytes memory data, Options memory opts) internal returns (address) {
+        return _deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts);
     }
 
     /**
@@ -336,7 +325,7 @@ library Upgrades {
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
-        return _deploy(contractName, opts.constructorData);
+        return _deploy(contractName, opts.constructorData, opts);
     }
 
     /**
@@ -365,7 +354,7 @@ library Upgrades {
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
         validateUpgrade(contractName, opts);
-        return _deploy(contractName, opts.constructorData);
+        return _deploy(contractName, opts.constructorData, opts);
     }
 
     /**
@@ -495,21 +484,29 @@ library Upgrades {
         return inputs;
     }
 
-    function _deploy(string memory contractName, bytes memory constructorData) private returns (address) {
-        bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-        address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
-        if (deployedAddress == address(0)) {
-            revert(
-                string.concat(
-                    "Failed to deploy contract ",
-                    contractName,
-                    ' using constructor data "',
-                    string(constructorData),
-                    '"'
-                )
-            );
+    function _deploy(
+        string memory contractName,
+        bytes memory constructorData,
+        Options memory opts
+    ) private returns (address) {
+        if (opts.defender.useDefenderDeploy) {
+            return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
+        } else {
+            bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
+            address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
+            if (deployedAddress == address(0)) {
+                revert(
+                    string.concat(
+                        "Failed to deploy contract ",
+                        contractName,
+                        ' using constructor data "',
+                        string(constructorData),
+                        '"'
+                    )
+                );
+            }
+            return deployedAddress;
         }
-        return deployedAddress;
     }
 
     function _deployFromBytecode(bytes memory bytecode) private returns (address) {
@@ -518,5 +515,18 @@ library Upgrades {
             addr := create(0, add(bytecode, 32), mload(bytecode))
         }
         return addr;
+    }
+
+    /**
+     * @dev Precompile proxy contracts so that they can be deployed by name via the `_deploy` function.
+     *
+     * NOTE: This function is never called and has no effect, but must be kept to ensure that the proxy contracts are included in the compilation.
+     */
+    function _precompileProxyContracts() private pure {
+        bytes memory dummy;
+        dummy = type(ERC1967Proxy).creationCode;
+        dummy = type(TransparentUpgradeableProxy).creationCode;
+        dummy = type(UpgradeableBeacon).creationCode;
+        dummy = type(BeaconProxy).creationCode;
     }
 }

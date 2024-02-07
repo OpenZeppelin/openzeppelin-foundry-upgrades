@@ -6,7 +6,10 @@ import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
-contract UpgradesTest is Test {
+/**
+ * @dev Tests the Utils internal library.
+ */
+contract UtilsTest is Test {
     function testGetContractInfo_from_file() public {
         ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out");
 
@@ -14,7 +17,7 @@ contract UpgradesTest is Test {
         assertEq(info.contractPath, "test/contracts/Greeter.sol");
 
         assertEq(info.license, "MIT");
-        assertEq(info.bytecode, vm.toString(vm.getCode("Greeter.sol")));
+        assertEq(info.sourceCodeHash, "0xf9875b1fd90da13f5f990d5ba7e66481f4b7e13e4a8f57fa9145fe90a1cb9324"); // source code hash of Greeter.sol
     }
 
     function testGetContractInfo_from_fileAndName() public {
@@ -102,7 +105,11 @@ contract UpgradesTest is Test {
 
     function testGetBuildInfoFile() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("Greeter.sol", "out");
-        string memory buildInfoFile = Utils.getBuildInfoFile(contractInfo.bytecode, contractInfo.shortName, "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
 
         assertTrue(buildInfoFile.toSlice().startsWith("out/build-info".toSlice()));
         assertTrue(buildInfoFile.toSlice().endsWith(".json".toSlice()));

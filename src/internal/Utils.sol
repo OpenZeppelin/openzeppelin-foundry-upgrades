@@ -15,13 +15,13 @@ struct ContractInfo {
      */
     string shortName;
     /**
-     * Bytecode string from the compiled artifact
-     */
-    string bytecode;
-    /**
      * License identifier from the compiled artifact
      */
     string license;
+    /**
+     * keccak256 hash of the source code from metadata
+     */
+    string sourceCodeHash;
 }
 
 /**
@@ -78,7 +78,10 @@ library Utils {
 
         info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
         info.license = vm.parseJsonString(artifactJson, ".ast.license");
-        info.bytecode = vm.parseJsonString(artifactJson, ".bytecode.object");
+        info.sourceCodeHash = vm.parseJsonString(
+            artifactJson,
+            string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")
+        );
 
         return info;
     }
@@ -88,29 +91,32 @@ library Utils {
     /**
      * Gets the path to the build-info file that contains the given bytecode.
      *
-     * @param bytecode Contract bytecode in string format, starting with 0x
+     * @param sourceCodeHash keccak256 hash of the source code from metadata
      * @param contractName Contract name to display in error message if build-info file is not found
      * @param outDir Foundry output directory that contains a build-info directory
      * @return The path to the build-info file that contains the given bytecode
      */
     function getBuildInfoFile(
-        string memory bytecode,
+        string memory sourceCodeHash,
         string memory contractName,
         string memory outDir
     ) internal returns (string memory) {
-        string memory trimmedBytecode = bytecode.toSlice().beyond("0x".toSlice()).toString();
-
         string[] memory inputs = new string[](4);
         inputs[0] = "grep";
         inputs[1] = "-rl";
-        inputs[2] = string.concat('"', trimmedBytecode, '"');
+        inputs[2] = string.concat('"', sourceCodeHash, '"');
         inputs[3] = string.concat(outDir, "/build-info");
 
         Vm.FfiResult memory result = runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
 
         if (!stdout.toSlice().endsWith(".json".toSlice())) {
-            revert(string.concat("Could not find build-info file with bytecode for contract ", contractName));
+            revert(
+                string.concat(
+                    "Could not find build-info file with matching source code hash for contract ",
+                    contractName
+                )
+            );
         }
 
         return stdout;
