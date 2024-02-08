@@ -14,6 +14,9 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * The script waits for the deployment to complete before it continues.
+     *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @return Address of the deployed contract
      */
@@ -26,26 +29,35 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * The script waits for the deployment to complete before it continues.
+     *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param opts Defender deployment options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
+     * @param defenderOpts Defender deployment options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
      * @return Address of the deployed contract
      */
-    function deployContract(string memory contractName, DefenderOptions memory opts) internal returns (address) {
-        return deployContract(contractName, "", opts);
+    function deployContract(
+        string memory contractName,
+        DefenderOptions memory defenderOpts
+    ) internal returns (address) {
+        return deployContract(contractName, "", defenderOpts);
     }
 
     /**
      * @dev Deploys a contract with constructor arguments to the current network using OpenZeppelin Defender.
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
+     *
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * The script waits for the deployment to complete before it continues.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param constructorData Encoded constructor arguments
      * @return Address of the deployed contract
      */
     function deployContract(string memory contractName, bytes memory constructorData) internal returns (address) {
-        DefenderOptions memory opts;
-        return deployContract(contractName, constructorData, opts);
+        DefenderOptions memory defenderOpts;
+        return deployContract(contractName, constructorData, defenderOpts);
     }
 
     /**
@@ -53,17 +65,20 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * The script waits for the deployment to complete before it continues.
+     *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param constructorData Encoded constructor arguments
-     * @param opts Defender deployment options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
+     * @param defenderOpts Defender deployment options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
      * @return Address of the deployed contract
      */
     function deployContract(
         string memory contractName,
         bytes memory constructorData,
-        DefenderOptions memory opts
+        DefenderOptions memory defenderOpts
     ) internal returns (address) {
-        return DefenderDeploy.deploy(contractName, constructorData, opts);
+        return DefenderDeploy.deploy(contractName, constructorData, defenderOpts);
     }
 
     /**
@@ -80,9 +95,12 @@ library Defender {
      * WARNING: Ensure that the reference contract is the same as the current implementation contract that the proxy is pointing to.
      * This function does not validate that the reference contract is the current implementation.
      *
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment of the new implementation contract while the script is running.
+     * The script waits for the deployment to complete before it continues.
+     *
      * @param proxyAddress The proxy address
      * @param newImplementationContractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param opts Common options. Note that the `useDefenderDeploy` option is always treated as `true` when called from this function.
+     * @param opts Common options. Note that the `defender.useDefenderDeploy` option is always treated as `true` when called from this function.
      * @return Struct containing the proposal ID and URL for the upgrade proposal
      */
     function proposeUpgrade(

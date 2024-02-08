@@ -23,7 +23,7 @@ library DefenderDeploy {
     function deploy(
         string memory contractName,
         bytes memory constructorData,
-        DefenderOptions memory opts
+        DefenderOptions memory defenderOpts
     ) internal returns (address) {
         string memory outDir = Utils.getOutDir();
         ContractInfo memory contractInfo = Utils.getContractInfo(contractName, outDir);
@@ -33,7 +33,7 @@ library DefenderDeploy {
             outDir
         );
 
-        string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts);
+        string[] memory inputs = buildDeployCommand(contractInfo, buildInfoFile, constructorData, defenderOpts);
 
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
@@ -55,7 +55,7 @@ library DefenderDeploy {
         ContractInfo memory contractInfo,
         string memory buildInfoFile,
         bytes memory constructorData,
-        DefenderOptions memory opts
+        DefenderOptions memory defenderOpts
     ) internal view returns (string[] memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
@@ -83,17 +83,17 @@ library DefenderDeploy {
             inputBuilder[i++] = "--constructorBytecode";
             inputBuilder[i++] = vm.toString(constructorData);
         }
-        if (opts.skipVerifySourceCode) {
+        if (defenderOpts.skipVerifySourceCode) {
             inputBuilder[i++] = "--verifySourceCode";
             inputBuilder[i++] = "false";
         }
-        if (!(opts.relayerId).toSlice().empty()) {
+        if (!(defenderOpts.relayerId).toSlice().empty()) {
             inputBuilder[i++] = "--relayerId";
-            inputBuilder[i++] = opts.relayerId;
+            inputBuilder[i++] = defenderOpts.relayerId;
         }
-        if (opts.salt != 0) {
+        if (defenderOpts.salt != 0) {
             inputBuilder[i++] = "--salt";
-            inputBuilder[i++] = vm.toString(opts.salt);
+            inputBuilder[i++] = vm.toString(defenderOpts.salt);
         }
 
         // Create a copy of inputs but with the correct length

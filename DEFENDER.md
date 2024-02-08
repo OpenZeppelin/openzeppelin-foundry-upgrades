@@ -76,6 +76,9 @@ forge script <path to the script you created above> --ffi --rpc-url <RPC URL for
 
 The above example calls the `Upgrades.deployUUPSProxy` function with the `defender.useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
 
+> **Note:**
+> If using an EOA or Safe to deploy, you must submit the pending deployments in Defender while the script is running. The script waits for each deployment to complete before it continues.
+
 ### Non-Upgradeable Contracts
 
 If you are deploying non-upgradeable contracts, import the `Defender` library from [Defender.sol](src/Defender.sol) and use its functions to deploy contracts through OpenZeppelin Defender.
@@ -107,3 +110,6 @@ forge script <path to the script you created above> --ffi --rpc-url <RPC URL for
 ```
 
 The above example calls the `Defender.deployContract` function to deploy the specified contract to the connected network using Defender. The function waits for the deployment to complete, which may take a few minutes, then returns with the deployed contract address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
+
+> **Note:**
+> If using an EOA or Safe to deploy, you must submit the pending deployment in Defender while the script is running. The script waits for the deployment to complete before it continues.
