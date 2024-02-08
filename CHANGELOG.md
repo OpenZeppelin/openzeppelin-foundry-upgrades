@@ -4,7 +4,7 @@
 
 - Support constructor arguments for Defender deployments. ([#16](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/16))
 - Support Defender deployments for upgradeable contracts. ([#18](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/18))
-- Add `Defender.proposeUpgrade` function. ([#]())
+- Add `Defender.proposeUpgrade` function. ([#21](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/21))
 
 ### Breaking changes
 - `Defender.deployContract` functions now return `address` instead of `string`.
