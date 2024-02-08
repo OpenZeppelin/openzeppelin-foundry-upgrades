@@ -67,18 +67,18 @@ library Defender {
     }
 
     /**
-     * @dev Similar to `Upgrades.prepareUpgrade` but uses OpenZeppelin Defender for deployment and proposal.
+     * @dev Proposes an upgrade to an upgradeable proxy using OpenZeppelin Defender.
      *
-     * This function validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract using OpenZeppelin Defender,
-     * and proposes an upgrade to the new implementation contract using an upgrade approval process on OpenZeppelin Defender.
+     * This function validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract using Defender,
+     * and proposes an upgrade to the new implementation contract using an upgrade approval process on Defender.
      *
      * Supported for UUPS or Transparent proxies. Not currently supported for beacon proxies or beacons.
      * For beacons, use `Upgrades.prepareUpgrade` along with a transaction proposal on Defender to upgrade the beacon to the deployed implementation.
      *
      * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
      *
-     * WARNING: Ensure that the reference contract is the same contract that the proxy is currently pointing to.
-     * This function does not validate that the reference contract is the same as the current implementation.
+     * WARNING: Ensure that the reference contract is the same as the current implementation contract that the proxy is pointing to.
+     * This function does not validate that the reference contract is the current implementation.
      *
      * @param proxyAddress The proxy address
      * @param newImplementationContractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
