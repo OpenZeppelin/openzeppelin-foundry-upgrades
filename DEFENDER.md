@@ -38,8 +38,7 @@ DEFENDER_SECRET<Your API secret>
 
 If you are deploying upgradeable contracts, use the `Upgrades` library as described in [README.md#usage](README.md#usage) but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
 
-**Example:**
-
+**Example 1 - Deploying a proxy**:
 To deploy a UUPS proxy, create a script called `Defender.s.sol` like the following:
 ```
 pragma solidity ^0.8.20;
@@ -78,6 +77,35 @@ The above example calls the `Upgrades.deployUUPSProxy` function with the `defend
 
 > **Note:**
 > If using an EOA or Safe to deploy, you must submit the pending deployments in Defender while the script is running. The script waits for each deployment to complete before it continues.
+
+**Example 2 - Upgrading a proxy**:
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
+
+import {MyContractV2} from "../src/MyContractV2.sol";
+
+import {ProposeUpgradeResponse, Defender, Options} from "openzeppelin-foundry-upgrades/Defender.sol";
+
+contract DefenderScript is Script {
+    function setUp() public {}
+
+    function run() public {
+        Options memory opts;
+        ProposeUpgradeResponse memory response = Defender.proposeUpgrade(
+            <MY_PROXY_ADDRESS>,
+            "MyContractV2.sol",
+            opts
+        );
+        console.log("Proposal id", response.proposalId);
+        console.log("Url", response.url);
+    }
+}
+```
+Then run the script as in Example 1.
 
 ### Non-Upgradeable Contracts
 
