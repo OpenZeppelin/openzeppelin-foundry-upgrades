@@ -43,7 +43,7 @@ contract DefenderDeployTest is Test {
             string.concat(
                 "npx @openzeppelin/defender-deploy-client-cli@",
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                " deploy --contractName MyContractName --contractPath test/contracts/MyContractFile.sol --chainId 31337 --artifactFile ",
+                " deploy --contractName MyContractName --contractPath test/contracts/MyContractFile.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
                 " --licenseType MIT"
             )
@@ -70,7 +70,7 @@ contract DefenderDeployTest is Test {
             string.concat(
                 "npx @openzeppelin/defender-deploy-client-cli@",
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --artifactFile ",
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
                 " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
             )
@@ -102,7 +102,7 @@ contract DefenderDeployTest is Test {
             string.concat(
                 "npx @openzeppelin/defender-deploy-client-cli@",
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --artifactFile ",
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
                 " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123"
             )
@@ -128,7 +128,7 @@ contract DefenderDeployTest is Test {
             string.concat(
                 "npx @openzeppelin/defender-deploy-client-cli@",
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                " proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --abiFile ",
+                " proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --contractArtifactFile ",
                 contractInfo.artifactPath
             )
         );

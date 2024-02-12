@@ -75,7 +75,7 @@ library DefenderDeploy {
         inputBuilder[i++] = contractInfo.contractPath;
         inputBuilder[i++] = "--chainId";
         inputBuilder[i++] = Strings.toString(block.chainid);
-        inputBuilder[i++] = "--artifactFile";
+        inputBuilder[i++] = "--buildInfoFile";
         inputBuilder[i++] = buildInfoFile;
         inputBuilder[i++] = "--licenseType";
         inputBuilder[i++] = contractInfo.license;
@@ -191,7 +191,7 @@ library DefenderDeploy {
         inputBuilder[i++] = vm.toString(newImplementationAddress);
         inputBuilder[i++] = "--chainId";
         inputBuilder[i++] = Strings.toString(block.chainid);
-        inputBuilder[i++] = "--abiFile";
+        inputBuilder[i++] = "--contractArtifactFile";
         inputBuilder[i++] = contractInfo.artifactPath;
         if (proxyAdminAddress != address(0)) {
             inputBuilder[i++] = "--proxyAdminAddress";
