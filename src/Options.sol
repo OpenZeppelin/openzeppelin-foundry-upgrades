@@ -40,7 +40,7 @@ struct DefenderOptions {
     /**
      * Deploys contracts using OpenZeppelin Defender instead of broadcasting deployments through Forge. Defaults to `false`. See DEFENDER.md.
      *
-     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment(s) while the script is running.
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment(s) while the script is running.
      * The script waits for each deployment to complete before it continues.
      */
     bool useDefenderDeploy;

@@ -14,7 +14,7 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
-     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment while the script is running.
      * The script waits for the deployment to complete before it continues.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
@@ -29,7 +29,7 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
-     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment while the script is running.
      * The script waits for the deployment to complete before it continues.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
@@ -48,7 +48,7 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
-     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment while the script is running.
      * The script waits for the deployment to complete before it continues.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
@@ -65,7 +65,7 @@ library Defender {
      *
      * WARNING: Do not use this function directly if you are deploying an upgradeable contract. This function does not validate whether the contract is upgrade safe.
      *
-     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment while the script is running.
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment while the script is running.
      * The script waits for the deployment to complete before it continues.
      *
      * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
@@ -95,7 +95,7 @@ library Defender {
      * WARNING: Ensure that the reference contract is the same as the current implementation contract that the proxy is pointing to.
      * This function does not validate that the reference contract is the current implementation.
      *
-     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy to submit the pending deployment of the new implementation contract while the script is running.
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment of the new implementation contract while the script is running.
      * The script waits for the deployment to complete before it continues.
      *
      * @param proxyAddress The proxy address
