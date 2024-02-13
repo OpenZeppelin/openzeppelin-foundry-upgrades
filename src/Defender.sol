@@ -121,10 +121,21 @@ library Defender {
             );
     }
 
+    /**
+     * @dev Gets the default deploy approval process configured for your deployment environment on OpenZeppelin Defender.
+     *
+     * @return Struct with the default deploy approval process ID and the associated address, such as a Relayer, EOA, or multisig wallet address.
+     */
     function getDeployApprovalProcess() internal returns (ApprovalProcessResponse memory) {
         return DefenderDeploy.getApprovalProcess("getDeployApprovalProcess");
     }
 
+    /**
+     * @dev Gets the default upgrade approval process configured for your deployment environment on OpenZeppelin Defender.
+     * For example, this is useful for determining the default multisig wallet that you can use in your scripts to assign as the owner of your proxy.
+     *
+     * @return Struct with the default upgrade approval process ID and the associated address, such as a multisig or governor contract address.
+     */
     function getUpgradeApprovalProcess() internal returns (ApprovalProcessResponse memory) {
         return DefenderDeploy.getApprovalProcess("getUpgradeApprovalProcess");
     }
