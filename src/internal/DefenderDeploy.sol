@@ -10,7 +10,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {Utils, ContractInfo} from "./Utils.sol";
 import {Versions} from "./Versions.sol";
 import {Options, DefenderOptions} from "../Options.sol";
-import {ProposeUpgradeResponse} from "../Defender.sol";
+import {ProposeUpgradeResponse, ApprovalProcessResponse} from "../Defender.sol";
 
 /**
  * @dev Internal helper methods for Defender deployments.
@@ -42,13 +42,8 @@ library DefenderDeploy {
             revert(string.concat("Failed to deploy contract ", contractName, ": ", string(result.stderr)));
         }
 
-        strings.slice memory delim = "Deployed to address: ".toSlice();
-        if (stdout.toSlice().contains(delim)) {
-            string memory deployedAddress = stdout.toSlice().copy().find(delim).beyond(delim).toString();
-            return Vm(Utils.CHEATCODE_ADDRESS).parseAddress(deployedAddress);
-        } else {
-            revert(string.concat("Failed to parse deployment address from output: ", stdout));
-        }
+        string memory deployedAddress = _parseLine("Deployed to address: ", stdout, true);
+        return Vm(Utils.CHEATCODE_ADDRESS).parseAddress(deployedAddress);
     }
 
     function buildDeployCommand(
@@ -144,26 +139,29 @@ library DefenderDeploy {
 
     function parseProposeUpgradeResponse(string memory stdout) internal pure returns (ProposeUpgradeResponse memory) {
         ProposeUpgradeResponse memory response;
-
-        strings.slice memory idDelim = "Proposal ID: ".toSlice();
-        strings.slice memory urlDelim = "Proposal URL: ".toSlice();
-
-        if (stdout.toSlice().contains(idDelim)) {
-            strings.slice memory idSlice = stdout.toSlice().copy().find(idDelim).beyond(idDelim);
-            // Remove any following lines, such as the Proposal URL line
-            if (idSlice.contains("\n".toSlice())) {
-                idSlice = idSlice.split("\n".toSlice());
-            }
-            response.proposalId = idSlice.toString();
-        } else {
-            revert(string.concat("Failed to parse proposal ID from output: ", stdout));
-        }
-
-        if (stdout.toSlice().contains(urlDelim)) {
-            response.url = stdout.toSlice().copy().find(urlDelim).beyond(urlDelim).toString();
-        }
-
+        response.proposalId = _parseLine("Proposal ID: ", stdout, true);
+        response.url = _parseLine("Proposal URL: ", stdout, false);
         return response;
+    }
+
+    function _parseLine(
+        string memory expectedPrefix,
+        string memory stdout,
+        bool required
+    ) private pure returns (string memory) {
+        strings.slice memory delim = expectedPrefix.toSlice();
+        if (stdout.toSlice().contains(delim)) {
+            strings.slice memory slice = stdout.toSlice().copy().find(delim).beyond(delim);
+            // Remove any following lines
+            if (slice.contains("\n".toSlice())) {
+                slice = slice.split("\n".toSlice());
+            }
+            return slice.toString();
+        } else if (required) {
+            revert(string.concat("Failed to find line with prefix '", expectedPrefix, "' in output: ", stdout));
+        } else {
+            return "";
+        }
     }
 
     function buildProposeUpgradeCommand(
@@ -201,6 +199,59 @@ library DefenderDeploy {
             inputBuilder[i++] = "--approvalProcessId";
             inputBuilder[i++] = opts.defender.upgradeApprovalProcessId;
         }
+
+        // Create a copy of inputs but with the correct length
+        string[] memory inputs = new string[](i);
+        for (uint8 j = 0; j < i; j++) {
+            inputs[j] = inputBuilder[j];
+        }
+
+        return inputs;
+    }
+
+    function getApprovalProcess(string memory command) internal returns (ApprovalProcessResponse memory) {
+        string[] memory inputs = buildGetApprovalProcessCommand(command);
+
+        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
+        string memory stdout = string(result.stdout);
+
+        if (result.exitCode != 0) {
+            revert(string.concat("Failed to get approval process: ", string(result.stderr)));
+        }
+
+        return parseApprovalProcessResponse(stdout);
+    }
+
+    function parseApprovalProcessResponse(string memory stdout) internal pure returns (ApprovalProcessResponse memory) {
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+
+        ApprovalProcessResponse memory response;
+
+        response.approvalProcessId = _parseLine("Approval process ID: ", stdout, true);
+
+        string memory viaString = _parseLine("Via: ", stdout, false);
+        if (viaString.toSlice().len() != 0) {
+            response.via = vm.parseAddress(viaString);
+        }
+
+        response.viaType = _parseLine("Via type: ", stdout, false);
+
+        return response;
+    }
+
+    function buildGetApprovalProcessCommand(string memory command) internal view returns (string[] memory) {
+        string[] memory inputBuilder = new string[](255);
+
+        uint8 i = 0;
+
+        inputBuilder[i++] = "npx";
+        inputBuilder[i++] = string.concat(
+            "@openzeppelin/defender-deploy-client-cli@",
+            Versions.DEFENDER_DEPLOY_CLIENT_CLI
+        );
+        inputBuilder[i++] = command;
+        inputBuilder[i++] = "--chainId";
+        inputBuilder[i++] = Strings.toString(block.chainid);
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);

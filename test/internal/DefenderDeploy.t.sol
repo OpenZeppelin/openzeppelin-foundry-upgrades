@@ -7,7 +7,7 @@ import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.
 import {DefenderDeploy} from "openzeppelin-foundry-upgrades/internal/DefenderDeploy.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
 import {Options, DefenderOptions} from "openzeppelin-foundry-upgrades/Options.sol";
-import {ProposeUpgradeResponse} from "openzeppelin-foundry-upgrades/Defender.sol";
+import {ProposeUpgradeResponse, ApprovalProcessResponse} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 
 /**
@@ -150,5 +150,41 @@ contract DefenderDeployTest is Test {
 
         assertEq(response.proposalId, "123");
         assertEq(response.url, "");
+    }
+
+    function testBuildGetApprovalProcessCommand() public {
+        string memory commandString = _toString(
+            DefenderDeploy.buildGetApprovalProcessCommand("getDeployApprovalProcess")
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " getDeployApprovalProcess --chainId 31337"
+            )
+        );
+    }
+
+    function testParseApprovalProcessResponse() public {
+        string
+            memory output = "Approval process ID: abc\nVia: 0x1230000000000000000000000000000000000456\nVia type: Relayer";
+
+        ApprovalProcessResponse memory response = DefenderDeploy.parseApprovalProcessResponse(output);
+
+        assertEq(response.approvalProcessId, "abc");
+        assertEq(response.via, 0x1230000000000000000000000000000000000456);
+        assertEq(response.viaType, "Relayer");
+    }
+
+    function testParseApprovalProcessResponseIdOnly() public {
+        string memory output = "Approval process ID: abc";
+
+        ApprovalProcessResponse memory response = DefenderDeploy.parseApprovalProcessResponse(output);
+
+        assertEq(response.approvalProcessId, "abc");
+        assertTrue(response.via == address(0));
+        assertEq(response.viaType, "");
     }
 }

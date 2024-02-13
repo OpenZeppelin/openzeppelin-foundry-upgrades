@@ -120,9 +120,23 @@ library Defender {
                 opts
             );
     }
+
+    function getDeployApprovalProcess() internal returns (ApprovalProcessResponse memory) {
+        return DefenderDeploy.getApprovalProcess("getDeployApprovalProcess");
+    }
+
+    function getUpgradeApprovalProcess() internal returns (ApprovalProcessResponse memory) {
+        return DefenderDeploy.getApprovalProcess("getUpgradeApprovalProcess");
+    }
 }
 
 struct ProposeUpgradeResponse {
     string proposalId;
     string url;
+}
+
+struct ApprovalProcessResponse {
+    string approvalProcessId;
+    address via;
+    string viaType;
 }
