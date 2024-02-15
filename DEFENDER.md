@@ -80,7 +80,7 @@ Then run the following command:
 forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
 ```
 
-The above example assumes the implementation contract takes an initial owner address as the second argument of its `initialize` function. It retrieves the address associated with the upgrade approval process configured in Defender (such as a multisig address), and uses that address as the initial owner.
+The above example assumes the implementation contract takes an initial owner address as an argument for its `initialize` function. The script retrieves the address associated with the upgrade approval process configured in Defender (such as a multisig address), and uses that address as the initial owner so that it can have upgrade rights for the proxy.
 
 This example calls the `Upgrades.deployUUPSProxy` function with the `defender.useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
 
