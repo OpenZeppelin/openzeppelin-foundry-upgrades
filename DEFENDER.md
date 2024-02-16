@@ -14,15 +14,18 @@ OpenZeppelin Foundry Upgrades can be used for performing deployments through [Op
 See [README.md#installing](README.md#installing)
 
 ## Prerequisites
-1. Install [Node.js](https://nodejs.org/).
+1. Install [Node.js](https://nodejs.org/).  
+
 2. Configure your `foundry.toml` to include build info and storage layout:
 ```
 [profile.default]
 build_info = true
 extra_output = ["storageLayout"]
 ```
-**Note**: Metadata must also be included in the compiler output, which it is by default.
-3. Include `--ffi` in your `forge script` or `forge test` command.
+**Note**: Metadata must also be included in the compiler output, which it is by default.  
+
+3. Include `--ffi` in your `forge script` or `forge test` command.  
+
 4. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
 ```
 DEFENDER_KEY=<Your API key>
@@ -35,8 +38,7 @@ DEFENDER_SECRET<Your API secret>
 
 If you are deploying upgradeable contracts, use the `Upgrades` library as described in [README.md#usage](README.md#usage) but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
 
-**Example:**
-
+**Example 1 - Deploying a proxy**:
 To deploy a UUPS proxy, create a script called `Defender.s.sol` like the following:
 ```
 pragma solidity ^0.8.20;
@@ -73,6 +75,38 @@ forge script <path to the script you created above> --ffi --rpc-url <RPC URL for
 
 The above example calls the `Upgrades.deployUUPSProxy` function with the `defender.useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
 
+> **Note:**
+> If using an EOA or Safe to deploy, you must submit the pending deployments in Defender while the script is running. The script waits for each deployment to complete before it continues.
+
+**Example 2 - Upgrading a proxy**:
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
+
+import {MyContractV2} from "../src/MyContractV2.sol";
+
+import {ProposeUpgradeResponse, Defender, Options} from "openzeppelin-foundry-upgrades/Defender.sol";
+
+contract DefenderScript is Script {
+    function setUp() public {}
+
+    function run() public {
+        Options memory opts;
+        ProposeUpgradeResponse memory response = Defender.proposeUpgrade(
+            <MY_PROXY_ADDRESS>,
+            "MyContractV2.sol",
+            opts
+        );
+        console.log("Proposal id", response.proposalId);
+        console.log("Url", response.url);
+    }
+}
+```
+Then run the script as in Example 1.
+
 ### Non-Upgradeable Contracts
 
 If you are deploying non-upgradeable contracts, import the `Defender` library from [Defender.sol](src/Defender.sol) and use its functions to deploy contracts through OpenZeppelin Defender.
@@ -104,3 +138,6 @@ forge script <path to the script you created above> --ffi --rpc-url <RPC URL for
 ```
 
 The above example calls the `Defender.deployContract` function to deploy the specified contract to the connected network using Defender. The function waits for the deployment to complete, which may take a few minutes, then returns with the deployed contract address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
+
+> **Note:**
+> If using an EOA or Safe to deploy, you must submit the pending deployment in Defender while the script is running. The script waits for the deployment to complete before it continues.

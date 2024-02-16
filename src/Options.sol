@@ -39,6 +39,9 @@ struct Options {
 struct DefenderOptions {
     /**
      * Deploys contracts using OpenZeppelin Defender instead of broadcasting deployments through Forge. Defaults to `false`. See DEFENDER.md.
+     *
+     * NOTE: If using an EOA or Safe to deploy, go to https://defender.openzeppelin.com/v2/#/deploy[Defender deploy] to submit the pending deployment(s) while the script is running.
+     * The script waits for each deployment to complete before it continues.
      */
     bool useDefenderDeploy;
     /**
@@ -58,4 +61,9 @@ struct DefenderOptions {
      * WARNING: CREATE2 affects `msg.sender` behavior. See https://docs.openzeppelin.com/defender/v2/tutorial/deploy#deploy-caveat for more information.
      */
     bytes32 salt;
+    /**
+     * The ID of the upgrade approval process to use when proposing an upgrade.
+     * Defaults to the upgrade approval process configured for your deployment environment on Defender.
+     */
+    string upgradeApprovalProcessId;
 }

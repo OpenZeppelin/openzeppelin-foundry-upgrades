@@ -22,6 +22,10 @@ struct ContractInfo {
      * keccak256 hash of the source code from metadata
      */
     string sourceCodeHash;
+    /**
+     * Artifact file path e.g. the path of the file 'out/MyContract.sol/MyContract.json'
+     */
+    string artifactPath;
 }
 
 /**
@@ -82,6 +86,7 @@ library Utils {
             artifactJson,
             string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")
         );
+        info.artifactPath = artifactPath;
 
         return info;
     }
