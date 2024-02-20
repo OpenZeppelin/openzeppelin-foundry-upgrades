@@ -46,6 +46,7 @@ pragma solidity ^0.8.20;
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 
+import {Defender, ApprovalProcessResponse} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {MyContract} from "../src/MyContract.sol";
@@ -54,12 +55,18 @@ contract DefenderScript is Script {
     function setUp() public {}
 
     function run() public {
+        ApprovalProcessResponse memory upgradeApprovalProcess = Defender.getUpgradeApprovalProcess();
+
+        if (upgradeApprovalProcess.via == address(0)) {
+            revert(string.concat("Upgrade approval process with id ", upgradeApprovalProcess.approvalProcessId, " has no assigned address"));
+        }
+
         Options memory opts;
         opts.defender.useDefenderDeploy = true;
 
         address proxy = Upgrades.deployUUPSProxy(
             "MyContract.sol",
-            abi.encodeCall(MyContract.initialize, ("arguments for the initialize function")),
+            abi.encodeCall(MyContract.initialize, ("Hello World", upgradeApprovalProcess.via)),
             opts
         );
 
@@ -73,12 +80,15 @@ Then run the following command:
 forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
 ```
 
-The above example calls the `Upgrades.deployUUPSProxy` function with the `defender.useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
+The above example assumes the implementation contract takes an initial owner address as an argument for its `initialize` function. The script retrieves the address associated with the upgrade approval process configured in Defender (such as a multisig address), and uses that address as the initial owner so that it can have upgrade rights for the proxy.
+
+This example calls the `Upgrades.deployUUPSProxy` function with the `defender.useDefenderDeploy` option to deploy both the implementation contract and a UUPS proxy to the connected network using Defender. The function waits for the deployments to complete, which may take a few minutes per contract, then returns with the deployed proxy address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
 
 > **Note:**
 > If using an EOA or Safe to deploy, you must submit the pending deployments in Defender while the script is running. The script waits for each deployment to complete before it continues.
 
-**Example 2 - Upgrading a proxy**:
+**Example 2 - Proposing an upgrade to a proxy**:
+To propose an upgrade through Defender, create a script like the following:
 ```
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
@@ -105,7 +115,7 @@ contract DefenderScript is Script {
     }
 }
 ```
-Then run the script as in Example 1.
+Then run the script as in Example 1, and go the resulting URL to review and approve the upgrade proposal.
 
 ### Non-Upgradeable Contracts
 
