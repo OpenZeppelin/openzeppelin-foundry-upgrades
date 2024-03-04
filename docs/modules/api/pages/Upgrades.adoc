@@ -1,0 +1,503 @@
+# Solidity API
+
+## Upgrades
+
+_Library for deploying and managing upgradeable contracts from Forge scripts or tests._
+
+### deployUUPSProxy
+
+```solidity
+function deployUUPSProxy(string contractName, bytes initializerData, struct Options opts) internal returns (address)
+```
+
+_Deploys a UUPS proxy using the given contract as the implementation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| initializerData | bytes | Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required |
+| opts | struct Options | Common options |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Proxy address |
+
+### deployUUPSProxy
+
+```solidity
+function deployUUPSProxy(string contractName, bytes initializerData) internal returns (address)
+```
+
+_Deploys a UUPS proxy using the given contract as the implementation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| initializerData | bytes | Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Proxy address |
+
+### deployTransparentProxy
+
+```solidity
+function deployTransparentProxy(string contractName, address initialOwner, bytes initializerData, struct Options opts) internal returns (address)
+```
+
+_Deploys a transparent proxy using the given contract as the implementation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| initialOwner | address | Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy |
+| initializerData | bytes | Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required |
+| opts | struct Options | Common options |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Proxy address |
+
+### deployTransparentProxy
+
+```solidity
+function deployTransparentProxy(string contractName, address initialOwner, bytes initializerData) internal returns (address)
+```
+
+_Deploys a transparent proxy using the given contract as the implementation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| initialOwner | address | Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy |
+| initializerData | bytes | Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Proxy address |
+
+### upgradeProxy
+
+```solidity
+function upgradeProxy(address proxy, string contractName, bytes data, struct Options opts) internal
+```
+
+_Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of the proxy to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| data | bytes | Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade |
+| opts | struct Options | Common options |
+
+### upgradeProxy
+
+```solidity
+function upgradeProxy(address proxy, string contractName, bytes data) internal
+```
+
+_Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of the proxy to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| data | bytes | Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade |
+
+### upgradeProxy
+
+```solidity
+function upgradeProxy(address proxy, string contractName, bytes data, struct Options opts, address tryCaller) internal
+```
+
+For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+_Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+
+This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of the proxy to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| data | bytes | Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade |
+| opts | struct Options | Common options |
+| tryCaller | address | Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin. |
+
+### upgradeProxy
+
+```solidity
+function upgradeProxy(address proxy, string contractName, bytes data, address tryCaller) internal
+```
+
+For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+_Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+
+This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of the proxy to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| data | bytes | Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade |
+| tryCaller | address | Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin. |
+
+### deployBeacon
+
+```solidity
+function deployBeacon(string contractName, address initialOwner, struct Options opts) internal returns (address)
+```
+
+_Deploys an upgradeable beacon using the given contract as the implementation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| initialOwner | address | Address to set as the owner of the UpgradeableBeacon contract which gets deployed |
+| opts | struct Options | Common options |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Beacon address |
+
+### deployBeacon
+
+```solidity
+function deployBeacon(string contractName, address initialOwner) internal returns (address)
+```
+
+_Deploys an upgradeable beacon using the given contract as the implementation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| initialOwner | address | Address to set as the owner of the UpgradeableBeacon contract which gets deployed |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Beacon address |
+
+### upgradeBeacon
+
+```solidity
+function upgradeBeacon(address beacon, string contractName, struct Options opts) internal
+```
+
+_Upgrades a beacon to a new implementation contract.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| beacon | address | Address of the beacon to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| opts | struct Options | Common options |
+
+### upgradeBeacon
+
+```solidity
+function upgradeBeacon(address beacon, string contractName) internal
+```
+
+_Upgrades a beacon to a new implementation contract.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| beacon | address | Address of the beacon to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+
+### upgradeBeacon
+
+```solidity
+function upgradeBeacon(address beacon, string contractName, struct Options opts, address tryCaller) internal
+```
+
+For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+_Upgrades a beacon to a new implementation contract.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+
+This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| beacon | address | Address of the beacon to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| opts | struct Options | Common options |
+| tryCaller | address | Address to use as the caller of the upgrade function. This should be the address that owns the beacon. |
+
+### upgradeBeacon
+
+```solidity
+function upgradeBeacon(address beacon, string contractName, address tryCaller) internal
+```
+
+For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+_Upgrades a beacon to a new implementation contract.
+
+Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
+
+This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| beacon | address | Address of the beacon to upgrade |
+| contractName | string | Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| tryCaller | address | Address to use as the caller of the upgrade function. This should be the address that owns the beacon. |
+
+### deployBeaconProxy
+
+```solidity
+function deployBeaconProxy(address beacon, bytes data) internal returns (address)
+```
+
+_Deploys a beacon proxy using the given beacon and call data._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| beacon | address | Address of the beacon to use |
+| data | bytes | Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Proxy address |
+
+### deployBeaconProxy
+
+```solidity
+function deployBeaconProxy(address beacon, bytes data, struct Options opts) internal returns (address)
+```
+
+_Deploys a beacon proxy using the given beacon and call data._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| beacon | address | Address of the beacon to use |
+| data | bytes | Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required |
+| opts | struct Options | Common options |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Proxy address |
+
+### validateImplementation
+
+```solidity
+function validateImplementation(string contractName, struct Options opts) internal
+```
+
+_Validates an implementation contract, but does not deploy it._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| opts | struct Options | Common options |
+
+### deployImplementation
+
+```solidity
+function deployImplementation(string contractName, struct Options opts) internal returns (address)
+```
+
+_Validates and deploys an implementation contract, and returns its address._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| opts | struct Options | Common options |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of the implementation contract |
+
+### validateUpgrade
+
+```solidity
+function validateUpgrade(string contractName, struct Options opts) internal
+```
+
+_Validates a new implementation contract in comparison with a reference contract, but does not deploy it.
+
+Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| opts | struct Options | Common options |
+
+### prepareUpgrade
+
+```solidity
+function prepareUpgrade(string contractName, struct Options opts) internal returns (address)
+```
+
+_Validates a new implementation contract in comparison with a reference contract, deploys the new implementation contract,
+and returns its address.
+
+Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.
+
+Use this method to prepare an upgrade to be run from an admin address you do not control directly or cannot use from your deployment environment._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contractName | string | Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory |
+| opts | struct Options | Common options |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of the new implementation contract |
+
+### getAdminAddress
+
+```solidity
+function getAdminAddress(address proxy) internal view returns (address)
+```
+
+_Gets the admin address of a transparent proxy from its ERC1967 admin storage slot._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of a transparent proxy |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Admin address |
+
+### getImplementationAddress
+
+```solidity
+function getImplementationAddress(address proxy) internal view returns (address)
+```
+
+_Gets the implementation address of a transparent or UUPS proxy from its ERC1967 implementation storage slot._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of a transparent or UUPS proxy |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Implementation address |
+
+### getBeaconAddress
+
+```solidity
+function getBeaconAddress(address proxy) internal view returns (address)
+```
+
+_Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| proxy | address | Address of a beacon proxy |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Beacon address |
+
+### tryPrank
+
+```solidity
+modifier tryPrank(address deployer)
+```
+
+For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+_Runs a function as a prank, or just runs the function normally if the prank could not be started._
+
+### CHEATCODE_ADDRESS
+
+```solidity
+address CHEATCODE_ADDRESS
+```
+

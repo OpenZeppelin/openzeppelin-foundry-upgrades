@@ -1,0 +1,28 @@
+# Solidity API
+
+## Options
+
+```solidity
+struct Options {
+  string referenceContract;
+  bytes constructorData;
+  string unsafeAllow;
+  bool unsafeAllowRenames;
+  bool unsafeSkipStorageCheck;
+  bool unsafeSkipAllChecks;
+  struct DefenderOptions defender;
+}
+```
+
+## DefenderOptions
+
+```solidity
+struct DefenderOptions {
+  bool useDefenderDeploy;
+  bool skipVerifySourceCode;
+  string relayerId;
+  bytes32 salt;
+  string upgradeApprovalProcessId;
+}
+```
+
