@@ -13,16 +13,6 @@ import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.ab
 
 {{{natspec.dev}}}
 
-{{#if modifiers}}
-[.contract-index]
-.Modifiers
---
-{{#each modifiers}}
-* {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
-{{/each}}
---
-{{/if}}
-
 {{#if has-functions}}
 [.contract-index]
 .Functions
@@ -36,6 +26,16 @@ import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.ab
 * {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
 {{/each}}
 
+{{/each}}
+--
+{{/if}}
+
+{{#if modifiers}}
+[.contract-index]
+.Modifiers
+--
+{{#each modifiers}}
+* {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
 {{/each}}
 --
 {{/if}}
@@ -91,15 +91,6 @@ import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.ab
 --
 {{/if}}
 
-{{#each modifiers}}
-[.contract-item]
-[[{{anchor}}]]
-==== `[.contract-item-name]#++{{name}}++#++({{typed-params params}})++` [.item-kind]#modifier#
-
-{{{natspec.dev}}}
-
-{{/each}}
-
 {{#each functions}}
 [.contract-item]
 [[{{anchor}}]]
@@ -122,6 +113,15 @@ import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.ab
 * (`{{type}}`) - {{{joinLines natspec}}}
 {{/each}}
 {{/if}}
+
+{{/each}}
+
+{{#each modifiers}}
+[.contract-item]
+[[{{anchor}}]]
+==== `[.contract-item-name]#++{{name}}++#++({{typed-params params}})++` [.item-kind]#modifier#
+
+{{{natspec.dev}}}
 
 {{/each}}
 

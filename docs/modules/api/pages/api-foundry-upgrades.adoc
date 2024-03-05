@@ -1,5 +1,4 @@
 :github-icon: pass:[<svg class="icon"><use href="#github-icon"/></svg>]
-:xref-Upgrades-tryPrank-address-: xref:#Upgrades-tryPrank-address-
 :xref-Upgrades-deployUUPSProxy-string-bytes-struct-Options-: xref:#Upgrades-deployUUPSProxy-string-bytes-struct-Options-
 :xref-Upgrades-deployUUPSProxy-string-bytes-: xref:#Upgrades-deployUUPSProxy-string-bytes-
 :xref-Upgrades-deployTransparentProxy-string-address-bytes-struct-Options-: xref:#Upgrades-deployTransparentProxy-string-address-bytes-struct-Options-
@@ -23,6 +22,7 @@
 :xref-Upgrades-getAdminAddress-address-: xref:#Upgrades-getAdminAddress-address-
 :xref-Upgrades-getImplementationAddress-address-: xref:#Upgrades-getImplementationAddress-address-
 :xref-Upgrades-getBeaconAddress-address-: xref:#Upgrades-getBeaconAddress-address-
+:xref-Upgrades-tryPrank-address-: xref:#Upgrades-tryPrank-address-
 :xref-Upgrades-CHEATCODE_ADDRESS-address: xref:#Upgrades-CHEATCODE_ADDRESS-address
 :xref-Defender-deployContract-string-: xref:#Defender-deployContract-string-
 :xref-Defender-deployContract-string-struct-DefenderOptions-: xref:#Defender-deployContract-string-struct-DefenderOptions-
@@ -73,12 +73,6 @@ import { Upgrades } from "openzeppelin-foundry-upgrades/src/Upgrades.sol";
 Library for deploying and managing upgradeable contracts from Forge scripts or tests.
 
 [.contract-index]
-.Modifiers
---
-* {xref-Upgrades-tryPrank-address-}[`++tryPrank(deployer)++`]
---
-
-[.contract-index]
 .Functions
 --
 * {xref-Upgrades-deployUUPSProxy-string-bytes-struct-Options-}[`++deployUUPSProxy(contractName, initializerData, opts)++`]
@@ -108,17 +102,17 @@ Library for deploying and managing upgradeable contracts from Forge scripts or t
 --
 
 [.contract-index]
+.Modifiers
+--
+* {xref-Upgrades-tryPrank-address-}[`++tryPrank(deployer)++`]
+--
+
+[.contract-index]
 .Internal Variables
 --
 * {xref-Upgrades-CHEATCODE_ADDRESS-address}[`++address constant CHEATCODE_ADDRESS++`]
 
 --
-
-[.contract-item]
-[[Upgrades-tryPrank-address-]]
-==== `[.contract-item-name]#++tryPrank++#++(address deployer)++` [.item-kind]#modifier#
-
-Runs a function as a prank, or just runs the function normally if the prank could not be started.
 
 [.contract-item]
 [[Upgrades-deployUUPSProxy-string-bytes-struct-Options-]]
@@ -474,6 +468,12 @@ Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
 *Returns*
 
 * (`address`) - Beacon address
+
+[.contract-item]
+[[Upgrades-tryPrank-address-]]
+==== `[.contract-item-name]#++tryPrank++#++(address deployer)++` [.item-kind]#modifier#
+
+Runs a function as a prank, or just runs the function normally if the prank could not be started.
 
 [.contract-item]
 [[Upgrades-CHEATCODE_ADDRESS-address]]
