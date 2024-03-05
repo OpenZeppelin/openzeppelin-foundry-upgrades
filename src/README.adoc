@@ -1,5 +1,13 @@
 = OpenZeppelin Foundry Upgrades API
 
+== Common Options
+
+The following options can be used with some of the below functions. See https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Options.sol[Options.sol] for detailed descriptions of each option.
+
+{{Options}}
+
+{{DefenderOptions}}
+
 == Foundry Upgrades
 
 {{Upgrades}}
@@ -7,11 +15,3 @@
 == Foundry Defender
 
 {{Defender}}
-
-== Options
-
-See https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Options.sol[Options.sol] for descriptions of each field.
-
-{{Options}}
-
-{{DefenderOptions}}
