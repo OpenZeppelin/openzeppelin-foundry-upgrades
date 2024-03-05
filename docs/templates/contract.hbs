@@ -107,6 +107,20 @@ import "@openzeppelin/{{__item_context.file.absolutePath}}";
 
 {{{natspec.dev}}}
 
+{{#if natspec.params}}
+*Parameters:*
+{{#each params}}
+* {{name}} ({{type}}) - {{{joinLines natspec}}}
+{{/each}}
+{{/if}}
+
+{{#if natspec.returns}}
+*Returns*
+{{#each returns}}
+* {{#if name}}{{name}}{{else}}[{{@index}}]{{/if}} ({{type}}) - {{{joinLines natspec}}}
+{{/each}}
+{{/if}}
+
 {{/each}}
 
 {{#each events}}
