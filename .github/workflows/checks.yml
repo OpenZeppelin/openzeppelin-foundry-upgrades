@@ -37,6 +37,9 @@ jobs:
       - name: Setup Node environment
         uses: ./.github/actions/setup
 
+      - name: Generate documentation
+        run: yarn docgen
+
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
