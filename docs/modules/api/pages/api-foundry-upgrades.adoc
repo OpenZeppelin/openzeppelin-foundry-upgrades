@@ -40,6 +40,11 @@ The following options can be used with some of the below functions. See https://
 [[Options]]
 === `++Options++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Options.sol[{github-icon},role=heading-link]
 
+[.hljs-theme-light.nopadding]
+```solidity
+import { Options } from "openzeppelin-foundry-upgrades/src/Options.sol";
+```
+
 ```solidity
 struct Options {
   string referenceContract;
@@ -54,6 +59,11 @@ struct Options {
 
 [[DefenderOptions]]
 === `++DefenderOptions++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Options.sol[{github-icon},role=heading-link]
+
+[.hljs-theme-light.nopadding]
+```solidity
+import { DefenderOptions } from "openzeppelin-foundry-upgrades/src/Options.sol";
+```
 
 ```solidity
 struct DefenderOptions {
