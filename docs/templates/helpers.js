@@ -29,8 +29,13 @@ function getAllLinks(items) {
   const res = {};
   linksCache.set(items, res);
   for (const item of items) {
-    res[`xref-${item.anchor}`] = `xref:${item.__item_context.page}#${item.anchor}`;
-    res[slug(item.fullName)] = `pass:normal[xref:${item.__item_context.page}#${item.anchor}[\`${item.fullName}\`]]`;
+    let page = item.__item_context.page;
+    if (page === '.adoc') {
+      page = '';
+    }
+
+    res[`xref-${item.anchor}`] = `xref:${page}#${item.anchor}`;
+    res[slug(item.fullName)] = `pass:normal[xref:${page}#${item.anchor}[\`${item.fullName}\`]]`;
   }
   return res;
 }
