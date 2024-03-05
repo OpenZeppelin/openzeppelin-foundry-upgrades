@@ -4,11 +4,11 @@
 
 [.contract]
 [[{{anchor}}]]
-=== `++{{name}}++` link:https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v{{oz-version}}/{{__item_context.file.absolutePath}}[{github-icon},role=heading-link]
+=== `++{{name}}++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/{{__item_context.file.absolutePath}}[{github-icon},role=heading-link]
 
 [.hljs-theme-light.nopadding]
 ```solidity
-import "@openzeppelin/{{__item_context.file.absolutePath}}";
+import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.absolutePath}}";
 ```
 
 {{{natspec.dev}}}

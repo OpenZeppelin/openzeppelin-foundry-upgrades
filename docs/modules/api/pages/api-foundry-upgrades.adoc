@@ -63,11 +63,11 @@
 
 [.contract]
 [[Upgrades]]
-=== `++Upgrades++` link:https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v/src/Upgrades.sol[{github-icon},role=heading-link]
+=== `++Upgrades++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/src/Upgrades.sol[{github-icon},role=heading-link]
 
 [.hljs-theme-light.nopadding]
 ```solidity
-import "@openzeppelin/src/Upgrades.sol";
+import { Upgrades } from "openzeppelin-foundry-upgrades/src/Upgrades.sol";
 ```
 
 Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -491,11 +491,11 @@ Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
 
 [.contract]
 [[Defender]]
-=== `++Defender++` link:https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v/src/Defender.sol[{github-icon},role=heading-link]
+=== `++Defender++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/src/Defender.sol[{github-icon},role=heading-link]
 
 [.hljs-theme-light.nopadding]
 ```solidity
-import "@openzeppelin/src/Defender.sol";
+import { Defender } from "openzeppelin-foundry-upgrades/src/Defender.sol";
 ```
 
 Library for interacting with OpenZeppelin Defender from Forge scripts or tests.
