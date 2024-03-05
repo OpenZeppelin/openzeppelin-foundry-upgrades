@@ -10,7 +10,7 @@
     "forge:script": "forge script test/Upgrades.s.sol --ffi",
     "lint": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --check && solhint 'src/**/*.sol'",
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write",
-    "docgen": "hardhat clean && hardhat compile && hardhat docgen"
+    "docgen": "hardhat clean && hardhat compile && hardhat docgen && mv docs/modules/api/pages/.adoc docs/modules/api/pages/api-foundry-upgrades.adoc"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-foundry": "^1.1.1",
