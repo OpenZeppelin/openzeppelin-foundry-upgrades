@@ -33,7 +33,7 @@
 :xref-Defender-getUpgradeApprovalProcess--: xref:#Defender-getUpgradeApprovalProcess--
 = OpenZeppelin Foundry Upgrades API
 
-== Upgrades
+== Foundry Upgrades
 
 :deployUUPSProxy: pass:normal[xref:#Upgrades-deployUUPSProxy-string-bytes-struct-Options-[`++deployUUPSProxy++`]]
 :deployUUPSProxy: pass:normal[xref:#Upgrades-deployUUPSProxy-string-bytes-[`++deployUUPSProxy++`]]
@@ -134,7 +134,7 @@ Deploys a UUPS proxy using the given contract as the implementation.
 
 *Returns*
 
-* `[0]` (`address`) - Proxy address
+* (`address`) - Proxy address
 
 [.contract-item]
 [[Upgrades-deployUUPSProxy-string-bytes-]]
@@ -149,7 +149,7 @@ Deploys a UUPS proxy using the given contract as the implementation.
 
 *Returns*
 
-* `[0]` (`address`) - Proxy address
+* (`address`) - Proxy address
 
 [.contract-item]
 [[Upgrades-deployTransparentProxy-string-address-bytes-struct-Options-]]
@@ -166,7 +166,7 @@ Deploys a transparent proxy using the given contract as the implementation.
 
 *Returns*
 
-* `[0]` (`address`) - Proxy address
+* (`address`) - Proxy address
 
 [.contract-item]
 [[Upgrades-deployTransparentProxy-string-address-bytes-]]
@@ -182,7 +182,7 @@ Deploys a transparent proxy using the given contract as the implementation.
 
 *Returns*
 
-* `[0]` (`address`) - Proxy address
+* (`address`) - Proxy address
 
 [.contract-item]
 [[Upgrades-upgradeProxy-address-string-bytes-struct-Options-]]
@@ -264,7 +264,7 @@ Deploys an upgradeable beacon using the given contract as the implementation.
 
 *Returns*
 
-* `[0]` (`address`) - Beacon address
+* (`address`) - Beacon address
 
 [.contract-item]
 [[Upgrades-deployBeacon-string-address-]]
@@ -279,7 +279,7 @@ Deploys an upgradeable beacon using the given contract as the implementation.
 
 *Returns*
 
-* `[0]` (`address`) - Beacon address
+* (`address`) - Beacon address
 
 [.contract-item]
 [[Upgrades-upgradeBeacon-address-string-struct-Options-]]
@@ -356,7 +356,7 @@ Deploys a beacon proxy using the given beacon and call data.
 
 *Returns*
 
-* `[0]` (`address`) - Proxy address
+* (`address`) - Proxy address
 
 [.contract-item]
 [[Upgrades-deployBeaconProxy-address-bytes-struct-Options-]]
@@ -372,7 +372,7 @@ Deploys a beacon proxy using the given beacon and call data.
 
 *Returns*
 
-* `[0]` (`address`) - Proxy address
+* (`address`) - Proxy address
 
 [.contract-item]
 [[Upgrades-validateImplementation-string-struct-Options-]]
@@ -398,7 +398,7 @@ Validates and deploys an implementation contract, and returns its address.
 
 *Returns*
 
-* `[0]` (`address`) - Address of the implementation contract
+* (`address`) - Address of the implementation contract
 
 [.contract-item]
 [[Upgrades-validateUpgrade-string-struct-Options-]]
@@ -431,7 +431,7 @@ Use this method to prepare an upgrade to be run from an admin address you do not
 
 *Returns*
 
-* `[0]` (`address`) - Address of the new implementation contract
+* (`address`) - Address of the new implementation contract
 
 [.contract-item]
 [[Upgrades-getAdminAddress-address-]]
@@ -445,7 +445,7 @@ Gets the admin address of a transparent proxy from its ERC1967 admin storage slo
 
 *Returns*
 
-* `[0]` (`address`) - Admin address
+* (`address`) - Admin address
 
 [.contract-item]
 [[Upgrades-getImplementationAddress-address-]]
@@ -459,7 +459,7 @@ Gets the implementation address of a transparent or UUPS proxy from its ERC1967 
 
 *Returns*
 
-* `[0]` (`address`) - Implementation address
+* (`address`) - Implementation address
 
 [.contract-item]
 [[Upgrades-getBeaconAddress-address-]]
@@ -473,13 +473,13 @@ Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
 
 *Returns*
 
-* `[0]` (`address`) - Beacon address
+* (`address`) - Beacon address
 
 [.contract-item]
 [[Upgrades-CHEATCODE_ADDRESS-address]]
 ==== `address [.contract-item-name]#++CHEATCODE_ADDRESS++#` [.item-kind]#internal constant#
 
-== Defender
+== Foundry Defender
 
 :deployContract: pass:normal[xref:#Defender-deployContract-string-[`++deployContract++`]]
 :deployContract: pass:normal[xref:#Defender-deployContract-string-struct-DefenderOptions-[`++deployContract++`]]
@@ -530,7 +530,7 @@ The script waits for the deployment to complete before it continues.
 
 *Returns*
 
-* `[0]` (`address`) - Address of the deployed contract
+* (`address`) - Address of the deployed contract
 
 [.contract-item]
 [[Defender-deployContract-string-struct-DefenderOptions-]]
@@ -550,7 +550,7 @@ The script waits for the deployment to complete before it continues.
 
 *Returns*
 
-* `[0]` (`address`) - Address of the deployed contract
+* (`address`) - Address of the deployed contract
 
 [.contract-item]
 [[Defender-deployContract-string-bytes-]]
@@ -570,7 +570,7 @@ The script waits for the deployment to complete before it continues.
 
 *Returns*
 
-* `[0]` (`address`) - Address of the deployed contract
+* (`address`) - Address of the deployed contract
 
 [.contract-item]
 [[Defender-deployContract-string-bytes-struct-DefenderOptions-]]
@@ -591,7 +591,7 @@ The script waits for the deployment to complete before it continues.
 
 *Returns*
 
-* `[0]` (`address`) - Address of the deployed contract
+* (`address`) - Address of the deployed contract
 
 [.contract-item]
 [[Defender-proposeUpgrade-address-string-struct-Options-]]
@@ -621,7 +621,7 @@ The script waits for the deployment to complete before it continues.
 
 *Returns*
 
-* `[0]` (`struct ProposeUpgradeResponse`) - Struct containing the proposal ID and URL for the upgrade proposal
+* (`struct ProposeUpgradeResponse`) - Struct containing the proposal ID and URL for the upgrade proposal
 
 [.contract-item]
 [[Defender-getDeployApprovalProcess--]]
@@ -631,7 +631,7 @@ Gets the default deploy approval process configured for your deployment environm
 
 *Returns*
 
-* `[0]` (`struct ApprovalProcessResponse`) - Struct with the default deploy approval process ID and the associated address, such as a Relayer, EOA, or multisig wallet address.
+* (`struct ApprovalProcessResponse`) - Struct with the default deploy approval process ID and the associated address, such as a Relayer, EOA, or multisig wallet address.
 
 [.contract-item]
 [[Defender-getUpgradeApprovalProcess--]]
@@ -642,5 +642,5 @@ For example, this is useful for determining the default multisig wallet that you
 
 *Returns*
 
-* `[0]` (`struct ApprovalProcessResponse`) - Struct with the default upgrade approval process ID and the associated address, such as a multisig or governor contract address.
+* (`struct ApprovalProcessResponse`) - Struct with the default upgrade approval process ID and the associated address, such as a multisig or governor contract address.
 
