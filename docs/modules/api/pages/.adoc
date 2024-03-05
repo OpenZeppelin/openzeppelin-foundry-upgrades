@@ -33,6 +33,8 @@
 :xref-Defender-getUpgradeApprovalProcess--: xref:.adoc#Defender-getUpgradeApprovalProcess--
 = OpenZeppelin Foundry Upgrades API
 
+== Upgrades
+
 :deployUUPSProxy: pass:normal[xref:#Upgrades-deployUUPSProxy-string-bytes-struct-Options-[`++deployUUPSProxy++`]]
 :deployUUPSProxy: pass:normal[xref:#Upgrades-deployUUPSProxy-string-bytes-[`++deployUUPSProxy++`]]
 :deployTransparentProxy: pass:normal[xref:#Upgrades-deployTransparentProxy-string-address-bytes-struct-Options-[`++deployTransparentProxy++`]]
@@ -295,19 +297,7 @@ Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
 [[Upgrades-CHEATCODE_ADDRESS-address]]
 ==== `address [.contract-item-name]#++CHEATCODE_ADDRESS++#` [.item-kind]#internal constant#
 
-# Options
-
-```solidity
-struct Options {
-  string referenceContract;
-  bytes constructorData;
-  string unsafeAllow;
-  bool unsafeAllowRenames;
-  bool unsafeSkipStorageCheck;
-  bool unsafeSkipAllChecks;
-  struct DefenderOptions defender;
-}
-```
+== Defender
 
 :deployContract: pass:normal[xref:#Defender-deployContract-string-[`++deployContract++`]]
 :deployContract: pass:normal[xref:#Defender-deployContract-string-struct-DefenderOptions-[`++deployContract++`]]

@@ -1,8 +1,9 @@
 = OpenZeppelin Foundry Upgrades API
 
+== Upgrades
+
 {{Upgrades}}
 
-{{Options}}
+== Defender
 
 {{Defender}}
-
