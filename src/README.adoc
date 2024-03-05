@@ -7,3 +7,11 @@
 == Foundry Defender
 
 {{Defender}}
+
+== Options
+
+See https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Options.sol[Options.sol] for descriptions of each field.
+
+{{Options}}
+
+{{DefenderOptions}}

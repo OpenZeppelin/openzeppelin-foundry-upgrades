@@ -5,9 +5,9 @@ OpenZeppelin Foundry Upgrades can be used for performing deployments through htt
 WARNING: Defender deployments are **always** broadcast to a live network, regardless of whether you are using the `broadcast` cheatcode.
 The recommended pattern is to separate Defender scripts from scripts that rely on network forking and simulations, to avoid mixing simulation and live network data.
 
-== Installing
+== Installation
 
-See xref:foundry-upgrades#installing[Using with Foundry - Installing].
+See xref:foundry-upgrades#installion[Using with Foundry - Installation].
 
 == Prerequisites
 1. Install https://nodejs.org/[Node.js].
@@ -35,7 +35,7 @@ DEFENDER_SECRET<Your API secret>
 
 === Upgradeable Contracts
 
-If you are deploying upgradeable contracts, use the `Upgrades` library as described in xref:foundry-upgrades#installing[Using with Foundry - Installing] but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
+If you are deploying upgradeable contracts, use the `Upgrades` library as described in xref:foundry-upgrades#installion[Using with Foundry - Installation] but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
 
 **Example 1 - Deploying a proxy**:
 To deploy a UUPS proxy, create a script called `Defender.s.sol` like the following:

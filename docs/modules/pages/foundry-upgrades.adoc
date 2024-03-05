@@ -1,8 +1,8 @@
-= OpenZeppelin Foundry Upgrades
+= Using with Foundry
 
 Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
 
-== Installing
+== Installation
 
 Run these commands:
 [source,console]

@@ -63,7 +63,7 @@
 
 [.contract]
 [[Upgrades]]
-=== `++Upgrades++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/src/Upgrades.sol[{github-icon},role=heading-link]
+=== `++Upgrades++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/src/Upgrades.sol[{github-icon},role=heading-link]
 
 [.hljs-theme-light.nopadding]
 ```solidity
@@ -491,7 +491,7 @@ Runs a function as a prank, or just runs the function normally if the prank coul
 
 [.contract]
 [[Defender]]
-=== `++Defender++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/src/Defender.sol[{github-icon},role=heading-link]
+=== `++Defender++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/src/Defender.sol[{github-icon},role=heading-link]
 
 [.hljs-theme-light.nopadding]
 ```solidity
@@ -643,4 +643,34 @@ For example, this is useful for determining the default multisig wallet that you
 *Returns*
 
 * (`struct ApprovalProcessResponse`) - Struct with the default upgrade approval process ID and the associated address, such as a multisig or governor contract address.
+
+== Options
+
+See https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Options.sol[Options.sol] for descriptions of each field.
+
+# Options
+
+```solidity
+struct Options {
+  string referenceContract;
+  bytes constructorData;
+  string unsafeAllow;
+  bool unsafeAllowRenames;
+  bool unsafeSkipStorageCheck;
+  bool unsafeSkipAllChecks;
+  struct DefenderOptions defender;
+}
+```
+
+# DefenderOptions
+
+```solidity
+struct DefenderOptions {
+  bool useDefenderDeploy;
+  bool skipVerifySourceCode;
+  string relayerId;
+  bytes32 salt;
+  string upgradeApprovalProcessId;
+}
+```
 
