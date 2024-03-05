@@ -25,7 +25,7 @@ NOTE: Metadata must also be included in the compiler output, which it is by defa
 3. Include `--ffi` in your `forge script` or `forge test` command.  
 
 4. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
-[source,plaintext]
+[source]
 ----
 DEFENDER_KEY=<Your API key>
 DEFENDER_SECRET<Your API secret>
@@ -35,7 +35,7 @@ DEFENDER_SECRET<Your API secret>
 
 === Upgradeable Contracts
 
-If you are deploying upgradeable contracts, use the `Upgrades` library as described in xref:foundry-upgrades#installing[Using with Foundry - Usage] but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
+If you are deploying upgradeable contracts, use the `Upgrades` library as described in xref:foundry-upgrades#installing[Using with Foundry - Installing] but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
 
 **Example 1 - Deploying a proxy**:
 To deploy a UUPS proxy, create a script called `Defender.s.sol` like the following:
