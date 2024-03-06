@@ -67,7 +67,7 @@ import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 Then call functions from `Upgrades.sol` to run validations, deployments, or upgrades.
 
-### Examples
+=== Examples
 
 Deploy a UUPS proxy:
 [source,solidity]
@@ -145,10 +145,14 @@ Upgrade a beacon:
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ----
 
-### Deploying and Verifying
+=== Deploying and Verifying
 
 Run your script with `forge script` to broadcast and deploy. See Foundry's https://book.getfoundry.sh/tutorials/solidity-scripting[Solidity Scripting] guide.
 
 IMPORTANT: Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
 
 NOTE: Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
+
+== API
+
+See xref:api-foundry-upgrades.adoc[Foundry Upgrades API] for the full API documentation.
