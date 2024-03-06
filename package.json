@@ -3,7 +3,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "clean": "forge clean",
+    "clean": "forge clean && hardhat clean",
     "compile": "forge build",
     "test": "npm run forge:test && npm run forge:script",
     "forge:test": "forge test -vvv --ffi",
