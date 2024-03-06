@@ -8,7 +8,7 @@
 
 [.hljs-theme-light.nopadding]
 ```solidity
-import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.absolutePath}}";
+import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.relativePath}}";
 ```
 
 {{{natspec.dev}}}
@@ -96,7 +96,13 @@ import { {{name}} } from "openzeppelin-foundry-upgrades/{{__item_context.file.ab
 [[{{anchor}}]]
 ==== `[.contract-item-name]#++{{name}}++#++({{typed-params params}}){{#if returns2}} → {{typed-params returns2}}{{/if}}++` [.item-kind]#{{visibility}}#
 
+{{#if natspec.notice}}
+NOTE: {{{natspec.notice}}}
+{{/if}}
+
+{{#if natspec.dev}}
 {{{natspec.dev}}}
+{{/if}}
 
 {{#if natspec.params}}
 *Parameters:*
