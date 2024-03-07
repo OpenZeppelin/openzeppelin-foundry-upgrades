@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0 (2024-03-07)
+
+- Support private networks and forked networks with Defender.
+
 ## 0.0.2 (2024-02-20)
 
 - Support constructor arguments for Defender deployments. ([#16](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/16))
