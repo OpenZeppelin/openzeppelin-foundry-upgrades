@@ -28,6 +28,9 @@ Ensure that all tests pass.  If you are adding new functionality, include testca
 
 If linting errors or warnings occur, run `yarn lint:fix` to attempt to auto-fix issues.  If there are remaining issues that cannot be auto-fixed, manually address them and re-run the command to ensure it passes.
 
+### Updating documentation
+```yarn docgen```
+
 ## Creating Pull Requests (PRs)
 
 As a contributor, we ask that you fork this repository, work on your own fork and then submit pull requests. The pull requests will be reviewed and eventually merged into the main repo. See ["Fork-a-Repo"](https://help.github.com/articles/fork-a-repo/) for how this works.
