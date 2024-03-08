@@ -14,7 +14,7 @@
   "devDependencies": {
     "@openzeppelin/contracts": "^5.0.0",
     "@openzeppelin/upgrades-core": "^1.32.3",
-    "@openzeppelin/defender-deploy-client-cli": "0.0.1",
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.5",
     "prettier": "^3.0.0",
     "prettier-plugin-solidity": "^1.1.0",
     "solhint": "^3.3.6",
