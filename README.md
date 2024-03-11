@@ -1,5 +1,7 @@
 # OpenZeppelin Foundry Upgrades
 
+[![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades)
+
 Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
 
 ## Installing
