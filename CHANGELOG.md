@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (2024-03-07)
+## 0.1.0 (2024-03-11)
 
 - Support private networks and forked networks with Defender.
 
