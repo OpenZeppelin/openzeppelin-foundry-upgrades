@@ -32,6 +32,18 @@ DEFENDER_KEY=<Your API key>
 DEFENDER_SECRET<Your API secret>
 ```
 
+## Network Selection
+
+The network that is used with OpenZeppelin Defender is determined by the network that Foundry is connected to.
+If you want to ensure that a specific network is used with Defender, set the `DEFENDER_NETWORK` environment variable in your `.env` file, for example:
+```
+DEFENDER_NETWORK=my-mainnet-fork
+```
+If set, this must be the name of a public, private or forked network in Defender. If the `chainId` parameter corresponds to a different network while this is set, the deployment will not occur and will throw an error instead.
+
+> **Note**
+> This is required if you have multiple forked networks in Defender with the same chainId, in which case the one with name matching the `DEFENDER_NETWORK` environment variable will be used.
+
 ## Usage
 
 ### Upgradeable Contracts

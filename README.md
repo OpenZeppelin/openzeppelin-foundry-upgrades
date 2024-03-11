@@ -1,9 +1,8 @@
 # OpenZeppelin Foundry Upgrades
 
-Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
+[![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades)
 
-> **Warning**
-> This repository contains experimental code. It is available as a technology preview and its functionality is subject to change. Breaking changes may be introduced at any point while it is in preview.
+Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
 
 ## Installing
 

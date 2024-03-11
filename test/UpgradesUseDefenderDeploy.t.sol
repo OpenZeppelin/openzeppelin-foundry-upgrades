@@ -28,6 +28,14 @@ contract UpgradesUseDefenderDeployTest is Test {
         d = new Deployer();
     }
 
+    function _assertDefenderNotAvailable(strings.slice memory slice) private {
+        assertTrue(
+            slice.contains(
+                "The current network with chainId 31337 is not supported by OpenZeppelin Defender".toSlice()
+            ) || slice.contains("DEFENDER_KEY and DEFENDER_SECRET must be set in environment variables".toSlice())
+        );
+    }
+
     function testDeployUUPSProxy() public {
         Options memory opts;
         opts.defender.useDefenderDeploy = true;
@@ -37,7 +45,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
             assertTrue(slice.contains("Failed to deploy contract GreeterProxiable.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
@@ -50,7 +58,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
             assertTrue(slice.contains("Failed to deploy contract Greeter.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
@@ -67,7 +75,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
             assertTrue(slice.contains("Failed to deploy contract GreeterV2Proxiable.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
@@ -80,7 +88,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
             assertTrue(slice.contains("Failed to deploy contract Greeter.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
@@ -96,7 +104,7 @@ contract UpgradesUseDefenderDeployTest is Test {
             strings.slice memory slice = reason.toSlice();
             // Note the below is not the implementation contract, because this function only deploys the BeaconProxy contract
             assertTrue(slice.contains("Failed to deploy contract BeaconProxy.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
@@ -111,7 +119,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
             assertTrue(slice.contains("Failed to deploy contract GreeterV2.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
@@ -124,7 +132,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
             assertTrue(slice.contains("Failed to deploy contract GreeterV2.sol".toSlice()));
-            assertTrue(slice.contains("Network 31337 is not supported by OpenZeppelin Defender".toSlice()));
+            _assertDefenderNotAvailable(slice);
         }
     }
 
