@@ -43,10 +43,11 @@ This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/
 
 If you want to be able to run upgrade safety checks, the following are needed:
 1. Install [Node.js](https://nodejs.org/).
-2. Configure your `foundry.toml` to include build info and storage layout:
+2. Configure your `foundry.toml` to include build info, ast and storage layout:
 ```
 [profile.default]
 build_info = true
+ast = true
 extra_output = ["storageLayout"]
 ```
 3. If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
