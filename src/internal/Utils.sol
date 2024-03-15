@@ -130,7 +130,7 @@ library Utils {
     /**
      * @dev Gets the output directory from the FOUNDRY_OUT environment variable, or defaults to "out" if not set.
      */
-    function getOutDir() internal returns (string memory) {
+    function getOutDir() internal view returns (string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         string memory defaultOutDir = "out";
