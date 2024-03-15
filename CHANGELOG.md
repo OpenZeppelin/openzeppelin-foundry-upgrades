@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update forge-std to v1.8.0, fix compiler warnings. ([#30](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/30))
+
 ## 0.1.0 (2024-03-11)
 
 - Support private networks and forked networks with Defender.
