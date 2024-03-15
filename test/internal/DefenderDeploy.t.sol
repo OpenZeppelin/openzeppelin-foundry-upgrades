@@ -178,7 +178,7 @@ contract DefenderDeployTest is Test {
         assertEq(response.viaType, "Relayer");
     }
 
-    function testParseApprovalProcessResponseIdOnly() public pure{
+    function testParseApprovalProcessResponseIdOnly() public pure {
         string memory output = "Approval process ID: abc";
 
         ApprovalProcessResponse memory response = DefenderDeploy.parseApprovalProcessResponse(output);
