@@ -28,7 +28,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         d = new Deployer();
     }
 
-    function _assertDefenderNotAvailable(strings.slice memory slice) private {
+    function _assertDefenderNotAvailable(strings.slice memory slice) private pure {
         assertTrue(
             slice.contains(
                 "The current network with chainId 31337 is not supported by OpenZeppelin Defender".toSlice()
