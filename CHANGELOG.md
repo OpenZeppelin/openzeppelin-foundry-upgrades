@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Update forge-std to v1.8.0, fix compiler warnings. ([#30](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/30))
+- Update forge-std to v1.8.0, restrict state mutabilitiy of some functions. ([#30](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/30))
+
+### Breaking changes
+- Requires forge-std version v1.8.0 or later.
 
 ## 0.1.0 (2024-03-11)
 
