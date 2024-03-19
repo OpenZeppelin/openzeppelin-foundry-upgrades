@@ -24,6 +24,7 @@ extra_output = ["storageLayout"]
 
 NOTE: Metadata must also be included in the compiler output, which it is by default.  
 
+[start=3]
 3. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
 [source]
 ----
