@@ -109,7 +109,7 @@ contract DefenderDeployTest is Test {
         );
     }
 
-    function testBuildProposeUpgradeCommand() public {
+    function testBuildProposeUpgradeCommand() public view {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
         Options memory opts;
@@ -134,7 +134,7 @@ contract DefenderDeployTest is Test {
         );
     }
 
-    function testParseProposeUpgradeResponse() public {
+    function testParseProposeUpgradeResponse() public pure {
         string memory output = "Upgrade proposal created.\nProposal ID: 123\nProposal URL: https://my.url/my-tx";
 
         ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
@@ -143,7 +143,7 @@ contract DefenderDeployTest is Test {
         assertEq(response.url, "https://my.url/my-tx");
     }
 
-    function testParseProposeUpgradeResponseNoUrl() public {
+    function testParseProposeUpgradeResponseNoUrl() public pure {
         string memory output = "Upgrade proposal created.\nProposal ID: 123";
 
         ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
@@ -152,7 +152,7 @@ contract DefenderDeployTest is Test {
         assertEq(response.url, "");
     }
 
-    function testBuildGetApprovalProcessCommand() public {
+    function testBuildGetApprovalProcessCommand() public view {
         string memory commandString = _toString(
             DefenderDeploy.buildGetApprovalProcessCommand("getDeployApprovalProcess")
         );
@@ -167,7 +167,7 @@ contract DefenderDeployTest is Test {
         );
     }
 
-    function testParseApprovalProcessResponse() public {
+    function testParseApprovalProcessResponse() public pure {
         string
             memory output = "Approval process ID: abc\nVia: 0x1230000000000000000000000000000000000456\nVia type: Relayer";
 
@@ -178,7 +178,7 @@ contract DefenderDeployTest is Test {
         assertEq(response.viaType, "Relayer");
     }
 
-    function testParseApprovalProcessResponseIdOnly() public {
+    function testParseApprovalProcessResponseIdOnly() public pure {
         string memory output = "Approval process ID: abc";
 
         ApprovalProcessResponse memory response = DefenderDeploy.parseApprovalProcessResponse(output);

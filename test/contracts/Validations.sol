@@ -5,7 +5,8 @@ pragma solidity ^0.8.20;
 
 contract Unsafe {
     function unsafe() public {
-        selfdestruct(payable(msg.sender));
+        (bool s, ) = msg.sender.delegatecall("");
+        s;
     }
 }
 
