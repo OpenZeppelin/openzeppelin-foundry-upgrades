@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2024-03-20)
 
 - Update forge-std to v1.8.0, restrict state mutability of some functions. ([#30](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/30))
 
@@ -9,7 +9,7 @@
 
 ## 0.1.0 (2024-03-11)
 
-- Support private networks and forked networks with Defender.
+- Support private networks and forked networks with Defender. ([#25](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/25))
 
 ## 0.0.2 (2024-02-20)
 
