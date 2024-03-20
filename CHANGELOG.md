@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (2024-03-20)
+
+- Throw helpful error message if AST not found in contract artifacts. ([#28](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/28))
+
 ## 0.2.0 (2024-03-20)
 
 - Update forge-std to v1.8.0, restrict state mutability of some functions. ([#30](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/30))

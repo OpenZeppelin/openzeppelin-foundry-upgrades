@@ -80,6 +80,11 @@ library Utils {
         );
         string memory artifactJson = vm.readFile(artifactPath);
 
+        if (!vm.keyExistsJson(artifactJson, ".ast")) {
+            revert(
+                string.concat("Could not find AST in artifact ", artifactPath, ". Set `ast = true` in foundry.toml")
+            );
+        }
         info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
         info.license = vm.parseJsonString(artifactJson, ".ast.license");
         info.sourceCodeHash = vm.parseJsonString(

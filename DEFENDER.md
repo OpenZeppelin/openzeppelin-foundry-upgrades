@@ -16,17 +16,17 @@ See [README.md#installing](README.md#installing)
 ## Prerequisites
 1. Install [Node.js](https://nodejs.org/).  
 
-2. Configure your `foundry.toml` to include build info and storage layout:
+2. Configure your `foundry.toml` to enable ffi, ast, build info and storage layout:
 ```
 [profile.default]
+ffi = true
+ast = true
 build_info = true
 extra_output = ["storageLayout"]
 ```
 **Note**: Metadata must also be included in the compiler output, which it is by default.  
 
-3. Include `--ffi` in your `forge script` or `forge test` command.  
-
-4. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
+3. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
 ```
 DEFENDER_KEY=<Your API key>
 DEFENDER_SECRET<Your API secret>
