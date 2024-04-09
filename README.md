@@ -8,6 +8,7 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 
 Run these commands:
 ```
+forge install foundry-rs/forge-std
 forge install OpenZeppelin/openzeppelin-foundry-upgrades
 forge install OpenZeppelin/openzeppelin-contracts-upgradeable
 ```
@@ -34,6 +35,8 @@ OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 See [DEFENDER.md](DEFENDER.md)
 
 ## Version Limitations
+
+This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.8.0 or higher.
 
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts versions 5.0 or higher.
 
