@@ -8,6 +8,7 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 
 Run these commands:
 ```
+forge install foundry-rs/forge-std
 forge install OpenZeppelin/openzeppelin-foundry-upgrades
 forge install OpenZeppelin/openzeppelin-contracts-upgradeable
 ```
@@ -35,6 +36,8 @@ See [DEFENDER.md](DEFENDER.md)
 
 ## Version Limitations
 
+This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.8.0 or higher.
+
 This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts versions 5.0 or higher.
 
 ## Before Running
@@ -61,6 +64,11 @@ If you do not want to run upgrade safety checks, you can skip the above steps an
 Import the library in your Foundry scripts or tests:
 ```
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+```
+
+Also import the implementation contract that you want to validate, deploy, or upgrade to, for example:
+```
+import {MyToken} from "src/MyToken.sol";
 ```
 
 Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
