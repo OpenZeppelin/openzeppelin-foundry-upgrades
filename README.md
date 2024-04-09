@@ -66,6 +66,11 @@ Import the library in your Foundry scripts or tests:
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
 
+Also import the implementation contract that you want to validate, deploy, or upgrade to, for example:
+```
+import {MyToken} from "src/MyToken.sol";
+```
+
 Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
 
 ### Examples
