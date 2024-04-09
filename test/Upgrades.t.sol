@@ -15,6 +15,10 @@ import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
 
+// Import additional contracts to include them for compilation
+import {MyContractName} from "./contracts/MyContractFile.sol";
+import "./contracts/Validations.sol";
+
 /**
  * @dev Tests for the Upgrades library.
  */
@@ -212,7 +216,7 @@ contract UpgradesTest is Test {
         Options memory opts;
         opts.constructorData = abi.encode(123);
         address proxy = Upgrades.deployTransparentProxy(
-            "WithConstructor.sol",
+            "WithConstructor.sol:WithConstructor",
             msg.sender,
             abi.encodeCall(WithConstructor.initialize, (456)),
             opts
