@@ -52,7 +52,7 @@ If you are deploying upgradeable contracts, use the `Upgrades` library as descri
 
 **Example 1 - Deploying a proxy**:
 To deploy a UUPS proxy, create a script called `Defender.s.sol` like the following:
-```
+```solidity
 pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
@@ -88,7 +88,7 @@ contract DefenderScript is Script {
 ```
 
 Then run the following command:
-```
+```console
 forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
 ```
 
@@ -101,7 +101,7 @@ This example calls the `Upgrades.deployUUPSProxy` function with the `defender.us
 
 **Example 2 - Proposing an upgrade to a proxy**:
 To propose an upgrade through Defender, create a script like the following:
-```
+```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -136,7 +136,7 @@ If you are deploying non-upgradeable contracts, import the `Defender` library fr
 **Example:**
 
 To deploy a non-upgradeable contract, create a script called `Defender.s.sol` like the following:
-```
+```solidity
 pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
@@ -155,7 +155,7 @@ contract DefenderScript is Script {
 ```
 
 Then run the following command:
-```
+```console
 forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
 ```
 
