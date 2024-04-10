@@ -7,7 +7,7 @@ The recommended pattern is to separate Defender scripts from scripts that rely o
 
 == Installation
 
-See xref:foundry-upgrades#installion[Using with Foundry - Installation].
+See xref:foundry-upgrades#installation[Using with Foundry - Installation].
 
 == Prerequisites
 1. Install https://nodejs.org/[Node.js].
@@ -48,7 +48,7 @@ NOTE: This is required if you have multiple forked networks in Defender with the
 
 === Upgradeable Contracts
 
-If you are deploying upgradeable contracts, use the `Upgrades` library as described in xref:foundry-upgrades#installion[Using with Foundry - Installation] but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
+If you are deploying upgradeable contracts, use the `Upgrades` library as described in xref:foundry-upgrades#installation[Using with Foundry - Installation] but set the option `defender.useDefenderDeploy = true` when calling functions to cause all deployments to occur through OpenZeppelin Defender.
 
 **Example 1 - Deploying a proxy**:
 To deploy a UUPS proxy, create a script called `Defender.s.sol` like the following:
