@@ -59,6 +59,18 @@ extra_output = ["storageLayout"]
 
 If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
 
+### Output directory configuration
+
+If your `foundry.toml` uses a non-default output directory, set the `FOUNDRY_OUT` environment variable to match your output directory. For example, if `foundry.toml` has:
+```toml
+[profile.default]
+out = "my-output-dir"
+```
+Then set the following in the `.env` file of your project:
+```env
+FOUNDRY_OUT="my-output-dir"
+```
+
 ## Usage
 
 Import the library in your Foundry scripts or tests:
