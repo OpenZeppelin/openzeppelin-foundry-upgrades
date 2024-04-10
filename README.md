@@ -14,7 +14,7 @@ forge install OpenZeppelin/openzeppelin-contracts-upgradeable
 ```
 
 Set the following in `remappings.txt`, replacing any previous definitions of these remappings:
-```shell
+```
 @openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 ```
@@ -26,7 +26,7 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 
 If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
 For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
-```shell
+```env
 OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 ```
 

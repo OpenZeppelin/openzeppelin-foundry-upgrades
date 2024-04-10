@@ -27,7 +27,7 @@ extra_output = ["storageLayout"]
 **Note**: Metadata must also be included in the compiler output, which it is by default.  
 
 3. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
-```shell
+```env
 DEFENDER_KEY="<Your API key>"
 DEFENDER_SECRET="<Your API secret>"
 ```
@@ -36,7 +36,7 @@ DEFENDER_SECRET="<Your API secret>"
 
 The network that is used with OpenZeppelin Defender is determined by the network that Foundry is connected to.
 If you want to ensure that a specific network is used with Defender, set the `DEFENDER_NETWORK` environment variable in your `.env` file, for example:
-```shell
+```env
 DEFENDER_NETWORK=my-mainnet-fork
 ```
 If set, this must be the name of a public, private or forked network in Defender. If the `chainId` parameter corresponds to a different network while this is set, the deployment will not occur and will throw an error instead.
