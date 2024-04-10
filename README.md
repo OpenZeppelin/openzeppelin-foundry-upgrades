@@ -7,7 +7,7 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 ## Installing
 
 Run these commands:
-```
+```console
 forge install foundry-rs/forge-std
 forge install OpenZeppelin/openzeppelin-foundry-upgrades
 forge install OpenZeppelin/openzeppelin-contracts-upgradeable
@@ -62,12 +62,12 @@ If you do not want to run upgrade safety checks, you can skip the above steps an
 ## Usage
 
 Import the library in your Foundry scripts or tests:
-```
+```solidity
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
 
 Also import the implementation contract that you want to validate, deploy, or upgrade to, for example:
-```
+```solidity
 import {MyToken} from "src/MyToken.sol";
 ```
 
@@ -76,7 +76,7 @@ Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, de
 ### Examples
 
 Deploy a UUPS proxy:
-```
+```solidity
 address proxy = Upgrades.deployUUPSProxy(
     "MyContract.sol",
     abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
@@ -84,7 +84,7 @@ address proxy = Upgrades.deployUUPSProxy(
 ```
 
 Deploy a transparent proxy:
-```
+```solidity
 address proxy = Upgrades.deployTransparentProxy(
     "MyContract.sol",
     INITIAL_OWNER_ADDRESS_FOR_PROXY_ADMIN,
@@ -93,13 +93,13 @@ address proxy = Upgrades.deployTransparentProxy(
 ```
 
 Call your contract's functions as normal, but remember to always use the proxy address:
-```
+```solidity
 MyContract instance = MyContract(proxy);
 instance.myFunction();
 ```
 
 Upgrade a transparent or UUPS proxy and call an arbitrary function (such as a reinitializer) during the upgrade process:
-```
+```solidity
 Upgrades.upgradeProxy(
     transparentProxy,
     "MyContractV2.sol",
@@ -108,7 +108,7 @@ Upgrades.upgradeProxy(
 ```
 
 Upgrade a transparent or UUPS proxy without calling any additional function:
-```
+```solidity
 Upgrades.upgradeProxy(
     transparentProxy,
     "MyContractV2.sol",
@@ -118,7 +118,7 @@ Upgrades.upgradeProxy(
 
 > **Warning**
 > When upgrading a proxy or beacon, ensure that the new contract either has its `@custom:oz-upgrades-from <reference>` annotation set to the current implementation contract used by the proxy or beacon, or set it with the `referenceContract` option, for example:
-> ```
+> ```solidity
 > Options memory opts;
 > opts.referenceContract = "MyContractV1.sol";
 > Upgrades.upgradeProxy(proxy, "MyContractV2.sol", "", opts);
@@ -126,12 +126,12 @@ Upgrades.upgradeProxy(
 > ```
 
 Deploy an upgradeable beacon:
-```
+```solidity
 address beacon = Upgrades.deployBeacon("MyContract.sol", INITIAL_OWNER_ADDRESS_FOR_BEACON);
 ```
 
 Deploy a beacon proxy:
-```
+```solidity
 address proxy = Upgrades.deployBeaconProxy(
     beacon,
     abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
@@ -139,7 +139,7 @@ address proxy = Upgrades.deployBeaconProxy(
 ```
 
 Upgrade a beacon:
-```
+```solidity
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ```
 
