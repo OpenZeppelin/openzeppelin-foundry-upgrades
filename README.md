@@ -68,7 +68,7 @@ out = "my-output-dir"
 ```
 Then set the following in the `.env` file of your project:
 ```env
-FOUNDRY_OUT="my-output-dir"
+FOUNDRY_OUT=my-output-dir
 ```
 
 ## Usage
