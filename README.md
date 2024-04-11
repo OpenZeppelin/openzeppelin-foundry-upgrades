@@ -26,7 +26,7 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 
 If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
 For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
-```
+```env
 OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 ```
 
@@ -47,7 +47,7 @@ This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/
 If you want to be able to run upgrade safety checks, the following are needed:
 1. Install [Node.js](https://nodejs.org/).
 2. Configure your `foundry.toml` to enable ffi, ast, build info and storage layout:
-```
+```toml
 [profile.default]
 ffi = true
 ast = true
@@ -58,6 +58,18 @@ extra_output = ["storageLayout"]
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
 If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+
+### Output directory configuration
+
+If your `foundry.toml` uses a non-default output directory, set the `FOUNDRY_OUT` environment variable to match your output directory. For example, if `foundry.toml` has:
+```toml
+[profile.default]
+out = "my-output-dir"
+```
+Then set the following in the `.env` file of your project:
+```env
+FOUNDRY_OUT=my-output-dir
+```
 
 ## Usage
 

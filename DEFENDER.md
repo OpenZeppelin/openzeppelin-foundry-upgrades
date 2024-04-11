@@ -17,7 +17,7 @@ See [README.md#installing](README.md#installing)
 1. Install [Node.js](https://nodejs.org/).  
 
 2. Configure your `foundry.toml` to enable ffi, ast, build info and storage layout:
-```
+```toml
 [profile.default]
 ffi = true
 ast = true
@@ -27,16 +27,16 @@ extra_output = ["storageLayout"]
 **Note**: Metadata must also be included in the compiler output, which it is by default.  
 
 3. Set the following environment variables in your `.env` file at your project root, using your Team API key and secret from OpenZeppelin Defender:
-```
-DEFENDER_KEY=<Your API key>
-DEFENDER_SECRET<Your API secret>
+```env
+DEFENDER_KEY="<Your API key>"
+DEFENDER_SECRET="<Your API secret>"
 ```
 
 ## Network Selection
 
 The network that is used with OpenZeppelin Defender is determined by the network that Foundry is connected to.
 If you want to ensure that a specific network is used with Defender, set the `DEFENDER_NETWORK` environment variable in your `.env` file, for example:
-```
+```env
 DEFENDER_NETWORK=my-mainnet-fork
 ```
 If set, this must be the name of a public, private or forked network in Defender. If the `chainId` parameter corresponds to a different network while this is set, the deployment will not occur and will throw an error instead.
@@ -89,7 +89,7 @@ contract DefenderScript is Script {
 
 Then run the following command:
 ```console
-forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
+forge script <path to the script you created above> --force --rpc-url <RPC URL for the network you want to use>
 ```
 
 The above example assumes the implementation contract takes an initial owner address as an argument for its `initialize` function. The script retrieves the address associated with the upgrade approval process configured in Defender (such as a multisig address), and uses that address as the initial owner so that it can have upgrade rights for the proxy.
@@ -156,7 +156,7 @@ contract DefenderScript is Script {
 
 Then run the following command:
 ```console
-forge script <path to the script you created above> --ffi --rpc-url <RPC URL for the network you want to use>
+forge script <path to the script you created above> --force --rpc-url <RPC URL for the network you want to use>
 ```
 
 The above example calls the `Defender.deployContract` function to deploy the specified contract to the connected network using Defender. The function waits for the deployment to complete, which may take a few minutes, then returns with the deployed contract address. While the function is waiting, you can monitor your deployment status in OpenZeppelin Defender's [Deploy module](https://defender.openzeppelin.com/v2/#/deploy).
