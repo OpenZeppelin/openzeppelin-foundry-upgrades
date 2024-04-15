@@ -89,10 +89,10 @@ library DefenderDeploy {
             inputBuilder[i++] = "false";
         } else if (!(defenderOpts.licenseType).toSlice().empty()) {
             inputBuilder[i++] = "--licenseType";
-            inputBuilder[i++] = defenderOpts.licenseType;
+            inputBuilder[i++] = string.concat("\"", defenderOpts.licenseType, "\"");
         } else if (!defenderOpts.skipLicenseType && !(contractInfo.license).toSlice().empty()) {
             inputBuilder[i++] = "--licenseType";
-            inputBuilder[i++] = _toLicenseType(contractInfo);
+            inputBuilder[i++] = string.concat("\"", _toLicenseType(contractInfo), "\"");
         }
         if (!(defenderOpts.relayerId).toSlice().empty()) {
             inputBuilder[i++] = "--relayerId";
