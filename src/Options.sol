@@ -66,4 +66,17 @@ struct DefenderOptions {
      * Defaults to the upgrade approval process configured for your deployment environment on Defender.
      */
     string upgradeApprovalProcessId;
+    /**
+     * License type to display on block explorers for verified source code.
+     * See https://etherscan.io/contract-license-types for supported values and use the string found in brackets, e.g. MIT.
+     * If not set, uses the SPDX license identifier from the contract's Solidity file and converts it to a license type string.
+     * Cannot be set if `skipLicenseType` or `skipVerifySourceCode` is `true`.
+     */
+    string licenseType;
+    /**
+     * If set to `true`, does not set the license type on block explorers for verified source code.
+     * Use this if your contract's license type is not supported by block explorers.
+     * Defaults to `false`.
+     */
+    bool skipLicenseType;
 }

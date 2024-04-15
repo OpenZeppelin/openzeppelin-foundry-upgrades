@@ -72,7 +72,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType MIT"
             )
         );
     }
@@ -89,9 +89,9 @@ contract DefenderDeployTest is Test {
 
         DefenderOptions memory opts;
         opts.useDefenderDeploy = true;
-        opts.skipVerifySourceCode = true;
         opts.relayerId = "my-relayer-id";
         opts.salt = 0xabc0000000000000000000000000000000000000000000000000000000000123;
+        opts.licenseType = "MyLicenseType"; // not a valid type, but this just sets the option
 
         string memory commandString = _toString(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
@@ -104,7 +104,65 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --licenseType MIT --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123"
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType MyLicenseType --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123"
+            )
+        );
+    }
+
+    function testBuildDeployCommandSkipVerifySourceCode() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("WithConstructor.sol:WithConstructor", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        bytes memory constructorData = abi.encode(123);
+
+        DefenderOptions memory opts;
+        opts.skipVerifySourceCode = true;
+
+        string memory commandString = _toString(
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false"
+            )
+        );
+    }
+
+    function testBuildDeployCommandSkipLicenseType() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("WithConstructor.sol:WithConstructor", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        bytes memory constructorData = abi.encode(123);
+
+        DefenderOptions memory opts;
+        opts.skipLicenseType = true;
+
+        string memory commandString = _toString(
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
             )
         );
     }
