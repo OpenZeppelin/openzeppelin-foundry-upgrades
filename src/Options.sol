@@ -69,7 +69,7 @@ struct DefenderOptions {
     /**
      * License type to display on block explorers for verified source code.
      * See https://etherscan.io/contract-license-types for supported values and use the string found in brackets, e.g. MIT.
-     * If not set, uses the SPDX license identifier from the contract's Solidity file and converts it to a license type string.
+     * If not set, infers the license type by using the SPDX license identifier from the contract's Solidity file.
      * Cannot be set if `skipLicenseType` or `skipVerifySourceCode` is `true`.
      */
     string licenseType;

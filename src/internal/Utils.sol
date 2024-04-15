@@ -15,7 +15,7 @@ struct ContractInfo {
      */
     string shortName;
     /**
-     * License identifier from the compiled artifact
+     * License identifier from the compiled artifact. Empty if not found.
      */
     string license;
     /**
@@ -86,7 +86,9 @@ library Utils {
             );
         }
         info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
-        info.license = vm.parseJsonString(artifactJson, ".ast.license");
+        if (vm.keyExistsJson(artifactJson, ".ast.license")) {
+            info.license = vm.parseJsonString(artifactJson, ".ast.license");
+        }
         info.sourceCodeHash = vm.parseJsonString(
             artifactJson,
             string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")

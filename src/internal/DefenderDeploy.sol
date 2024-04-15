@@ -90,9 +90,9 @@ library DefenderDeploy {
         } else if (!(defenderOpts.licenseType).toSlice().empty()) {
             inputBuilder[i++] = "--licenseType";
             inputBuilder[i++] = defenderOpts.licenseType;
-        } else if (!defenderOpts.skipLicenseType) {
+        } else if (!defenderOpts.skipLicenseType && !(contractInfo.license).toSlice().empty()) {
             inputBuilder[i++] = "--licenseType";
-            inputBuilder[i++] = _toLicenseType(contractInfo.license);
+            inputBuilder[i++] = _toLicenseType(contractInfo);
         }
         if (!(defenderOpts.relayerId).toSlice().empty()) {
             inputBuilder[i++] = "--relayerId";
@@ -112,8 +112,8 @@ library DefenderDeploy {
         return inputs;
     }
 
-    function _toLicenseType(string memory spdxIdentifier) private pure returns (string memory) {
-        strings.slice memory id = spdxIdentifier.toSlice();
+    function _toLicenseType(ContractInfo memory contractInfo) private pure returns (string memory) {
+        strings.slice memory id = contractInfo.license.toSlice();
         if (id.equals("UNLICENSED".toSlice())) {
             return "None";
         } else if (id.equals("Unlicense".toSlice())) {
@@ -146,8 +146,10 @@ library DefenderDeploy {
             revert(
                 string.concat(
                     "SPDX license identifier ",
-                    spdxIdentifier,
-                    " not recognized. Set a license type with `licenseType` option, or use the `skipLicenseType` option to skip setting the license type for source code verification."
+                    contractInfo.license,
+                    " in ",
+                    contractInfo.contractPath,
+                    " does not look like a supported license for block explorer verification. Set a license type for block explorer verification with the `licenseType` option, or use the `skipLicenseType` option to skip."
                 )
             );
         }

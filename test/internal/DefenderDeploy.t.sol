@@ -9,6 +9,8 @@ import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
 import {Options, DefenderOptions} from "openzeppelin-foundry-upgrades/Options.sol";
 import {ProposeUpgradeResponse, ApprovalProcessResponse} from "openzeppelin-foundry-upgrades/Defender.sol";
 import {WithConstructor} from "../contracts/WithConstructor.sol";
+import {UnrecognizedLicense} from "../contracts/UnrecognizedLicense.sol";
+import {NoLicense} from "../contracts/NoLicense.sol";
 
 /**
  * @dev Tests the DefenderDeploy internal library.
@@ -215,6 +217,51 @@ contract DefenderDeployTest is Test {
                 "The `skipVerifySourceCode` option cannot be used together with the `licenseType` option"
             );
         }
+    }
+
+    function testBuildDeployCommand_error_unrecognizedLicense() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("UnrecognizedLicense.sol:UnrecognizedLicense", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        DefenderOptions memory opts;
+
+        Invoker i = new Invoker();
+        try i.buildDeployCommand(contractInfo, buildInfoFile, "", opts) {
+            fail();
+        } catch Error(string memory reason) {
+            assertEq(
+                reason,
+                "SPDX license identifier UnrecognizedId in test/contracts/UnrecognizedLicense.sol does not look like a supported license for block explorer verification. Set a license type for block explorer verification with the `licenseType` option, or use the `skipLicenseType` option to skip."
+            );
+        }
+    }
+
+    function testBuildDeployCommandNoContractLicense() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("NoLicense.sol:NoLicense", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        DefenderOptions memory opts;
+        string memory commandString = _toString(
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName NoLicense --contractPath test/contracts/NoLicense.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile
+            )
+        );
     }
 
     function testBuildProposeUpgradeCommand() public view {
