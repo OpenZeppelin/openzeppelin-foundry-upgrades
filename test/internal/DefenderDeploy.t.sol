@@ -48,7 +48,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName MyContractName --contractPath test/contracts/MyContractFile.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --licenseType \"MIT\""
+                ' --licenseType "MIT"'
             )
         );
     }
@@ -75,7 +75,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType \"MIT\""
+                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "MIT"'
             )
         );
     }
@@ -107,7 +107,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType \"My License Type\" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123"
+                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "My License Type" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123'
             )
         );
     }
@@ -188,10 +188,7 @@ contract DefenderDeployTest is Test {
         try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
             fail();
         } catch Error(string memory reason) {
-            assertEq(
-                reason,
-                "The `skipLicenseType` option cannot be used together with the `licenseType` option"
-            );
+            assertEq(reason, "The `skipLicenseType` option cannot be used together with the `licenseType` option");
         }
     }
 
@@ -213,10 +210,7 @@ contract DefenderDeployTest is Test {
         try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
             fail();
         } catch Error(string memory reason) {
-            assertEq(
-                reason,
-                "The `skipVerifySourceCode` option cannot be used together with the `licenseType` option"
-            );
+            assertEq(reason, "The `skipVerifySourceCode` option cannot be used together with the `licenseType` option");
         }
     }
 
@@ -285,7 +279,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName Unlicensed --contractPath test/contracts/Unlicensed.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --licenseType \"None\""
+                ' --licenseType "None"'
             )
         );
     }
