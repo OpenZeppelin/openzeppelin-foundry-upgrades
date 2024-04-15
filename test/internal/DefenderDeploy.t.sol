@@ -11,6 +11,7 @@ import {ProposeUpgradeResponse, ApprovalProcessResponse} from "openzeppelin-foun
 import {WithConstructor} from "../contracts/WithConstructor.sol";
 import {UnrecognizedLicense} from "../contracts/UnrecognizedLicense.sol";
 import {NoLicense} from "../contracts/NoLicense.sol";
+import {Unlicensed} from "../contracts/Unlicensed.sol";
 
 /**
  * @dev Tests the DefenderDeploy internal library.
@@ -260,6 +261,31 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName NoLicense --contractPath test/contracts/NoLicense.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile
+            )
+        );
+    }
+
+    function testBuildDeployCommandUnlicensed() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("Unlicensed.sol:Unlicensed", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        DefenderOptions memory opts;
+        string memory commandString = _toString(
+            DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
+        );
+
+        assertEq(
+            commandString,
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName Unlicensed --contractPath test/contracts/Unlicensed.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                " --licenseType None"
             )
         );
     }
