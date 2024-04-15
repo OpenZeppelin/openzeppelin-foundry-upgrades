@@ -235,7 +235,7 @@ contract DefenderDeployTest is Test {
         } catch Error(string memory reason) {
             assertEq(
                 reason,
-                "SPDX license identifier UnrecognizedId in test/contracts/UnrecognizedLicense.sol does not look like a supported license for block explorer verification. Set a license type for block explorer verification with the `licenseType` option, or use the `skipLicenseType` option to skip."
+                "SPDX license identifier UnrecognizedId in test/contracts/UnrecognizedLicense.sol does not look like a supported license for block explorer verification. Use the `licenseType` option to specify a license type, or set the `skipLicenseType` option to `true` to skip."
             );
         }
     }

@@ -149,7 +149,7 @@ library DefenderDeploy {
                     contractInfo.license,
                     " in ",
                     contractInfo.contractPath,
-                    " does not look like a supported license for block explorer verification. Set a license type for block explorer verification with the `licenseType` option, or use the `skipLicenseType` option to skip."
+                    " does not look like a supported license for block explorer verification. Use the `licenseType` option to specify a license type, or set the `skipLicenseType` option to `true` to skip."
                 )
             );
         }
