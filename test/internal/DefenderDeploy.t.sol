@@ -167,6 +167,56 @@ contract DefenderDeployTest is Test {
         );
     }
 
+    function testBuildDeployCommand_error_licenseType_skipLicenseType() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("WithConstructor.sol:WithConstructor", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        bytes memory constructorData = abi.encode(123);
+
+        DefenderOptions memory opts;
+        opts.skipLicenseType = true;
+        opts.licenseType = "MyLicenseType";
+
+        Invoker i = new Invoker();
+        try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
+            fail();
+        } catch Error(string memory reason) {
+            assertEq(
+                reason,
+                "The `skipLicenseType` option cannot be used together with the `licenseType` option"
+            );
+        }
+    }
+
+    function testBuildDeployCommand_error_licenseType_skipVerifySourceCode() public {
+        ContractInfo memory contractInfo = Utils.getContractInfo("WithConstructor.sol:WithConstructor", "out");
+        string memory buildInfoFile = Utils.getBuildInfoFile(
+            contractInfo.sourceCodeHash,
+            contractInfo.shortName,
+            "out"
+        );
+
+        bytes memory constructorData = abi.encode(123);
+
+        DefenderOptions memory opts;
+        opts.skipVerifySourceCode = true;
+        opts.licenseType = "MyLicenseType";
+
+        Invoker i = new Invoker();
+        try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
+            fail();
+        } catch Error(string memory reason) {
+            assertEq(
+                reason,
+                "The `skipVerifySourceCode` option cannot be used together with the `licenseType` option"
+            );
+        }
+    }
+
     function testBuildProposeUpgradeCommand() public view {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
@@ -244,5 +294,16 @@ contract DefenderDeployTest is Test {
         assertEq(response.approvalProcessId, "abc");
         assertTrue(response.via == address(0));
         assertEq(response.viaType, "");
+    }
+}
+
+contract Invoker {
+    function buildDeployCommand(
+        ContractInfo memory contractInfo,
+        string memory buildInfoFile,
+        bytes memory constructorData,
+        DefenderOptions memory defenderOpts
+    ) public view {
+        DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, defenderOpts);
     }
 }
