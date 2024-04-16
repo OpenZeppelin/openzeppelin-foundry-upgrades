@@ -188,7 +188,7 @@ contract DefenderDeployTest is Test {
         try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
             fail();
         } catch Error(string memory reason) {
-            assertEq(reason, "The `skipLicenseType` option cannot be used together with the `licenseType` option");
+            assertEq(reason, "The `licenseType` option cannot be used when the `skipLicenseType` option is `true`");
         }
     }
 
@@ -210,7 +210,7 @@ contract DefenderDeployTest is Test {
         try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
             fail();
         } catch Error(string memory reason) {
-            assertEq(reason, "The `skipVerifySourceCode` option cannot be used together with the `licenseType` option");
+            assertEq(reason, "The `licenseType` option cannot be used when the `skipVerifySourceCode` option is `true`");
         }
     }
 

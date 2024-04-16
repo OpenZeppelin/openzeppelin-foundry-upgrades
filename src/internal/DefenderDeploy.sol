@@ -56,9 +56,9 @@ library DefenderDeploy {
 
         if (!(defenderOpts.licenseType).toSlice().empty()) {
             if (defenderOpts.skipVerifySourceCode) {
-                revert("The `skipVerifySourceCode` option cannot be used together with the `licenseType` option");
+                revert("The `licenseType` option cannot be used when the `skipVerifySourceCode` option is `true`");
             } else if (defenderOpts.skipLicenseType) {
-                revert("The `skipLicenseType` option cannot be used together with the `licenseType` option");
+                revert("The `licenseType` option cannot be used when the `skipLicenseType` option is `true`");
             }
         }
 
