@@ -428,10 +428,10 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.2.tgz#b1d03075e49290d06570b2fd42154d76c2a5d210"
   integrity sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==
 
-"@openzeppelin/defender-deploy-client-cli@0.0.1-alpha.5":
-  version "0.0.1-alpha.5"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/defender-deploy-client-cli/-/defender-deploy-client-cli-0.0.1-alpha.5.tgz#088643b9574c6ede1fab538b52c772bfe6cc7465"
-  integrity sha512-Ict4BAiV6Xa6MjGaXFoHYif+LG9MqZ4IihDkKswbceoxAx1QosMA36tRV4CV/24ZLt2FZKH7QJjZtWhjVX7CZQ==
+"@openzeppelin/defender-deploy-client-cli@0.0.1-alpha.6":
+  version "0.0.1-alpha.6"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/defender-deploy-client-cli/-/defender-deploy-client-cli-0.0.1-alpha.6.tgz#73a7671cc8343883ad8b462784e3ce5a41d9d150"
+  integrity sha512-yye4SGdaRFRo3BVSJEsJQzguBAYFIX7x9O6KRrCTKR8pcPsNn+tSBokk4qDMKKYmdMcAfZVCvGxwG3F3ZjXcmg==
   dependencies:
     "@openzeppelin/defender-sdk-base-client" "^1.10.0"
     "@openzeppelin/defender-sdk-deploy-client" "^1.10.0"
