@@ -210,7 +210,10 @@ contract DefenderDeployTest is Test {
         try i.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts) {
             fail();
         } catch Error(string memory reason) {
-            assertEq(reason, "The `licenseType` option cannot be used when the `skipVerifySourceCode` option is `true`");
+            assertEq(
+                reason,
+                "The `licenseType` option cannot be used when the `skipVerifySourceCode` option is `true`"
+            );
         }
     }
 
