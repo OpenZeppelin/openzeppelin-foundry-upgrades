@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 (2024-04-17)
+
+- Defender: Fix handling of license types for block explorer verification, support `licenseType` and `skipLicenseType` options. ([#43](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/43))
+
 ## 0.2.1 (2024-03-20)
 
 - Throw helpful error message if AST not found in contract artifacts. ([#28](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/28))

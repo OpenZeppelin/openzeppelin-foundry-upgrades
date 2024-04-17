@@ -54,6 +54,14 @@ library DefenderDeploy {
     ) internal view returns (string[] memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
+        if (!(defenderOpts.licenseType).toSlice().empty()) {
+            if (defenderOpts.skipVerifySourceCode) {
+                revert("The `licenseType` option cannot be used when the `skipVerifySourceCode` option is `true`");
+            } else if (defenderOpts.skipLicenseType) {
+                revert("The `licenseType` option cannot be used when the `skipLicenseType` option is `true`");
+            }
+        }
+
         string[] memory inputBuilder = new string[](255);
 
         uint8 i = 0;
@@ -72,8 +80,6 @@ library DefenderDeploy {
         inputBuilder[i++] = Strings.toString(block.chainid);
         inputBuilder[i++] = "--buildInfoFile";
         inputBuilder[i++] = buildInfoFile;
-        inputBuilder[i++] = "--licenseType";
-        inputBuilder[i++] = contractInfo.license;
         if (constructorData.length > 0) {
             inputBuilder[i++] = "--constructorBytecode";
             inputBuilder[i++] = vm.toString(constructorData);
@@ -81,6 +87,12 @@ library DefenderDeploy {
         if (defenderOpts.skipVerifySourceCode) {
             inputBuilder[i++] = "--verifySourceCode";
             inputBuilder[i++] = "false";
+        } else if (!(defenderOpts.licenseType).toSlice().empty()) {
+            inputBuilder[i++] = "--licenseType";
+            inputBuilder[i++] = string.concat('"', defenderOpts.licenseType, '"');
+        } else if (!defenderOpts.skipLicenseType && !(contractInfo.license).toSlice().empty()) {
+            inputBuilder[i++] = "--licenseType";
+            inputBuilder[i++] = string.concat('"', _toLicenseType(contractInfo), '"');
         }
         if (!(defenderOpts.relayerId).toSlice().empty()) {
             inputBuilder[i++] = "--relayerId";
@@ -98,6 +110,49 @@ library DefenderDeploy {
         }
 
         return inputs;
+    }
+
+    function _toLicenseType(ContractInfo memory contractInfo) private pure returns (string memory) {
+        strings.slice memory id = contractInfo.license.toSlice();
+        if (id.equals("UNLICENSED".toSlice())) {
+            return "None";
+        } else if (id.equals("Unlicense".toSlice())) {
+            return "Unlicense";
+        } else if (id.equals("MIT".toSlice())) {
+            return "MIT";
+        } else if (id.equals("GPL-2.0-only".toSlice()) || id.equals("GPL-2.0-or-later".toSlice())) {
+            return "GNU GPLv2";
+        } else if (id.equals("GPL-3.0-only".toSlice()) || id.equals("GPL-3.0-or-later".toSlice())) {
+            return "GNU GPLv3";
+        } else if (id.equals("LGPL-2.1-only".toSlice()) || id.equals("LGPL-2.1-or-later".toSlice())) {
+            return "GNU LGPLv2.1";
+        } else if (id.equals("LGPL-3.0-only".toSlice()) || id.equals("LGPL-3.0-or-later".toSlice())) {
+            return "GNU LGPLv3";
+        } else if (id.equals("BSD-2-Clause".toSlice())) {
+            return "BSD-2-Clause";
+        } else if (id.equals("BSD-3-Clause".toSlice())) {
+            return "BSD-3-Clause";
+        } else if (id.equals("MPL-2.0".toSlice())) {
+            return "MPL-2.0";
+        } else if (id.equals("OSL-3.0".toSlice())) {
+            return "OSL-3.0";
+        } else if (id.equals("Apache-2.0".toSlice())) {
+            return "Apache-2.0";
+        } else if (id.equals("AGPL-3.0-only".toSlice()) || id.equals("AGPL-3.0-or-later".toSlice())) {
+            return "GNU AGPLv3";
+        } else if (id.equals("BUSL-1.1".toSlice())) {
+            return "BSL 1.1";
+        } else {
+            revert(
+                string.concat(
+                    "SPDX license identifier ",
+                    contractInfo.license,
+                    " in ",
+                    contractInfo.contractPath,
+                    " does not look like a supported license for block explorer verification. Use the `licenseType` option to specify a license type, or set the `skipLicenseType` option to `true` to skip."
+                )
+            );
+        }
     }
 
     function proposeUpgrade(
