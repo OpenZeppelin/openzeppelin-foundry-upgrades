@@ -57,7 +57,7 @@ extra_output = ["storageLayout"]
 3. If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
-If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety checks, you can skip the above steps and use the [`unsafeSkipAllChecks` option](src/Options.sol) when calling `Upgrades` library's functions, or use [UnsafeUpgrades.sol](src/UnsafeUpgrades.sol) instead. Note that these are dangerous options meant to be used as a last resort.
 
 ### Output directory configuration
 

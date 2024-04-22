@@ -63,7 +63,7 @@ extra_output = ["storageLayout"]
 
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
-If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety checks, you can skip the above steps and use the xref:api-foundry-upgrades.adoc#Options[`unsafeSkipAllChecks` option] when calling the `Upgrades` library's functions, or use xref:api-foundry-upgrades.adoc#UnsafeUpgrades[`UnsafeUpgrades`] instead. Note that these are dangerous options meant to be used as a last resort.
 
 === Output directory configuration
 
