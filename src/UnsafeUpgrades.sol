@@ -13,14 +13,14 @@ import {Utils} from "./internal/Utils.sol";
 import {Upgrades} from "./Upgrades.sol";
 
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests, without any validations.
+ * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests, without validations.
  *
- * Requires implementation contracts to be deployed before calling its functions.
+ * Requires implementation contracts to be deployed first.
  *
  * Works with `forge coverage`.
  * Does not require `--ffi` and does not require a clean compilation before each run.
  *
- * WARNING: This library does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
+ * WARNING: UnsafeUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
  * Use Upgrades.sol if you want validations to be run.
  */
 library UnsafeUpgrades {

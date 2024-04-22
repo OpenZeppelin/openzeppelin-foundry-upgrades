@@ -18,7 +18,7 @@ import {Utils} from "./internal/Utils.sol";
 import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
+ * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests, with validations that run before each deployment.
  */
 library Upgrades {
     /**
