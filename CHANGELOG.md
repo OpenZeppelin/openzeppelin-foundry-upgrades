@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add `UnsafeUpgrades.sol` for use with code coverage testing.
+
 ## 0.2.2 (2024-04-17)
 
 - Defender: Fix handling of license types for block explorer verification, support `licenseType` and `skipLicenseType` options. ([#43](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/43))
