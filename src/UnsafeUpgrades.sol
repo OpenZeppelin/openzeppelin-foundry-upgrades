@@ -10,7 +10,6 @@ import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol"
 
 import {Vm} from "forge-std/Vm.sol";
 import {Utils} from "./internal/Utils.sol";
-import {Upgrades} from "./Upgrades.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge tests, without validations.
