@@ -23,7 +23,10 @@ contract UnsafeUpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function testUUPS() public {
-        address proxy = UnsafeUpgrades.deployUUPSProxy(address(new GreeterProxiable()), abi.encodeCall(Greeter.initialize, ("hello")));
+        address proxy = UnsafeUpgrades.deployUUPSProxy(
+            address(new GreeterProxiable()),
+            abi.encodeCall(Greeter.initialize, ("hello"))
+        );
         Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
 
@@ -55,7 +58,12 @@ contract UnsafeUpgradesTest is Test {
 
         assertEq(instance.greeting(), "hello");
 
-        UnsafeUpgrades.upgradeProxy(proxy, address(new GreeterV2()), abi.encodeCall(GreeterV2.resetGreeting, ()), msg.sender);
+        UnsafeUpgrades.upgradeProxy(
+            proxy,
+            address(new GreeterV2()),
+            abi.encodeCall(GreeterV2.resetGreeting, ()),
+            msg.sender
+        );
         address implAddressV2 = Upgrades.getImplementationAddress(proxy);
 
         assertEq(Upgrades.getAdminAddress(proxy), adminAddress);
@@ -92,7 +100,11 @@ contract UnsafeUpgradesTest is Test {
 
         Vm vm = Vm(CHEATCODE_ADDRESS);
         vm.startPrank(msg.sender);
-        UnsafeUpgrades.upgradeProxy(proxy, address(new GreeterV2Proxiable()), abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()));
+        UnsafeUpgrades.upgradeProxy(
+            proxy,
+            address(new GreeterV2Proxiable()),
+            abi.encodeCall(GreeterV2Proxiable.resetGreeting, ())
+        );
         vm.stopPrank();
     }
 
@@ -107,7 +119,7 @@ contract UnsafeUpgradesTest is Test {
 
     function testWithConstructor() public {
         address proxy = UnsafeUpgrades.deployTransparentProxy(
-            address (new WithConstructor(123)),
+            address(new WithConstructor(123)),
             msg.sender,
             abi.encodeCall(WithConstructor.initialize, (456))
         );
@@ -116,7 +128,7 @@ contract UnsafeUpgradesTest is Test {
     }
 
     function testNoInitializer() public {
-        address proxy = UnsafeUpgrades.deployTransparentProxy(address (new WithConstructor(123)), msg.sender, "");
+        address proxy = UnsafeUpgrades.deployTransparentProxy(address(new WithConstructor(123)), msg.sender, "");
         assertEq(WithConstructor(proxy).a(), 123);
     }
 }

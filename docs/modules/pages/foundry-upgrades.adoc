@@ -195,7 +195,7 @@ address proxy = Upgrades.deployUUPSProxy(
 );
 ```
 
-WARNING: xref:api-foundry-upgrades.adoc#UnsafeUpgrades[`UnsafeUpgrades`] does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using xref:api-foundry-upgrades.adoc#Upgrades[`Upgrades`] in scripts.
+WARNING: xref:api-foundry-upgrades.adoc#UnsafeUpgrades[`UnsafeUpgrades`] is not recommended for use in Forge scripts. It does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using xref:api-foundry-upgrades.adoc#Upgrades[`Upgrades`] in scripts.
 
 == API
 

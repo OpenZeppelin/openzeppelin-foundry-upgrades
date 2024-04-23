@@ -177,4 +177,4 @@ address proxy = Upgrades.deployUUPSProxy(
 ```
 
 > **Warning**
-[UnsafeUpgrades.sol](src/UnsafeUpgrades.sol) does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using [Upgrades.sol](src/Upgrades.sol) in scripts.
+[UnsafeUpgrades.sol](src/UnsafeUpgrades.sol) is not recommended for use in Forge scripts. It does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using [Upgrades.sol](src/Upgrades.sol) in scripts.
