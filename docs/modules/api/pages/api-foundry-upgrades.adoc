@@ -23,6 +23,7 @@
 :xref-Upgrades-getImplementationAddress-address-: xref:#Upgrades-getImplementationAddress-address-
 :xref-Upgrades-getBeaconAddress-address-: xref:#Upgrades-getBeaconAddress-address-
 :xref-Upgrades-tryPrank-address-: xref:#Upgrades-tryPrank-address-
+:xref-Upgrades-CHEATCODE_ADDRESS-address: xref:#Upgrades-CHEATCODE_ADDRESS-address
 :xref-UnsafeUpgrades-deployUUPSProxy-address-bytes-: xref:#UnsafeUpgrades-deployUUPSProxy-address-bytes-
 :xref-UnsafeUpgrades-deployTransparentProxy-address-address-bytes-: xref:#UnsafeUpgrades-deployTransparentProxy-address-address-bytes-
 :xref-UnsafeUpgrades-upgradeProxy-address-address-bytes-: xref:#UnsafeUpgrades-upgradeProxy-address-address-bytes-
@@ -111,6 +112,7 @@ struct DefenderOptions {
 :getImplementationAddress: pass:normal[xref:#Upgrades-getImplementationAddress-address-[`++getImplementationAddress++`]]
 :getBeaconAddress: pass:normal[xref:#Upgrades-getBeaconAddress-address-[`++getBeaconAddress++`]]
 :tryPrank: pass:normal[xref:#Upgrades-tryPrank-address-[`++tryPrank++`]]
+:CHEATCODE_ADDRESS: pass:normal[xref:#Upgrades-CHEATCODE_ADDRESS-address[`++CHEATCODE_ADDRESS++`]]
 
 [.contract]
 [[Upgrades]]
@@ -156,6 +158,13 @@ Library for deploying and managing upgradeable contracts from Forge scripts or t
 .Modifiers
 --
 * {xref-Upgrades-tryPrank-address-}[`++tryPrank(deployer)++`]
+--
+
+[.contract-index]
+.Internal Variables
+--
+* {xref-Upgrades-CHEATCODE_ADDRESS-address}[`++address constant CHEATCODE_ADDRESS++`]
+
 --
 
 [.contract-item]
@@ -527,6 +536,10 @@ Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
 
 Runs a function as a prank, or just runs the function normally if the prank could not be started.
 
+[.contract-item]
+[[Upgrades-CHEATCODE_ADDRESS-address]]
+==== `address [.contract-item-name]#++CHEATCODE_ADDRESS++#` [.item-kind]#internal constant#
+
 :deployUUPSProxy: pass:normal[xref:#UnsafeUpgrades-deployUUPSProxy-address-bytes-[`++deployUUPSProxy++`]]
 :deployTransparentProxy: pass:normal[xref:#UnsafeUpgrades-deployTransparentProxy-address-address-bytes-[`++deployTransparentProxy++`]]
 :upgradeProxy: pass:normal[xref:#UnsafeUpgrades-upgradeProxy-address-address-bytes-[`++upgradeProxy++`]]
@@ -550,6 +563,7 @@ Library for deploying and managing upgradeable contracts from Forge tests, witho
 
 Requires implementation contracts to be instantiated first. Can be used with `forge coverage`.
 Does not require `--ffi` and does not require a clean compilation before each run.
+Not supported for OpenZeppelin Defender deployments.
 
 WARNING: Not recommended for use in Forge scripts.
 UnsafeUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.

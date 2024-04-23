@@ -17,6 +17,7 @@ import {Upgrades} from "./Upgrades.sol";
  *
  * Requires implementation contracts to be instantiated first. Can be used with `forge coverage`.
  * Does not require `--ffi` and does not require a clean compilation before each run.
+ * Not supported for OpenZeppelin Defender deployments.
  *
  * WARNING: Not recommended for use in Forge scripts.
  * UnsafeUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
