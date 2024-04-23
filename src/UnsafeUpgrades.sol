@@ -15,8 +15,9 @@ import {Upgrades} from "./Upgrades.sol";
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge tests, without validations.
  *
- * Requires implementation contracts to be instantiated first. Can be used with `forge coverage`.
+ * Can be used with `forge coverage`. Requires implementation contracts to be instantiated first.
  * Does not require `--ffi` and does not require a clean compilation before each run.
+ *
  * Not supported for OpenZeppelin Defender deployments.
  *
  * WARNING: Not recommended for use in Forge scripts.
