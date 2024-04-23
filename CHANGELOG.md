@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Add `UnsafeUpgrades.sol` for use with code coverage testing.
+- Add `UnsafeUpgrades` library for use with `forge coverage`. ([#45](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/45))
 
 ## 0.2.2 (2024-04-17)
 
