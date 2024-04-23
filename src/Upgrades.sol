@@ -106,7 +106,7 @@ library Upgrades {
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
 
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        Vm vm = Vm(CHEATCODE_ADDRESS);
 
         bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
         if (adminSlot == bytes32(0)) {
@@ -364,7 +364,7 @@ library Upgrades {
      * @return Admin address
      */
     function getAdminAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        Vm vm = Vm(CHEATCODE_ADDRESS);
 
         bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
         return address(uint160(uint256(adminSlot)));
@@ -377,7 +377,7 @@ library Upgrades {
      * @return Implementation address
      */
     function getImplementationAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        Vm vm = Vm(CHEATCODE_ADDRESS);
 
         bytes32 implSlot = vm.load(proxy, ERC1967Utils.IMPLEMENTATION_SLOT);
         return address(uint160(uint256(implSlot)));
@@ -390,7 +390,7 @@ library Upgrades {
      * @return Beacon address
      */
     function getBeaconAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        Vm vm = Vm(CHEATCODE_ADDRESS);
 
         bytes32 beaconSlot = vm.load(proxy, ERC1967Utils.BEACON_SLOT);
         return address(uint160(uint256(beaconSlot)));
@@ -402,7 +402,7 @@ library Upgrades {
      * @dev Runs a function as a prank, or just runs the function normally if the prank could not be started.
      */
     modifier tryPrank(address deployer) {
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        Vm vm = Vm(CHEATCODE_ADDRESS);
 
         try vm.startPrank(deployer) {
             _;
@@ -413,6 +413,7 @@ library Upgrades {
     }
 
     using strings for *;
+    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function _validate(string memory contractName, Options memory opts, bool requireReference) private {
         if (opts.unsafeSkipAllChecks) {
@@ -491,7 +492,7 @@ library Upgrades {
         if (opts.defender.useDefenderDeploy) {
             return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
         } else {
-            bytes memory creationCode = Vm(Utils.CHEATCODE_ADDRESS).getCode(contractName);
+            bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
             address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
             if (deployedAddress == address(0)) {
                 revert(
