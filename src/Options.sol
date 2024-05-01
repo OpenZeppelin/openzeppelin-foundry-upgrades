@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/**
+ * Common options.
+ */
 struct Options {
     /**
      * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1".
@@ -36,6 +39,9 @@ struct Options {
     DefenderOptions defender;
 }
 
+/**
+ * Options for OpenZeppelin Defender deployments.
+ */
 struct DefenderOptions {
     /**
      * Deploys contracts using OpenZeppelin Defender instead of broadcasting deployments through Forge. Defaults to `false`. See DEFENDER.md.
@@ -79,4 +85,30 @@ struct DefenderOptions {
      * Defaults to `false`.
      */
     bool skipLicenseType;
+    /**
+     * Transaction overrides for OpenZeppelin Defender deployments.
+     */
+    TxOverrides txOverrides;
+}
+
+/**
+ * Transaction overrides for OpenZeppelin Defender deployments.
+ */
+struct TxOverrides {
+    /**
+     * Maximum amount of gas to allow the deployment transaction to use.
+     */
+    uint256 gasLimit;
+    /**
+     * Gas price for legacy transactions, in wei.
+     */
+    uint256 gasPrice;
+    /**
+     * Maximum total fee per gas, in wei.
+     */
+    uint256 maxFeePerGas;
+    /**
+     * Maximum priority fee per gas, in wei.
+     */
+    uint256 maxPriorityFeePerGas;
 }
