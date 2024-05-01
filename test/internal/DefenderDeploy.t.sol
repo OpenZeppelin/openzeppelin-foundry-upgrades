@@ -95,6 +95,10 @@ contract DefenderDeployTest is Test {
         opts.relayerId = "my-relayer-id";
         opts.salt = 0xabc0000000000000000000000000000000000000000000000000000000000123;
         opts.licenseType = "My License Type"; // not a valid type, but this just sets the option
+        opts.txOverrides.gasLimit = 100000;
+        opts.txOverrides.gasPrice = 1 gwei;
+        opts.txOverrides.maxFeePerGas = 2 gwei;
+        opts.txOverrides.maxPriorityFeePerGas = 0.5 gwei;
 
         string memory commandString = _toString(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
@@ -107,7 +111,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "My License Type" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123'
+                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "My License Type" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123 --gasLimit 100000 --gasPrice 1000000000 --maxFeePerGas 2000000000 --maxPriorityFeePerGas 500000000'
             )
         );
     }
