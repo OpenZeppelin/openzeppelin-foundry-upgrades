@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 (2024-05-02)
+
+- Defender: Add `txOverrides` option. ([#49](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/49))
+
 ## 0.2.2 (2024-04-17)
 
 - Defender: Fix handling of license types for block explorer verification, support `licenseType` and `skipLicenseType` options. ([#43](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/43))
