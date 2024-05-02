@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.3 (2024-05-02)
 
 - Defender: Add `txOverrides` option. ([#49](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/49))
 
