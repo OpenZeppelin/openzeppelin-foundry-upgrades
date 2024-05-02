@@ -8,6 +8,8 @@ The following options can be used with some of the below functions. See https://
 
 {{DefenderOptions}}
 
+{{TxOverrides}}
+
 == Foundry Upgrades
 
 {{Upgrades}}

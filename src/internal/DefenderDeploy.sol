@@ -102,6 +102,22 @@ library DefenderDeploy {
             inputBuilder[i++] = "--salt";
             inputBuilder[i++] = vm.toString(defenderOpts.salt);
         }
+        if (defenderOpts.txOverrides.gasLimit != 0) {
+            inputBuilder[i++] = "--gasLimit";
+            inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.gasLimit);
+        }
+        if (defenderOpts.txOverrides.gasPrice != 0) {
+            inputBuilder[i++] = "--gasPrice";
+            inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.gasPrice);
+        }
+        if (defenderOpts.txOverrides.maxFeePerGas != 0) {
+            inputBuilder[i++] = "--maxFeePerGas";
+            inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.maxFeePerGas);
+        }
+        if (defenderOpts.txOverrides.maxPriorityFeePerGas != 0) {
+            inputBuilder[i++] = "--maxPriorityFeePerGas";
+            inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.maxPriorityFeePerGas);
+        }
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
