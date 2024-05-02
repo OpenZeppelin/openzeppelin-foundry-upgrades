@@ -2,11 +2,10 @@
 pragma solidity ^0.8.20;
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
-import {ITransparentUpgradeableProxy, TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
+import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
@@ -16,6 +15,8 @@ import {Options} from "./Options.sol";
 import {Versions} from "./internal/Versions.sol";
 import {Utils} from "./internal/Utils.sol";
 import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
+import {IUpgradeableProxy} from "./internal/interfaces/IUpgradeableProxy.sol";
+import {IProxyAdmin} from "./internal/interfaces/IProxyAdmin.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -108,13 +109,22 @@ library Upgrades {
 
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
+        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
         if (adminSlot == bytes32(0)) {
-            // No admin contract: upgrade directly using interface
-            ITransparentUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
+            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(proxy);
+            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
+                IUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
+            } else {
+                IUpgradeableProxy(proxy).upgradeTo(newImpl);
+            }
         } else {
-            ProxyAdmin admin = ProxyAdmin(address(uint160(uint256(adminSlot))));
-            admin.upgradeAndCall(ITransparentUpgradeableProxy(proxy), newImpl, data);
+            address admin = address(uint160(uint256(adminSlot)));
+            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(admin);
+            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
+                IProxyAdmin(admin).upgradeAndCall(proxy, newImpl, data);
+            } else {
+                IProxyAdmin(admin).upgrade(proxy, newImpl);
+            }
         }
     }
 
@@ -366,7 +376,7 @@ library Upgrades {
     function getAdminAddress(address proxy) internal view returns (address) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        bytes32 adminSlot = vm.load(proxy, ERC1967Utils.ADMIN_SLOT);
+        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
         return address(uint160(uint256(adminSlot)));
     }
 
@@ -379,7 +389,7 @@ library Upgrades {
     function getImplementationAddress(address proxy) internal view returns (address) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        bytes32 implSlot = vm.load(proxy, ERC1967Utils.IMPLEMENTATION_SLOT);
+        bytes32 implSlot = vm.load(proxy, _IMPLEMENTATION_SLOT);
         return address(uint160(uint256(implSlot)));
     }
 
@@ -392,7 +402,7 @@ library Upgrades {
     function getBeaconAddress(address proxy) internal view returns (address) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        bytes32 beaconSlot = vm.load(proxy, ERC1967Utils.BEACON_SLOT);
+        bytes32 beaconSlot = vm.load(proxy, _BEACON_SLOT);
         return address(uint160(uint256(beaconSlot)));
     }
 
@@ -412,8 +422,35 @@ library Upgrades {
         }
     }
 
+    /**
+     * @dev Storage slot with the address of the implementation.
+     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1.
+     */
+    bytes32 private constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
+
+    /**
+     * @dev Storage slot with the admin of the proxy.
+     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1.
+     */
+    bytes32 private constant _ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
+
+    /**
+     * @dev Storage slot with the UpgradeableBeacon contract which defines the implementation for the proxy.
+     * This is the keccak-256 hash of "eip1967.proxy.beacon" subtracted by 1.
+     */
+    bytes32 private constant _BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
+
     using strings for *;
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
+
+    function _getUpgradeInterfaceVersion(address addr) private returns (string memory) {
+        (bool success, bytes memory returndata) = addr.call(abi.encodeWithSignature("getUpgradeInterfaceVersion()"));
+        if (success) {
+            return abi.decode(returndata, (string));
+        } else {
+            return "";
+        }
+    }
 
     function _validate(string memory contractName, Options memory opts, bool requireReference) private {
         if (opts.unsafeSkipAllChecks) {
