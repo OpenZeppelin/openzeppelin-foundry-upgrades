@@ -15,7 +15,7 @@ import {ProposeUpgradeResponse, ApprovalProcessResponse} from "../Defender.sol";
 /**
  * @dev Internal helper methods for Defender deployments.
  *
- * DO NOT USE DIRECTLY. Use Defender.sol instead.
+ * WARNING: DO NOT USE DIRECTLY. Use Defender.sol instead.
  */
 library DefenderDeploy {
     using strings for *;

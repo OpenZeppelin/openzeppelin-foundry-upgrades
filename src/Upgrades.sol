@@ -18,6 +18,8 @@ import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 import {IUpgradeableProxy} from "./internal/interfaces/IUpgradeableProxy.sol";
 import {IProxyAdmin} from "./internal/interfaces/IProxyAdmin.sol";
 
+import {ValidateAndUpgrade} from "./internal/ValidateAndUpgrade.sol";
+
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
  */
@@ -36,7 +38,17 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return address(_deploy("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(impl, initializerData), opts));
+
+        if (opts.defender.useDefenderDeploy) {
+            return
+                DefenderDeploy.deploy(
+                    "ERC1967Proxy.sol:ERC1967Proxy",
+                    abi.encode(impl, initializerData),
+                    opts.defender
+                );
+        } else {
+            return address(new ERC1967Proxy(impl, initializerData));
+        }
     }
 
     /**
@@ -67,14 +79,17 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return
-            address(
-                _deploy(
+
+        if (opts.defender.useDefenderDeploy) {
+            return
+                DefenderDeploy.deploy(
                     "TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
                     abi.encode(impl, initialOwner, initializerData),
-                    opts
-                )
-            );
+                    opts.defender
+                );
+        } else {
+            return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
+        }
     }
 
     /**
@@ -105,27 +120,7 @@ library Upgrades {
      * @param opts Common options
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
-        address newImpl = prepareUpgrade(contractName, opts);
-
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
-        if (adminSlot == bytes32(0)) {
-            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(proxy);
-            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
-                IUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
-            } else {
-                IUpgradeableProxy(proxy).upgradeTo(newImpl);
-            }
-        } else {
-            address admin = address(uint160(uint256(adminSlot)));
-            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(admin);
-            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
-                IProxyAdmin(admin).upgradeAndCall(proxy, newImpl, data);
-            } else {
-                IProxyAdmin(admin).upgrade(proxy, newImpl);
-            }
-        }
+        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts);
     }
 
     /**
@@ -139,7 +134,7 @@ library Upgrades {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
         Options memory opts;
-        upgradeProxy(proxy, contractName, data, opts);
+        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts);
     }
 
     /**
@@ -164,8 +159,8 @@ library Upgrades {
         bytes memory data,
         Options memory opts,
         address tryCaller
-    ) internal tryPrank(tryCaller) {
-        upgradeProxy(proxy, contractName, data, opts);
+    ) internal {
+        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts, tryCaller);
     }
 
     /**
@@ -183,14 +178,9 @@ library Upgrades {
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
-    function upgradeProxy(
-        address proxy,
-        string memory contractName,
-        bytes memory data,
-        address tryCaller
-    ) internal tryPrank(tryCaller) {
+    function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal {
         Options memory opts;
-        upgradeProxy(proxy, contractName, data, opts, tryCaller);
+        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts, tryCaller);
     }
 
     /**
@@ -207,7 +197,17 @@ library Upgrades {
         Options memory opts
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
-        return _deploy("UpgradeableBeacon.sol:UpgradeableBeacon", abi.encode(impl, initialOwner), opts);
+
+        if (opts.defender.useDefenderDeploy) {
+            return
+                DefenderDeploy.deploy(
+                    "UpgradeableBeacon.sol:UpgradeableBeacon",
+                    abi.encode(impl, initialOwner),
+                    opts.defender
+                );
+        } else {
+            return address(new UpgradeableBeacon(impl, initialOwner));
+        }
     }
 
     /**
@@ -232,8 +232,7 @@ library Upgrades {
      * @param opts Common options
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
-        address newImpl = prepareUpgrade(contractName, opts);
-        UpgradeableBeacon(beacon).upgradeTo(newImpl);
+        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts);
     }
 
     /**
@@ -246,7 +245,7 @@ library Upgrades {
      */
     function upgradeBeacon(address beacon, string memory contractName) internal {
         Options memory opts;
-        upgradeBeacon(beacon, contractName, opts);
+        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts);
     }
 
     /**
@@ -269,8 +268,8 @@ library Upgrades {
         string memory contractName,
         Options memory opts,
         address tryCaller
-    ) internal tryPrank(tryCaller) {
-        upgradeBeacon(beacon, contractName, opts);
+    ) internal {
+        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts, tryCaller);
     }
 
     /**
@@ -287,9 +286,9 @@ library Upgrades {
      * @param contractName Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
      */
-    function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal tryPrank(tryCaller) {
+    function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal {
         Options memory opts;
-        upgradeBeacon(beacon, contractName, opts, tryCaller);
+        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts, tryCaller);
     }
 
     /**
@@ -313,7 +312,11 @@ library Upgrades {
      * @return Proxy address
      */
     function deployBeaconProxy(address beacon, bytes memory data, Options memory opts) internal returns (address) {
-        return _deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts);
+        if (opts.defender.useDefenderDeploy) {
+            return DefenderDeploy.deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts.defender);
+        } else {
+            return address(new BeaconProxy(beacon, data));
+        }
     }
 
     /**
@@ -323,7 +326,7 @@ library Upgrades {
      * @param opts Common options
      */
     function validateImplementation(string memory contractName, Options memory opts) internal {
-        _validate(contractName, opts, false);
+        ValidateAndUpgrade.validateImplementation(contractName, opts);
     }
 
     /**
@@ -334,8 +337,7 @@ library Upgrades {
      * @return Address of the implementation contract
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
-        validateImplementation(contractName, opts);
-        return _deploy(contractName, opts.constructorData, opts);
+        return ValidateAndUpgrade.deployImplementation(contractName, opts);
     }
 
     /**
@@ -347,7 +349,7 @@ library Upgrades {
      * @param opts Common options
      */
     function validateUpgrade(string memory contractName, Options memory opts) internal {
-        _validate(contractName, opts, true);
+        ValidateAndUpgrade.validateUpgrade(contractName, opts);
     }
 
     /**
@@ -363,8 +365,7 @@ library Upgrades {
      * @return Address of the new implementation contract
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
-        validateUpgrade(contractName, opts);
-        return _deploy(contractName, opts.constructorData, opts);
+        return ValidateAndUpgrade.prepareUpgrade(contractName, opts);
     }
 
     /**
@@ -374,10 +375,7 @@ library Upgrades {
      * @return Admin address
      */
     function getAdminAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
-        return address(uint160(uint256(adminSlot)));
+        return ValidateAndUpgrade.getAdminAddress(proxy);
     }
 
     /**
@@ -387,10 +385,7 @@ library Upgrades {
      * @return Implementation address
      */
     function getImplementationAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        bytes32 implSlot = vm.load(proxy, _IMPLEMENTATION_SLOT);
-        return address(uint160(uint256(implSlot)));
+        return ValidateAndUpgrade.getImplementationAddress(proxy);
     }
 
     /**
@@ -400,170 +395,6 @@ library Upgrades {
      * @return Beacon address
      */
     function getBeaconAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        bytes32 beaconSlot = vm.load(proxy, _BEACON_SLOT);
-        return address(uint160(uint256(beaconSlot)));
-    }
-
-    /**
-     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
-     *
-     * @dev Runs a function as a prank, or just runs the function normally if the prank could not be started.
-     */
-    modifier tryPrank(address deployer) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        try vm.startPrank(deployer) {
-            _;
-            vm.stopPrank();
-        } catch {
-            _;
-        }
-    }
-
-    /**
-     * @dev Storage slot with the address of the implementation.
-     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1.
-     */
-    bytes32 private constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
-
-    /**
-     * @dev Storage slot with the admin of the proxy.
-     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1.
-     */
-    bytes32 private constant _ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
-
-    /**
-     * @dev Storage slot with the UpgradeableBeacon contract which defines the implementation for the proxy.
-     * This is the keccak-256 hash of "eip1967.proxy.beacon" subtracted by 1.
-     */
-    bytes32 private constant _BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
-
-    using strings for *;
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
-    function _getUpgradeInterfaceVersion(address addr) private returns (string memory) {
-        (bool success, bytes memory returndata) = addr.call(abi.encodeWithSignature("getUpgradeInterfaceVersion()"));
-        if (success) {
-            return abi.decode(returndata, (string));
-        } else {
-            return "";
-        }
-    }
-
-    function _validate(string memory contractName, Options memory opts, bool requireReference) private {
-        if (opts.unsafeSkipAllChecks) {
-            return;
-        }
-
-        string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
-        Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
-        string memory stdout = string(result.stdout);
-
-        // CLI validate command uses exit code to indicate if the validation passed or failed.
-        // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
-        if (result.exitCode == 0 && stdout.toSlice().contains("SUCCESS".toSlice())) {
-            return;
-        } else if (result.stderr.length > 0) {
-            // Validations failed to run
-            revert(string.concat("Failed to run upgrade safety validation: ", string(result.stderr)));
-        } else {
-            // Validations ran but some contracts were not upgrade safe
-            revert(string.concat("Upgrade safety validation failed:\n", stdout));
-        }
-    }
-
-    function _buildValidateCommand(
-        string memory contractName,
-        Options memory opts,
-        bool requireReference
-    ) private view returns (string[] memory) {
-        string memory outDir = Utils.getOutDir();
-
-        string[] memory inputBuilder = new string[](255);
-
-        uint8 i = 0;
-
-        inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE);
-        inputBuilder[i++] = "validate";
-        inputBuilder[i++] = string.concat(outDir, "/build-info");
-        inputBuilder[i++] = "--contract";
-        inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
-
-        if (bytes(opts.referenceContract).length != 0) {
-            inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
-        }
-
-        if (opts.unsafeSkipStorageCheck) {
-            inputBuilder[i++] = "--unsafeSkipStorageCheck";
-        } else if (requireReference) {
-            inputBuilder[i++] = "--requireReference";
-        }
-
-        if (bytes(opts.unsafeAllow).length != 0) {
-            inputBuilder[i++] = "--unsafeAllow";
-            inputBuilder[i++] = opts.unsafeAllow;
-        }
-
-        if (opts.unsafeAllowRenames) {
-            inputBuilder[i++] = "--unsafeAllowRenames";
-        }
-
-        // Create a copy of inputs but with the correct length
-        string[] memory inputs = new string[](i);
-        for (uint8 j = 0; j < i; j++) {
-            inputs[j] = inputBuilder[j];
-        }
-
-        return inputs;
-    }
-
-    function _deploy(
-        string memory contractName,
-        bytes memory constructorData,
-        Options memory opts
-    ) private returns (address) {
-        if (opts.defender.useDefenderDeploy) {
-            return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
-        } else {
-            bytes memory creationCode = Vm(CHEATCODE_ADDRESS).getCode(contractName);
-            address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
-            if (deployedAddress == address(0)) {
-                revert(
-                    string.concat(
-                        "Failed to deploy contract ",
-                        contractName,
-                        ' using constructor data "',
-                        string(constructorData),
-                        '"'
-                    )
-                );
-            }
-            return deployedAddress;
-        }
-    }
-
-    function _deployFromBytecode(bytes memory bytecode) private returns (address) {
-        address addr;
-        assembly {
-            addr := create(0, add(bytecode, 32), mload(bytecode))
-        }
-        return addr;
-    }
-
-    /**
-     * @dev Precompile proxy contracts so that they can be deployed by name via the `_deploy` function.
-     *
-     * NOTE: This function is never called and has no effect, but must be kept to ensure that the proxy contracts are included in the compilation.
-     */
-    function _precompileProxyContracts() private pure {
-        bytes memory dummy;
-        dummy = type(ERC1967Proxy).creationCode;
-        dummy = type(TransparentUpgradeableProxy).creationCode;
-        dummy = type(UpgradeableBeacon).creationCode;
-        dummy = type(BeaconProxy).creationCode;
+        return ValidateAndUpgrade.getBeaconAddress(proxy);
     }
 }
