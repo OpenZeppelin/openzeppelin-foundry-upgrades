@@ -26,7 +26,10 @@ contract UpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function testUUPS() public {
-        address proxy = Upgrades.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(Greeter.initialize, ("hello")));
+        address proxy = Upgrades.deployUUPSProxy(
+            "GreeterProxiable.sol",
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+        );
         Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
 
@@ -48,7 +51,7 @@ contract UpgradesTest is Test {
         address proxy = Upgrades.deployTransparentProxy(
             "Greeter.sol",
             msg.sender,
-            abi.encodeCall(Greeter.initialize, ("hello"))
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
         );
         Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
@@ -71,7 +74,7 @@ contract UpgradesTest is Test {
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
         address implAddressV1 = IBeacon(beacon).implementation();
 
-        address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")));
+        address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, (msg.sender, "hello")));
         Greeter instance = Greeter(proxy);
 
         assertEq(Upgrades.getBeaconAddress(proxy), beacon);
@@ -81,16 +84,17 @@ contract UpgradesTest is Test {
         Upgrades.upgradeBeacon(beacon, "GreeterV2.sol", msg.sender);
         address implAddressV2 = IBeacon(beacon).implementation();
 
-        GreeterV2(address(instance)).resetGreeting();
+        Vm(CHEATCODE_ADDRESS).prank(msg.sender);
+        GreeterV2(address(instance)).setGreeting("modified");
 
-        assertEq(instance.greeting(), "resetted");
+        assertEq(instance.greeting(), "modified");
         assertFalse(implAddressV2 == implAddressV1);
     }
 
     function testUpgradeProxyWithoutCaller() public {
         address proxy = Upgrades.deployUUPSProxy(
             "GreeterProxiable.sol",
-            abi.encodeCall(GreeterProxiable.initialize, ("hello"))
+            abi.encodeCall(GreeterProxiable.initialize, (msg.sender, "hello"))
         );
 
         Vm vm = Vm(CHEATCODE_ADDRESS);

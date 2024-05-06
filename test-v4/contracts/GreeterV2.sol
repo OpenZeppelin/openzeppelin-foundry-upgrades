@@ -4,7 +4,8 @@ pragma solidity ^0.8.20;
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract Greeter is Initializable, OwnableUpgradeable {
+/// @custom:oz-upgrades-from Greeter
+contract GreeterV2 is Initializable, OwnableUpgradeable {
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -12,8 +13,16 @@ contract Greeter is Initializable, OwnableUpgradeable {
 
     string public greeting;
 
-    function initialize(address initialOwner, string memory _greeting) public initializer {
-        __Ownable_init(initialOwner);
+    function initialize(string memory _greeting) initializer public {
+        __Ownable_init();
+        greeting = _greeting;
+    }
+
+    function resetGreeting() public reinitializer(2) {
+        greeting = "resetted";
+    }
+
+    function setGreeting(string memory _greeting) public onlyOwner {
         greeting = _greeting;
     }
 }
