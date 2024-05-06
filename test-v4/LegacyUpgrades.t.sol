@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
@@ -31,7 +31,7 @@ contract LegacyUpgradesTest is Test {
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address proxy = address(new ERC1967Proxy(
             impl,
-            abi.encodeCall(Greeter.initialize, ("hello"))
+            abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
         Vm(CHEATCODE_ADDRESS).stopPrank();
 
@@ -43,7 +43,7 @@ contract LegacyUpgradesTest is Test {
         LegacyUpgrades.upgradeProxy(
             proxy,
             "GreeterV2Proxiable.sol",
-            abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()),
+            abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector),
             msg.sender
         );
         address implAddressV2 = LegacyUpgrades.getImplementationAddress(proxy);
@@ -61,7 +61,7 @@ contract LegacyUpgradesTest is Test {
         address proxy = address(new TransparentUpgradeableProxy(
             impl,
             proxyAdmin,
-            abi.encodeCall(Greeter.initialize, ("hello"))
+            abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
         Vm(CHEATCODE_ADDRESS).stopPrank();
 
@@ -73,7 +73,7 @@ contract LegacyUpgradesTest is Test {
 
         assertEq(instance.greeting(), "hello");
 
-        LegacyUpgrades.upgradeProxy(proxy, "GreeterV2.sol", abi.encodeCall(GreeterV2.resetGreeting, ()), msg.sender);
+        LegacyUpgrades.upgradeProxy(proxy, "GreeterV2.sol", abi.encodeWithSelector(GreeterV2.resetGreeting.selector), msg.sender);
         address implAddressV2 = LegacyUpgrades.getImplementationAddress(proxy);
 
         assertEq(LegacyUpgrades.getAdminAddress(proxy), adminAddress);
@@ -88,7 +88,7 @@ contract LegacyUpgradesTest is Test {
 
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address beacon = address(new UpgradeableBeacon(implAddressV1));
-        address proxy = address(new BeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello"))));
+        address proxy = address(new BeaconProxy(beacon, abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))));
         Vm(CHEATCODE_ADDRESS).stopPrank();
 
         Greeter instance = Greeter(proxy);
@@ -114,9 +114,9 @@ contract LegacyUpgradesTest is Test {
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address proxy = address(new ERC1967Proxy(
             impl,
-            abi.encodeCall(Greeter.initialize, ("hello"))
+            abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
-        LegacyUpgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()));
+        LegacyUpgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector));
         Vm(CHEATCODE_ADDRESS).stopPrank();
     }
 

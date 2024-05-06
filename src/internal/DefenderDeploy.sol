@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
@@ -39,7 +39,7 @@ library DefenderDeploy {
         string memory stdout = string(result.stdout);
 
         if (result.exitCode != 0) {
-            revert(string.concat("Failed to deploy contract ", contractName, ": ", string(result.stderr)));
+            revert(string(abi.encodePacked("Failed to deploy contract ", contractName, ": ", string(result.stderr))));
         }
 
         string memory deployedAddress = _parseLine("Deployed to address: ", stdout, true);
@@ -67,9 +67,8 @@ library DefenderDeploy {
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat(
-            "@openzeppelin/defender-deploy-client-cli@",
-            Versions.DEFENDER_DEPLOY_CLIENT_CLI
+        inputBuilder[i++] = string(
+            abi.encodePacked("@openzeppelin/defender-deploy-client-cli@", Versions.DEFENDER_DEPLOY_CLIENT_CLI)
         );
         inputBuilder[i++] = "deploy";
         inputBuilder[i++] = "--contractName";
@@ -89,10 +88,10 @@ library DefenderDeploy {
             inputBuilder[i++] = "false";
         } else if (!(defenderOpts.licenseType).toSlice().empty()) {
             inputBuilder[i++] = "--licenseType";
-            inputBuilder[i++] = string.concat('"', defenderOpts.licenseType, '"');
+            inputBuilder[i++] = string(abi.encodePacked('"', defenderOpts.licenseType, '"'));
         } else if (!defenderOpts.skipLicenseType && !(contractInfo.license).toSlice().empty()) {
             inputBuilder[i++] = "--licenseType";
-            inputBuilder[i++] = string.concat('"', _toLicenseType(contractInfo), '"');
+            inputBuilder[i++] = string(abi.encodePacked('"', _toLicenseType(contractInfo), '"'));
         }
         if (!(defenderOpts.relayerId).toSlice().empty()) {
             inputBuilder[i++] = "--relayerId";
@@ -160,12 +159,14 @@ library DefenderDeploy {
             return "BSL 1.1";
         } else {
             revert(
-                string.concat(
-                    "SPDX license identifier ",
-                    contractInfo.license,
-                    " in ",
-                    contractInfo.contractPath,
-                    " does not look like a supported license for block explorer verification. Use the `licenseType` option to specify a license type, or set the `skipLicenseType` option to `true` to skip."
+                string(
+                    abi.encodePacked(
+                        "SPDX license identifier ",
+                        contractInfo.license,
+                        " in ",
+                        contractInfo.contractPath,
+                        " does not look like a supported license for block explorer verification. Use the `licenseType` option to specify a license type, or set the `skipLicenseType` option to `true` to skip."
+                    )
                 )
             );
         }
@@ -196,11 +197,13 @@ library DefenderDeploy {
 
         if (result.exitCode != 0) {
             revert(
-                string.concat(
-                    "Failed to propose upgrade for proxy ",
-                    vm.toString(proxyAddress),
-                    ": ",
-                    string(result.stderr)
+                string(
+                    abi.encodePacked(
+                        "Failed to propose upgrade for proxy ",
+                        vm.toString(proxyAddress),
+                        ": ",
+                        string(result.stderr)
+                    )
                 )
             );
         }
@@ -229,7 +232,9 @@ library DefenderDeploy {
             }
             return slice.toString();
         } else if (required) {
-            revert(string.concat("Failed to find line with prefix '", expectedPrefix, "' in output: ", stdout));
+            revert(
+                string(abi.encodePacked("Failed to find line with prefix '", expectedPrefix, "' in output: ", stdout))
+            );
         } else {
             return "";
         }
@@ -249,9 +254,8 @@ library DefenderDeploy {
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat(
-            "@openzeppelin/defender-deploy-client-cli@",
-            Versions.DEFENDER_DEPLOY_CLIENT_CLI
+        inputBuilder[i++] = string(
+            abi.encodePacked("@openzeppelin/defender-deploy-client-cli@", Versions.DEFENDER_DEPLOY_CLIENT_CLI)
         );
         inputBuilder[i++] = "proposeUpgrade";
         inputBuilder[i++] = "--proxyAddress";
@@ -287,7 +291,7 @@ library DefenderDeploy {
         string memory stdout = string(result.stdout);
 
         if (result.exitCode != 0) {
-            revert(string.concat("Failed to get approval process: ", string(result.stderr)));
+            revert(string(abi.encodePacked("Failed to get approval process: ", string(result.stderr))));
         }
 
         return parseApprovalProcessResponse(stdout);
@@ -316,9 +320,8 @@ library DefenderDeploy {
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat(
-            "@openzeppelin/defender-deploy-client-cli@",
-            Versions.DEFENDER_DEPLOY_CLIENT_CLI
+        inputBuilder[i++] = string(
+            abi.encodePacked("@openzeppelin/defender-deploy-client-cli@", Versions.DEFENDER_DEPLOY_CLIENT_CLI)
         );
         inputBuilder[i++] = command;
         inputBuilder[i++] = "--chainId";

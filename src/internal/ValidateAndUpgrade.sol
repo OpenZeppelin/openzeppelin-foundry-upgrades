@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
@@ -270,10 +270,10 @@ library ValidateAndUpgrade {
             return;
         } else if (result.stderr.length > 0) {
             // Validations failed to run
-            revert(string.concat("Failed to run upgrade safety validation: ", string(result.stderr)));
+            revert(string(abi.encodePacked("Failed to run upgrade safety validation: ", string(result.stderr))));
         } else {
             // Validations ran but some contracts were not upgrade safe
-            revert(string.concat("Upgrade safety validation failed:\n", stdout));
+            revert(string(abi.encodePacked("Upgrade safety validation failed:\n", stdout)));
         }
     }
 
@@ -289,9 +289,9 @@ library ValidateAndUpgrade {
         uint8 i = 0;
 
         inputBuilder[i++] = "npx";
-        inputBuilder[i++] = string.concat("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE);
+        inputBuilder[i++] = string(abi.encodePacked("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE));
         inputBuilder[i++] = "validate";
-        inputBuilder[i++] = string.concat(outDir, "/build-info");
+        inputBuilder[i++] = string(abi.encodePacked(outDir, "/build-info"));
         inputBuilder[i++] = "--contract";
         inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
 

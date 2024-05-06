@@ -1,28 +1,28 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
 import {strings} from "solidity-stringutils/src/strings.sol";
 
 struct ContractInfo {
-    /**
+    /*
      * Contract path, e.g. "src/MyContract.sol"
      */
     string contractPath;
-    /**
+    /*
      * Contract short name, e.g. "MyContract"
      */
     string shortName;
-    /**
+    /*
      * License identifier from the compiled artifact. Empty if not found.
      */
     string license;
-    /**
+    /*
      * keccak256 hash of the source code from metadata
      */
     string sourceCodeHash;
-    /**
+    /*
      * Artifact file path e.g. the path of the file 'out/MyContract.sol/MyContract.json'
      */
     string artifactPath;
@@ -46,7 +46,7 @@ library Utils {
         string memory outDir
     ) internal view returns (string memory) {
         ContractInfo memory info = getContractInfo(contractName, outDir);
-        return string.concat(info.contractPath, ":", info.shortName);
+        return string(abi.encodePacked(info.contractPath, ":", info.shortName));
     }
 
     /**
@@ -68,21 +68,20 @@ library Utils {
 
         string memory fileName = _toFileName(contractName);
 
-        string memory artifactPath = string.concat(
-            vm.projectRoot(),
-            "/",
-            outDir,
-            "/",
-            fileName,
-            "/",
-            info.shortName,
-            ".json"
+        string memory artifactPath = string(
+            abi.encodePacked(vm.projectRoot(), "/", outDir, "/", fileName, "/", info.shortName, ".json")
         );
         string memory artifactJson = vm.readFile(artifactPath);
 
         if (!vm.keyExistsJson(artifactJson, ".ast")) {
             revert(
-                string.concat("Could not find AST in artifact ", artifactPath, ". Set `ast = true` in foundry.toml")
+                string(
+                    abi.encodePacked(
+                        "Could not find AST in artifact ",
+                        artifactPath,
+                        ". Set `ast = true` in foundry.toml"
+                    )
+                )
             );
         }
         info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
@@ -91,7 +90,7 @@ library Utils {
         }
         info.sourceCodeHash = vm.parseJsonString(
             artifactJson,
-            string.concat(".metadata.sources.['", info.contractPath, "'].keccak256")
+            string(abi.encodePacked(".metadata.sources.['", info.contractPath, "'].keccak256"))
         );
         info.artifactPath = artifactPath;
 
@@ -116,17 +115,19 @@ library Utils {
         string[] memory inputs = new string[](4);
         inputs[0] = "grep";
         inputs[1] = "-rl";
-        inputs[2] = string.concat('"', sourceCodeHash, '"');
-        inputs[3] = string.concat(outDir, "/build-info");
+        inputs[2] = string(abi.encodePacked('"', sourceCodeHash, '"'));
+        inputs[3] = string(abi.encodePacked(outDir, "/build-info"));
 
         Vm.FfiResult memory result = runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
 
         if (!stdout.toSlice().endsWith(".json".toSlice())) {
             revert(
-                string.concat(
-                    "Could not find build-info file with matching source code hash for contract ",
-                    contractName
+                string(
+                    abi.encodePacked(
+                        "Could not find build-info file with matching source code hash for contract ",
+                        contractName
+                    )
                 )
             );
         }
@@ -170,10 +171,12 @@ library Utils {
             }
 
             revert(
-                string.concat(
-                    "Contract name ",
-                    contractName,
-                    " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
+                string(
+                    abi.encodePacked(
+                        "Contract name ",
+                        contractName,
+                        " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
+                    )
                 )
             );
         }
@@ -192,10 +195,12 @@ library Utils {
             return jsonName.toSlice().until(".json".toSlice()).toString();
         } else {
             revert(
-                string.concat(
-                    "Contract name ",
-                    contractName,
-                    " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
+                string(
+                    abi.encodePacked(
+                        "Contract name ",
+                        contractName,
+                        " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
+                    )
                 )
             );
         }
@@ -210,9 +215,9 @@ library Utils {
     function toBashCommand(string[] memory inputs, string memory bashPath) internal pure returns (string[] memory) {
         string memory commandString;
         for (uint i = 0; i < inputs.length; i++) {
-            commandString = string.concat(commandString, inputs[i]);
+            commandString = string(abi.encodePacked(commandString, inputs[i]));
             if (i != inputs.length - 1) {
-                commandString = string.concat(commandString, " ");
+                commandString = string(abi.encodePacked(commandString, " "));
             }
         }
 
@@ -238,10 +243,12 @@ library Utils {
         if (result.exitCode != 0 && result.stdout.length == 0 && result.stderr.length == 0) {
             // On Windows, using the bash executable from WSL leads to a non-zero exit code and no output
             revert(
-                string.concat(
-                    'Failed to run bash command with "',
-                    bashCommand[0],
-                    '". If you are using Windows, set the OPENZEPPELIN_BASH_PATH environment variable to the fully qualified path of the bash executable. For example, if you are using Git for Windows, add the following line in the .env file of your project (using forward slashes):\nOPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"'
+                string(
+                    abi.encodePacked(
+                        'Failed to run bash command with "',
+                        bashCommand[0],
+                        '". If you are using Windows, set the OPENZEPPELIN_BASH_PATH environment variable to the fully qualified path of the bash executable. For example, if you are using Git for Windows, add the following line in the .env file of your project (using forward slashes):\nOPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"'
+                    )
                 )
             );
         } else {

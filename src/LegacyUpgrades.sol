@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Options} from "../src/Options.sol";
 import {ValidateAndUpgrade} from "../src/internal/ValidateAndUpgrade.sol";

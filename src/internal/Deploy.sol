@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {Utils} from "./Utils.sol";
@@ -15,12 +15,14 @@ library Deploy {
         address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
         if (deployedAddress == address(0)) {
             revert(
-                string.concat(
-                    "Failed to deploy contract ",
-                    contractName,
-                    ' using constructor data "',
-                    string(constructorData),
-                    '"'
+                string(
+                    abi.encodePacked(
+                        "Failed to deploy contract ",
+                        contractName,
+                        ' using constructor data "',
+                        string(constructorData),
+                        '"'
+                    )
                 )
             );
         }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Script} from "forge-std/Script.sol";
 
@@ -33,24 +33,24 @@ contract LegacyUpgradesScript is Script {
 
         // deploy each type of proxy for testing
         address proxyAdmin = address(new ProxyAdmin());
-        address transparentProxy = address(new TransparentUpgradeableProxy(greeter, proxyAdmin, abi.encodeCall(Greeter.initialize, ("hello"))));
+        address transparentProxy = address(new TransparentUpgradeableProxy(greeter, proxyAdmin, abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))));
 
         address uupsProxy = address(new ERC1967Proxy(
             greeterProxiable,
-            abi.encodeCall(GreeterProxiable.initialize, ("hello"))
+            abi.encodeWithSelector(GreeterProxiable.initialize.selector, ("hello"))
         ));
 
         address beacon = address(new UpgradeableBeacon(greeter));
-        new BeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")));
+        new BeaconProxy(beacon, abi.encodeWithSelector(Greeter.initialize.selector, ("hello")));
 
         // example upgrade of an existing transparent proxy
-        LegacyUpgrades.upgradeProxy(transparentProxy, "GreeterV2.sol", abi.encodeCall(GreeterV2.resetGreeting, ()));
+        LegacyUpgrades.upgradeProxy(transparentProxy, "GreeterV2.sol", abi.encodeWithSelector(GreeterV2.resetGreeting.selector));
 
         // example upgrade of an existing UUPS proxy
         LegacyUpgrades.upgradeProxy(
             uupsProxy,
             "GreeterV2Proxiable.sol",
-            abi.encodeCall(GreeterV2Proxiable.resetGreeting, ())
+            abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector)
         );
 
         // example upgrade of an existing beacon
