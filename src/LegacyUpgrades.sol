@@ -300,5 +300,35 @@ library UnsafeUpgrades {
      */
     function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal {
         Core.upgradeBeaconTo(beacon, newImpl, tryCaller);
-     }
+    }
+
+    /**
+     * @dev Gets the admin address of a transparent proxy from its ERC1967 admin storage slot.
+     *
+     * @param proxy Address of a transparent proxy
+     * @return Admin address
+     */
+    function getAdminAddress(address proxy) internal view returns (address) {
+        return Core.getAdminAddress(proxy);
+    }
+
+    /**
+     * @dev Gets the implementation address of a transparent or UUPS proxy from its ERC1967 implementation storage slot.
+     *
+     * @param proxy Address of a transparent or UUPS proxy
+     * @return Implementation address
+     */
+    function getImplementationAddress(address proxy) internal view returns (address) {
+        return Core.getImplementationAddress(proxy);
+    }
+
+    /**
+     * @dev Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
+     *
+     * @param proxy Address of a beacon proxy
+     * @return Beacon address
+     */
+    function getBeaconAddress(address proxy) internal view returns (address) {
+        return Core.getBeaconAddress(proxy);
+    }
 }
