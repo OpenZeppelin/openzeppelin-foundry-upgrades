@@ -195,7 +195,7 @@ library Core {
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
-        return _deploy(contractName, opts.constructorData, opts);
+        return deploy(contractName, opts.constructorData, opts);
     }
 
     /**
@@ -224,7 +224,7 @@ library Core {
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
         validateUpgrade(contractName, opts);
-        return _deploy(contractName, opts.constructorData, opts);
+        return deploy(contractName, opts.constructorData, opts);
     }
 
     /**
@@ -380,11 +380,11 @@ library Core {
         return inputs;
     }
 
-    function _deploy(
+    function deploy(
         string memory contractName,
         bytes memory constructorData,
         Options memory opts
-    ) private returns (address) {
+    ) internal returns (address) {
         if (opts.defender.useDefenderDeploy) {
             return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
         } else {

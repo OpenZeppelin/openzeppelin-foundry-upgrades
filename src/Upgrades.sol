@@ -40,16 +40,7 @@ library Upgrades {
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
 
-        if (opts.defender.useDefenderDeploy) {
-            return
-                DefenderDeploy.deploy(
-                    "ERC1967Proxy.sol:ERC1967Proxy",
-                    abi.encode(impl, initializerData),
-                    opts.defender
-                );
-        } else {
-            return address(new ERC1967Proxy(impl, initializerData));
-        }
+        return Core.deploy("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(impl, initializerData), opts);
     }
 
     /**
@@ -81,16 +72,12 @@ library Upgrades {
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
 
-        if (opts.defender.useDefenderDeploy) {
-            return
-                DefenderDeploy.deploy(
-                    "TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
-                    abi.encode(impl, initialOwner, initializerData),
-                    opts.defender
-                );
-        } else {
-            return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
-        }
+        return
+            Core.deploy(
+                "TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
+                abi.encode(impl, initialOwner, initializerData),
+                opts
+            );
     }
 
     /**
@@ -199,16 +186,7 @@ library Upgrades {
     ) internal returns (address) {
         address impl = deployImplementation(contractName, opts);
 
-        if (opts.defender.useDefenderDeploy) {
-            return
-                DefenderDeploy.deploy(
-                    "UpgradeableBeacon.sol:UpgradeableBeacon",
-                    abi.encode(impl, initialOwner),
-                    opts.defender
-                );
-        } else {
-            return address(new UpgradeableBeacon(impl, initialOwner));
-        }
+        return Core.deploy("UpgradeableBeacon.sol:UpgradeableBeacon", abi.encode(impl, initialOwner), opts);
     }
 
     /**
@@ -313,11 +291,7 @@ library Upgrades {
      * @return Proxy address
      */
     function deployBeaconProxy(address beacon, bytes memory data, Options memory opts) internal returns (address) {
-        if (opts.defender.useDefenderDeploy) {
-            return DefenderDeploy.deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts.defender);
-        } else {
-            return address(new BeaconProxy(beacon, data));
-        }
+        return Core.deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts);
     }
 
     /**
