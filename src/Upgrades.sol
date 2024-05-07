@@ -14,11 +14,10 @@ import {strings} from "solidity-stringutils/src/strings.sol";
 import {Options} from "./Options.sol";
 import {Versions} from "./internal/Versions.sol";
 import {Utils} from "./internal/Utils.sol";
+import {Core} from "./internal/Core.sol";
 import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 import {IUpgradeableProxy} from "./internal/interfaces/IUpgradeableProxy.sol";
 import {IProxyAdmin} from "./internal/interfaces/IProxyAdmin.sol";
-
-import {ValidateAndUpgrade} from "./internal/ValidateAndUpgrade.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -150,7 +149,7 @@ library Upgrades {
      * @param opts Common options
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts);
+        Core.upgradeProxy(proxy, contractName, data, opts);
     }
 
     /**
@@ -164,7 +163,7 @@ library Upgrades {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts);
+        Core.upgradeProxy(proxy, contractName, data, opts);
     }
 
     /**
@@ -190,7 +189,7 @@ library Upgrades {
         Options memory opts,
         address tryCaller
     ) internal {
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts, tryCaller);
+        Core.upgradeProxy(proxy, contractName, data, opts, tryCaller);
     }
 
     /**
@@ -210,7 +209,7 @@ library Upgrades {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts, tryCaller);
+        Core.upgradeProxy(proxy, contractName, data, opts, tryCaller);
     }
 
     /**
@@ -221,7 +220,7 @@ library Upgrades {
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      */
     function unsafeUpgradeProxy(address proxy, address newImpl, bytes memory data) internal {
-        ValidateAndUpgrade.unsafeUpgradeProxy(proxy, newImpl, data);
+        Core.unsafeUpgradeProxy(proxy, newImpl, data);
     }
 
     /**
@@ -237,13 +236,8 @@ library Upgrades {
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
-    function unsafeUpgradeProxy(
-        address proxy,
-        address newImpl,
-        bytes memory data,
-        address tryCaller
-    ) internal {
-        ValidateAndUpgrade.unsafeUpgradeProxy(proxy, newImpl, data, tryCaller);
+    function unsafeUpgradeProxy(address proxy, address newImpl, bytes memory data, address tryCaller) internal {
+        Core.unsafeUpgradeProxy(proxy, newImpl, data, tryCaller);
     }
 
     /**
@@ -306,7 +300,7 @@ library Upgrades {
      * @param opts Common options
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts);
+        Core.upgradeBeacon(beacon, contractName, opts);
     }
 
     /**
@@ -319,7 +313,7 @@ library Upgrades {
      */
     function upgradeBeacon(address beacon, string memory contractName) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts);
+        Core.upgradeBeacon(beacon, contractName, opts);
     }
 
     /**
@@ -343,7 +337,7 @@ library Upgrades {
         Options memory opts,
         address tryCaller
     ) internal {
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts, tryCaller);
+        Core.upgradeBeacon(beacon, contractName, opts, tryCaller);
     }
 
     /**
@@ -362,7 +356,7 @@ library Upgrades {
      */
     function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts, tryCaller);
+        Core.upgradeBeacon(beacon, contractName, opts, tryCaller);
     }
 
     /**
@@ -372,7 +366,7 @@ library Upgrades {
      * @param newImpl Address of the new implementation contract to upgrade to
      */
     function unsafeUpgradeBeacon(address beacon, address newImpl) internal {
-        ValidateAndUpgrade.unsafeUpgradeBeacon(beacon, newImpl);
+        Core.unsafeUpgradeBeacon(beacon, newImpl);
     }
 
     /**
@@ -388,7 +382,7 @@ library Upgrades {
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
      */
     function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal {
-        ValidateAndUpgrade.unsafeUpgradeBeacon(beacon, newImpl, tryCaller);
+        Core.unsafeUpgradeBeacon(beacon, newImpl, tryCaller);
     }
 
     /**
@@ -437,7 +431,7 @@ library Upgrades {
      * @param opts Common options
      */
     function validateImplementation(string memory contractName, Options memory opts) internal {
-        ValidateAndUpgrade.validateImplementation(contractName, opts);
+        Core.validateImplementation(contractName, opts);
     }
 
     /**
@@ -448,7 +442,7 @@ library Upgrades {
      * @return Address of the implementation contract
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
-        return ValidateAndUpgrade.deployImplementation(contractName, opts);
+        return Core.deployImplementation(contractName, opts);
     }
 
     /**
@@ -460,7 +454,7 @@ library Upgrades {
      * @param opts Common options
      */
     function validateUpgrade(string memory contractName, Options memory opts) internal {
-        ValidateAndUpgrade.validateUpgrade(contractName, opts);
+        Core.validateUpgrade(contractName, opts);
     }
 
     /**
@@ -476,7 +470,7 @@ library Upgrades {
      * @return Address of the new implementation contract
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
-        return ValidateAndUpgrade.prepareUpgrade(contractName, opts);
+        return Core.prepareUpgrade(contractName, opts);
     }
 
     /**
@@ -486,7 +480,7 @@ library Upgrades {
      * @return Admin address
      */
     function getAdminAddress(address proxy) internal view returns (address) {
-        return ValidateAndUpgrade.getAdminAddress(proxy);
+        return Core.getAdminAddress(proxy);
     }
 
     /**
@@ -496,7 +490,7 @@ library Upgrades {
      * @return Implementation address
      */
     function getImplementationAddress(address proxy) internal view returns (address) {
-        return ValidateAndUpgrade.getImplementationAddress(proxy);
+        return Core.getImplementationAddress(proxy);
     }
 
     /**
@@ -506,6 +500,6 @@ library Upgrades {
      * @return Beacon address
      */
     function getBeaconAddress(address proxy) internal view returns (address) {
-        return ValidateAndUpgrade.getBeaconAddress(proxy);
+        return Core.getBeaconAddress(proxy);
     }
 }

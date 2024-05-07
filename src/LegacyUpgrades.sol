@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Options} from "../src/Options.sol";
-import {ValidateAndUpgrade} from "../src/internal/ValidateAndUpgrade.sol";
+import {Core} from "../src/internal/Core.sol";
 
 /**
  * @dev Library for managing upgradeable contracts from Forge scripts or tests.
@@ -21,7 +21,7 @@ library LegacyUpgrades {
      * @param opts Common options
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts);
+        Core.upgradeProxy(proxy, contractName, data, opts);
     }
 
     /**
@@ -35,7 +35,7 @@ library LegacyUpgrades {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts);
+        Core.upgradeProxy(proxy, contractName, data, opts);
     }
 
     /**
@@ -61,7 +61,7 @@ library LegacyUpgrades {
         Options memory opts,
         address tryCaller
     ) internal {
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts, tryCaller);
+        Core.upgradeProxy(proxy, contractName, data, opts, tryCaller);
     }
 
     /**
@@ -81,7 +81,7 @@ library LegacyUpgrades {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, address tryCaller) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeProxy(proxy, contractName, data, opts, tryCaller);
+        Core.upgradeProxy(proxy, contractName, data, opts, tryCaller);
     }
 
     /**
@@ -94,7 +94,7 @@ library LegacyUpgrades {
      * @param opts Common options
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts);
+        Core.upgradeBeacon(beacon, contractName, opts);
     }
 
     /**
@@ -107,7 +107,7 @@ library LegacyUpgrades {
      */
     function upgradeBeacon(address beacon, string memory contractName) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts);
+        Core.upgradeBeacon(beacon, contractName, opts);
     }
 
     /**
@@ -131,7 +131,7 @@ library LegacyUpgrades {
         Options memory opts,
         address tryCaller
     ) internal {
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts, tryCaller);
+        Core.upgradeBeacon(beacon, contractName, opts, tryCaller);
     }
 
     /**
@@ -150,7 +150,7 @@ library LegacyUpgrades {
      */
     function upgradeBeacon(address beacon, string memory contractName, address tryCaller) internal {
         Options memory opts;
-        ValidateAndUpgrade.upgradeBeacon(beacon, contractName, opts, tryCaller);
+        Core.upgradeBeacon(beacon, contractName, opts, tryCaller);
     }
 
     /**
@@ -160,7 +160,7 @@ library LegacyUpgrades {
      * @param opts Common options
      */
     function validateImplementation(string memory contractName, Options memory opts) internal {
-        ValidateAndUpgrade.validateImplementation(contractName, opts);
+        Core.validateImplementation(contractName, opts);
     }
 
     /**
@@ -171,7 +171,7 @@ library LegacyUpgrades {
      * @return Address of the implementation contract
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
-        return ValidateAndUpgrade.deployImplementation(contractName, opts);
+        return Core.deployImplementation(contractName, opts);
     }
 
     /**
@@ -183,7 +183,7 @@ library LegacyUpgrades {
      * @param opts Common options
      */
     function validateUpgrade(string memory contractName, Options memory opts) internal {
-        ValidateAndUpgrade.validateUpgrade(contractName, opts);
+        Core.validateUpgrade(contractName, opts);
     }
 
     /**
@@ -199,7 +199,7 @@ library LegacyUpgrades {
      * @return Address of the new implementation contract
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
-        return ValidateAndUpgrade.prepareUpgrade(contractName, opts);
+        return Core.prepareUpgrade(contractName, opts);
     }
 
     /**
@@ -209,7 +209,7 @@ library LegacyUpgrades {
      * @return Admin address
      */
     function getAdminAddress(address proxy) internal view returns (address) {
-        return ValidateAndUpgrade.getAdminAddress(proxy);
+        return Core.getAdminAddress(proxy);
     }
 
     /**
@@ -219,7 +219,7 @@ library LegacyUpgrades {
      * @return Implementation address
      */
     function getImplementationAddress(address proxy) internal view returns (address) {
-        return ValidateAndUpgrade.getImplementationAddress(proxy);
+        return Core.getImplementationAddress(proxy);
     }
 
     /**
@@ -229,6 +229,6 @@ library LegacyUpgrades {
      * @return Beacon address
      */
     function getBeaconAddress(address proxy) internal view returns (address) {
-        return ValidateAndUpgrade.getBeaconAddress(proxy);
+        return Core.getBeaconAddress(proxy);
     }
 }

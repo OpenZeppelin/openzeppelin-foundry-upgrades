@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Options, DefenderOptions} from "./Options.sol";
-import {ValidateAndUpgrade} from "./internal/ValidateAndUpgrade.sol";
+import {Core} from "./internal/Core.sol";
 import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 /**
@@ -109,8 +109,8 @@ library Defender {
         Options memory opts
     ) internal returns (ProposeUpgradeResponse memory) {
         opts.defender.useDefenderDeploy = true;
-        address proxyAdminAddress = ValidateAndUpgrade.getAdminAddress(proxyAddress);
-        address newImplementationAddress = ValidateAndUpgrade.prepareUpgrade(newImplementationContractName, opts);
+        address proxyAdminAddress = Core.getAdminAddress(proxyAddress);
+        address newImplementationAddress = Core.prepareUpgrade(newImplementationContractName, opts);
         return
             DefenderDeploy.proposeUpgrade(
                 proxyAddress,

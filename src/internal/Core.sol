@@ -9,7 +9,6 @@ import {Options} from "../Options.sol";
 import {Versions} from "./Versions.sol";
 import {Utils} from "./Utils.sol";
 import {DefenderDeploy} from "./DefenderDeploy.sol";
-import {Deploy} from "./Deploy.sol";
 
 import {IUpgradeableProxy} from "./interfaces/IUpgradeableProxy.sol";
 import {IProxyAdmin} from "./interfaces/IProxyAdmin.sol";
@@ -20,7 +19,7 @@ import {IUpgradeableBeacon} from "./interfaces/IUpgradeableBeacon.sol";
  *
  * WARNING: DO NOT USE DIRECTLY. Use Upgrades.sol or Defender.sol instead.
  */
-library ValidateAndUpgrade {
+library Core {
     /**
      * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
      *
@@ -90,7 +89,6 @@ library ValidateAndUpgrade {
             }
         }
     }
-
 
     /**
      * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
@@ -197,7 +195,7 @@ library ValidateAndUpgrade {
      */
     function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
         validateImplementation(contractName, opts);
-        return _deployImpl(contractName, opts.constructorData, opts);
+        return _deploy(contractName, opts.constructorData, opts);
     }
 
     /**
@@ -226,7 +224,7 @@ library ValidateAndUpgrade {
      */
     function prepareUpgrade(string memory contractName, Options memory opts) internal returns (address) {
         validateUpgrade(contractName, opts);
-        return _deployImpl(contractName, opts.constructorData, opts);
+        return _deploy(contractName, opts.constructorData, opts);
     }
 
     /**
@@ -383,7 +381,7 @@ library ValidateAndUpgrade {
         return inputs;
     }
 
-    function _deployImpl(
+    function _deploy(
         string memory contractName,
         bytes memory constructorData,
         Options memory opts
@@ -391,7 +389,34 @@ library ValidateAndUpgrade {
         if (opts.defender.useDefenderDeploy) {
             return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
         } else {
-            return Deploy.deploy(contractName, constructorData);
+            return _directDeploy(contractName, constructorData);
         }
+    }
+
+    function _directDeploy(string memory contractName, bytes memory constructorData) internal returns (address) {
+        bytes memory creationCode = Vm(Utils.CHEATCODE_ADDRESS).getCode(contractName);
+        address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
+        if (deployedAddress == address(0)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "Failed to deploy contract ",
+                        contractName,
+                        ' using constructor data "',
+                        string(constructorData),
+                        '"'
+                    )
+                )
+            );
+        }
+        return deployedAddress;
+    }
+
+    function _deployFromBytecode(bytes memory bytecode) private returns (address) {
+        address addr;
+        assembly {
+            addr := create(0, add(bytecode, 32), mload(bytecode))
+        }
+        return addr;
     }
 }
