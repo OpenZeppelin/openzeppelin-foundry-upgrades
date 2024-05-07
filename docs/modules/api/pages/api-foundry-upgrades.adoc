@@ -22,8 +22,17 @@
 :xref-Upgrades-getAdminAddress-address-: xref:#Upgrades-getAdminAddress-address-
 :xref-Upgrades-getImplementationAddress-address-: xref:#Upgrades-getImplementationAddress-address-
 :xref-Upgrades-getBeaconAddress-address-: xref:#Upgrades-getBeaconAddress-address-
-:xref-Upgrades-tryPrank-address-: xref:#Upgrades-tryPrank-address-
-:xref-Upgrades-CHEATCODE_ADDRESS-address: xref:#Upgrades-CHEATCODE_ADDRESS-address
+:xref-UnsafeUpgrades-deployUUPSProxy-address-bytes-: xref:#UnsafeUpgrades-deployUUPSProxy-address-bytes-
+:xref-UnsafeUpgrades-deployTransparentProxy-address-address-bytes-: xref:#UnsafeUpgrades-deployTransparentProxy-address-address-bytes-
+:xref-UnsafeUpgrades-upgradeProxy-address-address-bytes-: xref:#UnsafeUpgrades-upgradeProxy-address-address-bytes-
+:xref-UnsafeUpgrades-upgradeProxy-address-address-bytes-address-: xref:#UnsafeUpgrades-upgradeProxy-address-address-bytes-address-
+:xref-UnsafeUpgrades-deployBeacon-address-address-: xref:#UnsafeUpgrades-deployBeacon-address-address-
+:xref-UnsafeUpgrades-upgradeBeacon-address-address-: xref:#UnsafeUpgrades-upgradeBeacon-address-address-
+:xref-UnsafeUpgrades-upgradeBeacon-address-address-address-: xref:#UnsafeUpgrades-upgradeBeacon-address-address-address-
+:xref-UnsafeUpgrades-deployBeaconProxy-address-bytes-: xref:#UnsafeUpgrades-deployBeaconProxy-address-bytes-
+:xref-UnsafeUpgrades-getAdminAddress-address-: xref:#UnsafeUpgrades-getAdminAddress-address-
+:xref-UnsafeUpgrades-getImplementationAddress-address-: xref:#UnsafeUpgrades-getImplementationAddress-address-
+:xref-UnsafeUpgrades-getBeaconAddress-address-: xref:#UnsafeUpgrades-getBeaconAddress-address-
 :xref-Defender-deployContract-string-: xref:#Defender-deployContract-string-
 :xref-Defender-deployContract-string-struct-DefenderOptions-: xref:#Defender-deployContract-string-struct-DefenderOptions-
 :xref-Defender-deployContract-string-bytes-: xref:#Defender-deployContract-string-bytes-
@@ -120,8 +129,6 @@ struct TxOverrides {
 :getAdminAddress: pass:normal[xref:#Upgrades-getAdminAddress-address-[`++getAdminAddress++`]]
 :getImplementationAddress: pass:normal[xref:#Upgrades-getImplementationAddress-address-[`++getImplementationAddress++`]]
 :getBeaconAddress: pass:normal[xref:#Upgrades-getBeaconAddress-address-[`++getBeaconAddress++`]]
-:tryPrank: pass:normal[xref:#Upgrades-tryPrank-address-[`++tryPrank++`]]
-:CHEATCODE_ADDRESS: pass:normal[xref:#Upgrades-CHEATCODE_ADDRESS-address[`++CHEATCODE_ADDRESS++`]]
 
 [.contract]
 [[Upgrades]]
@@ -160,19 +167,6 @@ Library for deploying and managing upgradeable contracts from Forge scripts or t
 * {xref-Upgrades-getAdminAddress-address-}[`++getAdminAddress(proxy)++`]
 * {xref-Upgrades-getImplementationAddress-address-}[`++getImplementationAddress(proxy)++`]
 * {xref-Upgrades-getBeaconAddress-address-}[`++getBeaconAddress(proxy)++`]
-
---
-
-[.contract-index]
-.Modifiers
---
-* {xref-Upgrades-tryPrank-address-}[`++tryPrank(deployer)++`]
---
-
-[.contract-index]
-.Internal Variables
---
-* {xref-Upgrades-CHEATCODE_ADDRESS-address}[`++address constant CHEATCODE_ADDRESS++`]
 
 --
 
@@ -539,17 +533,215 @@ Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
 
 * (`address`) - Beacon address
 
+:deployUUPSProxy: pass:normal[xref:#UnsafeUpgrades-deployUUPSProxy-address-bytes-[`++deployUUPSProxy++`]]
+:deployTransparentProxy: pass:normal[xref:#UnsafeUpgrades-deployTransparentProxy-address-address-bytes-[`++deployTransparentProxy++`]]
+:upgradeProxy: pass:normal[xref:#UnsafeUpgrades-upgradeProxy-address-address-bytes-[`++upgradeProxy++`]]
+:upgradeProxy: pass:normal[xref:#UnsafeUpgrades-upgradeProxy-address-address-bytes-address-[`++upgradeProxy++`]]
+:deployBeacon: pass:normal[xref:#UnsafeUpgrades-deployBeacon-address-address-[`++deployBeacon++`]]
+:upgradeBeacon: pass:normal[xref:#UnsafeUpgrades-upgradeBeacon-address-address-[`++upgradeBeacon++`]]
+:upgradeBeacon: pass:normal[xref:#UnsafeUpgrades-upgradeBeacon-address-address-address-[`++upgradeBeacon++`]]
+:deployBeaconProxy: pass:normal[xref:#UnsafeUpgrades-deployBeaconProxy-address-bytes-[`++deployBeaconProxy++`]]
+:getAdminAddress: pass:normal[xref:#UnsafeUpgrades-getAdminAddress-address-[`++getAdminAddress++`]]
+:getImplementationAddress: pass:normal[xref:#UnsafeUpgrades-getImplementationAddress-address-[`++getImplementationAddress++`]]
+:getBeaconAddress: pass:normal[xref:#UnsafeUpgrades-getBeaconAddress-address-[`++getBeaconAddress++`]]
+
+[.contract]
+[[UnsafeUpgrades]]
+=== `++UnsafeUpgrades++` link:https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/blob/main/src/Upgrades.sol[{github-icon},role=heading-link]
+
+[.hljs-theme-light.nopadding]
+```solidity
+import { UnsafeUpgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
+```
+
+Library for deploying and managing upgradeable contracts from Forge tests, without validations.
+
+Can be used with `forge coverage`. Requires implementation contracts to be instantiated first.
+Does not require `--ffi` and does not require a clean compilation before each run.
+
+Not supported for OpenZeppelin Defender deployments.
+
+WARNING: Not recommended for use in Forge scripts.
+`UnsafeUpgrades` does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
+Use `Upgrades` if you want validations to be run.
+
+[.contract-index]
+.Functions
+--
+* {xref-UnsafeUpgrades-deployUUPSProxy-address-bytes-}[`++deployUUPSProxy(impl, initializerData)++`]
+* {xref-UnsafeUpgrades-deployTransparentProxy-address-address-bytes-}[`++deployTransparentProxy(impl, initialOwner, initializerData)++`]
+* {xref-UnsafeUpgrades-upgradeProxy-address-address-bytes-}[`++upgradeProxy(proxy, newImpl, data)++`]
+* {xref-UnsafeUpgrades-upgradeProxy-address-address-bytes-address-}[`++upgradeProxy(proxy, newImpl, data, tryCaller)++`]
+* {xref-UnsafeUpgrades-deployBeacon-address-address-}[`++deployBeacon(impl, initialOwner)++`]
+* {xref-UnsafeUpgrades-upgradeBeacon-address-address-}[`++upgradeBeacon(beacon, newImpl)++`]
+* {xref-UnsafeUpgrades-upgradeBeacon-address-address-address-}[`++upgradeBeacon(beacon, newImpl, tryCaller)++`]
+* {xref-UnsafeUpgrades-deployBeaconProxy-address-bytes-}[`++deployBeaconProxy(beacon, data)++`]
+* {xref-UnsafeUpgrades-getAdminAddress-address-}[`++getAdminAddress(proxy)++`]
+* {xref-UnsafeUpgrades-getImplementationAddress-address-}[`++getImplementationAddress(proxy)++`]
+* {xref-UnsafeUpgrades-getBeaconAddress-address-}[`++getBeaconAddress(proxy)++`]
+
+--
+
 [.contract-item]
-[[Upgrades-tryPrank-address-]]
-==== `[.contract-item-name]#++tryPrank++#++(address deployer)++` [.item-kind]#modifier#
+[[UnsafeUpgrades-deployUUPSProxy-address-bytes-]]
+==== `[.contract-item-name]#++deployUUPSProxy++#++(address impl, bytes initializerData) → address++` [.item-kind]#internal#
 
-Runs a function as a prank, or just runs the function normally if the prank could not be started.
+Deploys a UUPS proxy using the given contract address as the implementation.
+
+*Parameters:*
+
+* `impl` (`address`) - Address of the contract to use as the implementation
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+
+*Returns*
+
+* (`address`) - Proxy address
 
 [.contract-item]
-[[Upgrades-CHEATCODE_ADDRESS-address]]
-==== `address [.contract-item-name]#++CHEATCODE_ADDRESS++#` [.item-kind]#internal constant#
+[[UnsafeUpgrades-deployTransparentProxy-address-address-bytes-]]
+==== `[.contract-item-name]#++deployTransparentProxy++#++(address impl, address initialOwner, bytes initializerData) → address++` [.item-kind]#internal#
 
-== Foundry Defender
+Deploys a transparent proxy using the given contract address as the implementation.
+
+*Parameters:*
+
+* `impl` (`address`) - Address of the contract to use as the implementation
+* `initialOwner` (`address`) - Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+
+*Returns*
+
+* (`address`) - Proxy address
+
+[.contract-item]
+[[UnsafeUpgrades-upgradeProxy-address-address-bytes-]]
+==== `[.contract-item-name]#++upgradeProxy++#++(address proxy, address newImpl, bytes data)++` [.item-kind]#internal#
+
+Upgrades a proxy to a new implementation contract address. Only supported for UUPS or transparent proxies.
+
+*Parameters:*
+
+* `proxy` (`address`) - Address of the proxy to upgrade
+* `newImpl` (`address`) - Address of the new implementation contract to upgrade to
+* `data` (`bytes`) - Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
+
+[.contract-item]
+[[UnsafeUpgrades-upgradeProxy-address-address-bytes-address-]]
+==== `[.contract-item-name]#++upgradeProxy++#++(address proxy, address newImpl, bytes data, address tryCaller)++` [.item-kind]#internal#
+
+NOTE: For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+Upgrades a proxy to a new implementation contract address. Only supported for UUPS or transparent proxies.
+
+This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+
+*Parameters:*
+
+* `proxy` (`address`) - Address of the proxy to upgrade
+* `newImpl` (`address`) - Address of the new implementation contract to upgrade to
+* `data` (`bytes`) - Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
+* `tryCaller` (`address`) - Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
+
+[.contract-item]
+[[UnsafeUpgrades-deployBeacon-address-address-]]
+==== `[.contract-item-name]#++deployBeacon++#++(address impl, address initialOwner) → address++` [.item-kind]#internal#
+
+Deploys an upgradeable beacon using the given contract address as the implementation.
+
+*Parameters:*
+
+* `impl` (`address`) - Address of the contract to use as the implementation
+* `initialOwner` (`address`) - Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+
+*Returns*
+
+* (`address`) - Beacon address
+
+[.contract-item]
+[[UnsafeUpgrades-upgradeBeacon-address-address-]]
+==== `[.contract-item-name]#++upgradeBeacon++#++(address beacon, address newImpl)++` [.item-kind]#internal#
+
+Upgrades a beacon to a new implementation contract address.
+
+*Parameters:*
+
+* `beacon` (`address`) - Address of the beacon to upgrade
+* `newImpl` (`address`) - Address of the new implementation contract to upgrade to
+
+[.contract-item]
+[[UnsafeUpgrades-upgradeBeacon-address-address-address-]]
+==== `[.contract-item-name]#++upgradeBeacon++#++(address beacon, address newImpl, address tryCaller)++` [.item-kind]#internal#
+
+NOTE: For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+
+Upgrades a beacon to a new implementation contract address.
+
+This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+
+*Parameters:*
+
+* `beacon` (`address`) - Address of the beacon to upgrade
+* `newImpl` (`address`) - Address of the new implementation contract to upgrade to
+* `tryCaller` (`address`) - Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
+
+[.contract-item]
+[[UnsafeUpgrades-deployBeaconProxy-address-bytes-]]
+==== `[.contract-item-name]#++deployBeaconProxy++#++(address beacon, bytes data) → address++` [.item-kind]#internal#
+
+Deploys a beacon proxy using the given beacon and call data.
+
+*Parameters:*
+
+* `beacon` (`address`) - Address of the beacon to use
+* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+
+*Returns*
+
+* (`address`) - Proxy address
+
+[.contract-item]
+[[UnsafeUpgrades-getAdminAddress-address-]]
+==== `[.contract-item-name]#++getAdminAddress++#++(address proxy) → address++` [.item-kind]#internal#
+
+Gets the admin address of a transparent proxy from its ERC1967 admin storage slot.
+
+*Parameters:*
+
+* `proxy` (`address`) - Address of a transparent proxy
+
+*Returns*
+
+* (`address`) - Admin address
+
+[.contract-item]
+[[UnsafeUpgrades-getImplementationAddress-address-]]
+==== `[.contract-item-name]#++getImplementationAddress++#++(address proxy) → address++` [.item-kind]#internal#
+
+Gets the implementation address of a transparent or UUPS proxy from its ERC1967 implementation storage slot.
+
+*Parameters:*
+
+* `proxy` (`address`) - Address of a transparent or UUPS proxy
+
+*Returns*
+
+* (`address`) - Implementation address
+
+[.contract-item]
+[[UnsafeUpgrades-getBeaconAddress-address-]]
+==== `[.contract-item-name]#++getBeaconAddress++#++(address proxy) → address++` [.item-kind]#internal#
+
+Gets the beacon address of a beacon proxy from its ERC1967 beacon storage slot.
+
+*Parameters:*
+
+* `proxy` (`address`) - Address of a beacon proxy
+
+*Returns*
+
+* (`address`) - Beacon address
 
 :deployContract: pass:normal[xref:#Defender-deployContract-string-[`++deployContract++`]]
 :deployContract: pass:normal[xref:#Defender-deployContract-string-struct-DefenderOptions-[`++deployContract++`]]
