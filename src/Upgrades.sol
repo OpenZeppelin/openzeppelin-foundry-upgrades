@@ -5,22 +5,12 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-
-import {Vm} from "forge-std/Vm.sol";
-import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Options} from "./Options.sol";
-import {Versions} from "./internal/Versions.sol";
-import {Utils} from "./internal/Utils.sol";
 import {Core} from "./internal/Core.sol";
-import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
-import {IUpgradeableProxy} from "./internal/interfaces/IUpgradeableProxy.sol";
-import {IProxyAdmin} from "./internal/interfaces/IProxyAdmin.sol";
 
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests, with validations.
+ * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
  *
  * @notice Requires OpenZeppelin Contracts v5 or above.
  */
@@ -383,8 +373,8 @@ library Upgrades {
  * Not supported for OpenZeppelin Defender deployments.
  *
  * WARNING: Not recommended for use in Forge scripts.
- * UnsafeUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
- * Use Upgrades.sol if you want validations to be run.
+ * `UnsafeUpgrades` does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
+ * Use `Upgrades` if you want validations to be run.
  *
  * @notice Requires OpenZeppelin Contracts v5 or above.
  */
