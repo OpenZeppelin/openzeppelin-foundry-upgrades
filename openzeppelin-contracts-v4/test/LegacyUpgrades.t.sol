@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
 
-import {LegacyUpgrades, Options} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";
+import {Upgrades, Options} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
@@ -19,14 +19,14 @@ import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 
 /**
- * @dev Tests for the LegacyUpgrades library.
+ * @dev Tests for the Upgrades library.
  */
 contract LegacyUpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function testUUPS() public {
         Options memory opts;
-        address impl = LegacyUpgrades.deployImplementation("GreeterProxiable.sol", opts);
+        address impl = Upgrades.deployImplementation("GreeterProxiable.sol", opts);
 
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address proxy = address(new ERC1967Proxy(
@@ -36,17 +36,17 @@ contract LegacyUpgradesTest is Test {
         Vm(CHEATCODE_ADDRESS).stopPrank();
 
         Greeter instance = Greeter(proxy);
-        address implAddressV1 = LegacyUpgrades.getImplementationAddress(proxy);
+        address implAddressV1 = Upgrades.getImplementationAddress(proxy);
 
         assertEq(instance.greeting(), "hello");
 
-        LegacyUpgrades.upgradeProxy(
+        Upgrades.upgradeProxy(
             proxy,
             "GreeterV2Proxiable.sol",
             abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector),
             msg.sender
         );
-        address implAddressV2 = LegacyUpgrades.getImplementationAddress(proxy);
+        address implAddressV2 = Upgrades.getImplementationAddress(proxy);
 
         assertEq(instance.greeting(), "resetted");
         assertFalse(implAddressV2 == implAddressV1);
@@ -54,7 +54,7 @@ contract LegacyUpgradesTest is Test {
 
     function testTransparent() public {
         Options memory opts;
-        address impl = LegacyUpgrades.deployImplementation("Greeter.sol", opts);
+        address impl = Upgrades.deployImplementation("Greeter.sol", opts);
 
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address proxyAdmin = address(new ProxyAdmin());
@@ -66,17 +66,17 @@ contract LegacyUpgradesTest is Test {
         Vm(CHEATCODE_ADDRESS).stopPrank();
 
         Greeter instance = Greeter(proxy);
-        address implAddressV1 = LegacyUpgrades.getImplementationAddress(proxy);
-        address adminAddress = LegacyUpgrades.getAdminAddress(proxy);
+        address implAddressV1 = Upgrades.getImplementationAddress(proxy);
+        address adminAddress = Upgrades.getAdminAddress(proxy);
 
         assertFalse(adminAddress == address(0));
 
         assertEq(instance.greeting(), "hello");
 
-        LegacyUpgrades.upgradeProxy(proxy, "GreeterV2.sol", abi.encodeWithSelector(GreeterV2.resetGreeting.selector), msg.sender);
-        address implAddressV2 = LegacyUpgrades.getImplementationAddress(proxy);
+        Upgrades.upgradeProxy(proxy, "GreeterV2.sol", abi.encodeWithSelector(GreeterV2.resetGreeting.selector), msg.sender);
+        address implAddressV2 = Upgrades.getImplementationAddress(proxy);
 
-        assertEq(LegacyUpgrades.getAdminAddress(proxy), adminAddress);
+        assertEq(Upgrades.getAdminAddress(proxy), adminAddress);
 
         assertEq(instance.greeting(), "resetted");
         assertFalse(implAddressV2 == implAddressV1);
@@ -84,7 +84,7 @@ contract LegacyUpgradesTest is Test {
 
     function testBeacon() public {
         Options memory opts;
-        address implAddressV1 = LegacyUpgrades.deployImplementation("Greeter.sol", opts);
+        address implAddressV1 = Upgrades.deployImplementation("Greeter.sol", opts);
 
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address beacon = address(new UpgradeableBeacon(implAddressV1));
@@ -93,11 +93,11 @@ contract LegacyUpgradesTest is Test {
 
         Greeter instance = Greeter(proxy);
 
-        assertEq(LegacyUpgrades.getBeaconAddress(proxy), beacon);
+        assertEq(Upgrades.getBeaconAddress(proxy), beacon);
 
         assertEq(instance.greeting(), "hello");
 
-        LegacyUpgrades.upgradeBeacon(beacon, "GreeterV2.sol", msg.sender);
+        Upgrades.upgradeBeacon(beacon, "GreeterV2.sol", msg.sender);
         address implAddressV2 = IBeacon(beacon).implementation();
 
         Vm(CHEATCODE_ADDRESS).prank(msg.sender);
@@ -109,24 +109,24 @@ contract LegacyUpgradesTest is Test {
 
     function testUpgradeProxyWithoutCaller() public {
         Options memory opts;
-        address impl = LegacyUpgrades.deployImplementation("GreeterProxiable.sol", opts);
+        address impl = Upgrades.deployImplementation("GreeterProxiable.sol", opts);
 
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address proxy = address(new ERC1967Proxy(
             impl,
             abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
-        LegacyUpgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector));
+        Upgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector));
         Vm(CHEATCODE_ADDRESS).stopPrank();
     }
 
     function testUpgradeBeaconWithoutCaller() public {
         Options memory opts;
-        address impl = LegacyUpgrades.deployImplementation("Greeter.sol", opts);
+        address impl = Upgrades.deployImplementation("Greeter.sol", opts);
 
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address beacon = address(new UpgradeableBeacon(impl));
-        LegacyUpgrades.upgradeBeacon(beacon, "GreeterV2.sol");
+        Upgrades.upgradeBeacon(beacon, "GreeterV2.sol");
         Vm(CHEATCODE_ADDRESS).stopPrank();
     }
 }

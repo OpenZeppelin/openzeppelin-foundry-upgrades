@@ -8,7 +8,7 @@ import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 
-import {LegacyUpgrades, Options} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";
+import {Upgrades, Options} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
@@ -28,8 +28,8 @@ contract LegacyUpgradesScript is Script {
         Options memory opts;
 
         // validate and deploy implementations to be used in proxies
-        address greeter = LegacyUpgrades.deployImplementation("Greeter.sol", opts);
-        address greeterProxiable = LegacyUpgrades.deployImplementation("GreeterProxiable.sol", opts);
+        address greeter = Upgrades.deployImplementation("Greeter.sol", opts);
+        address greeterProxiable = Upgrades.deployImplementation("GreeterProxiable.sol", opts);
 
         // deploy each type of proxy for testing
         address proxyAdmin = address(new ProxyAdmin());
@@ -44,17 +44,17 @@ contract LegacyUpgradesScript is Script {
         new BeaconProxy(beacon, abi.encodeWithSelector(Greeter.initialize.selector, ("hello")));
 
         // example upgrade of an existing transparent proxy
-        LegacyUpgrades.upgradeProxy(transparentProxy, "GreeterV2.sol", abi.encodeWithSelector(GreeterV2.resetGreeting.selector));
+        Upgrades.upgradeProxy(transparentProxy, "GreeterV2.sol", abi.encodeWithSelector(GreeterV2.resetGreeting.selector));
 
         // example upgrade of an existing UUPS proxy
-        LegacyUpgrades.upgradeProxy(
+        Upgrades.upgradeProxy(
             uupsProxy,
             "GreeterV2Proxiable.sol",
             abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector)
         );
 
         // example upgrade of an existing beacon
-        LegacyUpgrades.upgradeBeacon(beacon, "GreeterV2.sol");
+        Upgrades.upgradeBeacon(beacon, "GreeterV2.sol");
 
         vm.stopBroadcast();
     }
