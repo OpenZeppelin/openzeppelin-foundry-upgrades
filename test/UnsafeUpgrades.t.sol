@@ -75,7 +75,10 @@ contract UnsafeUpgradesTest is Test {
         address beacon = UnsafeUpgrades.deployBeacon(address(new Greeter()), msg.sender);
         address implAddressV1 = IBeacon(beacon).implementation();
 
-        address proxy = UnsafeUpgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, (msg.sender, "hello")));
+        address proxy = UnsafeUpgrades.deployBeaconProxy(
+            beacon,
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+        );
         Greeter instance = Greeter(proxy);
 
         assertEq(UnsafeUpgrades.getBeaconAddress(proxy), beacon);

@@ -411,7 +411,7 @@ library Upgrades {
  * WARNING: Not recommended for use in Forge scripts.
  * UnsafeUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
  * Use Upgrades.sol if you want validations to be run.
- * 
+ *
  * @notice Requires OpenZeppelin Contracts v5 or above.
  */
 library UnsafeUpgrades {
@@ -505,7 +505,7 @@ library UnsafeUpgrades {
      */
     function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal {
         Core.upgradeBeaconTo(beacon, newImpl, tryCaller);
-     }
+    }
 
     /**
      * @dev Deploys a beacon proxy using the given beacon and call data.

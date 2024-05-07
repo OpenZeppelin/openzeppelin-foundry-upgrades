@@ -244,7 +244,7 @@ library Upgrades {
  * WARNING: Not recommended for use in Forge scripts.
  * `UnsafeUpgrades` does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
  * Use `Upgrades` if you want validations to be run.
- * 
+ *
  * @notice Compatible with existing deployments that use OpenZeppelin Contracts v4.
  */
 library UnsafeUpgrades {
