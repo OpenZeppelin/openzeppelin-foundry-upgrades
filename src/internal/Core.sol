@@ -151,7 +151,7 @@ library Core {
     }
 
     /**
-     * @dev Upgrades a beacon to a new implementation contract.
+     * @dev Upgrades a beacon to a new implementation contract address.
      *
      * @param beacon Address of the beacon to upgrade
      * @param newImpl Address of the new implementation contract to upgrade to

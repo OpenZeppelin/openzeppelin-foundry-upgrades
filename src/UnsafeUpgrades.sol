@@ -103,6 +103,22 @@ library UnsafeUpgrades {
     }
 
     /**
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+     *
+     * @dev Upgrades a beacon to a new implementation contract address.
+     *
+     * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+     * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+     *
+     * @param beacon Address of the beacon to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
+     */
+    function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal {
+        Core.upgradeBeaconTo(beacon, newImpl, tryCaller);
+     }
+
+    /**
      * @dev Deploys a beacon proxy using the given beacon and call data.
      *
      * @param beacon Address of the beacon to use
