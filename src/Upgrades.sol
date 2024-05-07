@@ -66,7 +66,7 @@ library Upgrades {
     }
 
     /**
-     * @dev Deploys a UUPS proxy using the given contract as the implementation.
+     * @dev Deploys a UUPS proxy using the given contract address as the implementation.
      *
      * @param impl Address of the contract to use as the implementation
      * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
@@ -123,7 +123,7 @@ library Upgrades {
     }
 
     /**
-     * @dev Deploys a transparent proxy using the given contract as the implementation.
+     * @dev Deploys a transparent proxy using the given contract address as the implementation.
      *
      * @param impl Address of the contract to use as the implementation
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
@@ -213,7 +213,7 @@ library Upgrades {
     }
 
     /**
-     * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+     * @dev Upgrades a proxy to a new implementation contract address. Only supported for UUPS or transparent proxies.
      *
      * @param proxy Address of the proxy to upgrade
      * @param newImpl Address of the new implementation contract to upgrade to
@@ -226,7 +226,7 @@ library Upgrades {
     /**
      * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
      *
-     * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+     * @dev Upgrades a proxy to a new implementation contract address. Only supported for UUPS or transparent proxies.
      *
      * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
      * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
@@ -280,7 +280,7 @@ library Upgrades {
     }
 
     /**
-     * @dev Deploys an upgradeable beacon using the given contract as the implementation.
+     * @dev Deploys an upgradeable beacon using the given contract address as the implementation.
      *
      * @param impl Address of the contract to use as the implementation
      * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
@@ -360,7 +360,7 @@ library Upgrades {
     }
 
     /**
-     * @dev Upgrades a beacon to a new implementation contract.
+     * @dev Upgrades a beacon to a new implementation contract address.
      *
      * @param beacon Address of the beacon to upgrade
      * @param newImpl Address of the new implementation contract to upgrade to
