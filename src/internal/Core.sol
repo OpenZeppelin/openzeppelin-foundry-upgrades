@@ -15,7 +15,7 @@ import {IProxyAdmin} from "./interfaces/IProxyAdmin.sol";
 import {IUpgradeableBeacon} from "./interfaces/IUpgradeableBeacon.sol";
 
 /**
- * @dev Internal helper methods to validate implementations and perform upgrades.
+ * @dev Internal helper methods to validate/deploy implementations and perform upgrades.
  *
  * WARNING: DO NOT USE DIRECTLY. Use Upgrades.sol or Defender.sol instead.
  */
@@ -32,7 +32,7 @@ library Core {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
-        unsafeUpgradeProxy(proxy, newImpl, data);
+        upgradeProxyTo(proxy, newImpl, data);
     }
 
     /**
@@ -68,7 +68,7 @@ library Core {
      * @param newImpl Address of the new implementation contract to upgrade to
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      */
-    function unsafeUpgradeProxy(address proxy, address newImpl, bytes memory data) internal {
+    function upgradeProxyTo(address proxy, address newImpl, bytes memory data) internal {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
@@ -103,13 +103,13 @@ library Core {
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
      */
-    function unsafeUpgradeProxy(
+    function upgradeProxyTo(
         address proxy,
         address newImpl,
         bytes memory data,
         address tryCaller
     ) internal tryPrank(tryCaller) {
-        unsafeUpgradeProxy(proxy, newImpl, data);
+        upgradeProxyTo(proxy, newImpl, data);
     }
 
     /**
@@ -123,7 +123,7 @@ library Core {
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
-        unsafeUpgradeBeacon(beacon, newImpl);
+        upgradeBeaconTo(beacon, newImpl);
     }
 
     /**
@@ -156,7 +156,7 @@ library Core {
      * @param beacon Address of the beacon to upgrade
      * @param newImpl Address of the new implementation contract to upgrade to
      */
-    function unsafeUpgradeBeacon(address beacon, address newImpl) internal {
+    function upgradeBeaconTo(address beacon, address newImpl) internal {
         IUpgradeableBeacon(beacon).upgradeTo(newImpl);
     }
 
@@ -172,8 +172,8 @@ library Core {
      * @param newImpl Address of the new implementation contract to upgrade to
      * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
      */
-    function unsafeUpgradeBeacon(address beacon, address newImpl, address tryCaller) internal tryPrank(tryCaller) {
-        unsafeUpgradeBeacon(beacon, newImpl);
+    function upgradeBeaconTo(address beacon, address newImpl, address tryCaller) internal tryPrank(tryCaller) {
+        upgradeBeaconTo(beacon, newImpl);
     }
 
     /**
@@ -389,11 +389,11 @@ library Core {
         if (opts.defender.useDefenderDeploy) {
             return DefenderDeploy.deploy(contractName, constructorData, opts.defender);
         } else {
-            return _directDeploy(contractName, constructorData);
+            return _deploy(contractName, constructorData);
         }
     }
 
-    function _directDeploy(string memory contractName, bytes memory constructorData) internal returns (address) {
+    function _deploy(string memory contractName, bytes memory constructorData) internal returns (address) {
         bytes memory creationCode = Vm(Utils.CHEATCODE_ADDRESS).getCode(contractName);
         address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
         if (deployedAddress == address(0)) {
