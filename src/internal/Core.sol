@@ -69,9 +69,9 @@ library Core {
      * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
      */
     function upgradeProxyTo(address proxy, address newImpl, bytes memory data) internal {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
-        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
+        bytes32 adminSlot = vm.load(proxy, ADMIN_SLOT);
         if (adminSlot == bytes32(0)) {
             string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(proxy);
             if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
@@ -234,9 +234,9 @@ library Core {
      * @return Admin address
      */
     function getAdminAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
-        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
+        bytes32 adminSlot = vm.load(proxy, ADMIN_SLOT);
         return address(uint160(uint256(adminSlot)));
     }
 
@@ -247,9 +247,9 @@ library Core {
      * @return Implementation address
      */
     function getImplementationAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
-        bytes32 implSlot = vm.load(proxy, _IMPLEMENTATION_SLOT);
+        bytes32 implSlot = vm.load(proxy, IMPLEMENTATION_SLOT);
         return address(uint160(uint256(implSlot)));
     }
 
@@ -260,9 +260,9 @@ library Core {
      * @return Beacon address
      */
     function getBeaconAddress(address proxy) internal view returns (address) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
-        bytes32 beaconSlot = vm.load(proxy, _BEACON_SLOT);
+        bytes32 beaconSlot = vm.load(proxy, BEACON_SLOT);
         return address(uint160(uint256(beaconSlot)));
     }
 
@@ -272,7 +272,7 @@ library Core {
      * @dev Runs a function as a prank, or just runs the function normally if the prank could not be started.
      */
     modifier tryPrank(address deployer) {
-        Vm vm = Vm(CHEATCODE_ADDRESS);
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
         try vm.startPrank(deployer) {
             _;
@@ -286,22 +286,21 @@ library Core {
      * @dev Storage slot with the address of the implementation.
      * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1.
      */
-    bytes32 private constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
+    bytes32 private constant IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
 
     /**
      * @dev Storage slot with the admin of the proxy.
      * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1.
      */
-    bytes32 private constant _ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
+    bytes32 private constant ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
 
     /**
      * @dev Storage slot with the UpgradeableBeacon contract which defines the implementation for the proxy.
      * This is the keccak-256 hash of "eip1967.proxy.beacon" subtracted by 1.
      */
-    bytes32 private constant _BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
+    bytes32 private constant BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
 
     using strings for *;
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function _getUpgradeInterfaceVersion(address addr) private returns (string memory) {
         (bool success, bytes memory returndata) = addr.call(abi.encodeWithSignature("getUpgradeInterfaceVersion()"));
