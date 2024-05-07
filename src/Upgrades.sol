@@ -20,10 +20,9 @@ import {IUpgradeableProxy} from "./internal/interfaces/IUpgradeableProxy.sol";
 import {IProxyAdmin} from "./internal/interfaces/IProxyAdmin.sol";
 
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
+ * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests, with validations.
  *
  * @notice Requires OpenZeppelin Contracts v5 or above.
- * If you are using OpenZeppelin Contracts v4, use LegacyUpgrades.sol instead.
  */
 library Upgrades {
     /**

@@ -13,7 +13,7 @@ import {Utils} from "./internal/Utils.sol";
 import {Core} from "./internal/Core.sol";
 
 /**
- * @dev Library for deploying and managing upgradeable contracts from Forge tests, without validations.
+ * @dev Library for managing upgradeable contracts from Forge tests, without validations.
  *
  * Can be used with `forge coverage`. Requires implementation contracts to be instantiated first.
  * Does not require `--ffi` and does not require a clean compilation before each run.
@@ -21,39 +21,12 @@ import {Core} from "./internal/Core.sol";
  * Not supported for OpenZeppelin Defender deployments.
  *
  * WARNING: Not recommended for use in Forge scripts.
- * UnsafeUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
- * Use Upgrades.sol if you want validations to be run.
+ * UnsafeLegacyUpgrades.sol does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
+ * Use LegacyUpgrades.sol if you want validations to be run.
  * 
- * @notice Requires OpenZeppelin Contracts v5 or above.
+ * @notice Compatible with existing deployments that use OpenZeppelin Contracts v4.
  */
-library UnsafeUpgrades {
-    /**
-     * @dev Deploys a UUPS proxy using the given contract address as the implementation.
-     *
-     * @param impl Address of the contract to use as the implementation
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
-     * @return Proxy address
-     */
-    function deployUUPSProxy(address impl, bytes memory initializerData) internal returns (address) {
-        return address(new ERC1967Proxy(impl, initializerData));
-    }
-
-    /**
-     * @dev Deploys a transparent proxy using the given contract address as the implementation.
-     *
-     * @param impl Address of the contract to use as the implementation
-     * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
-     * @return Proxy address
-     */
-    function deployTransparentProxy(
-        address impl,
-        address initialOwner,
-        bytes memory initializerData
-    ) internal returns (address) {
-        return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
-    }
-
+library UnsafeLegacyUpgrades {
     /**
      * @dev Upgrades a proxy to a new implementation contract address. Only supported for UUPS or transparent proxies.
      *
@@ -83,17 +56,6 @@ library UnsafeUpgrades {
     }
 
     /**
-     * @dev Deploys an upgradeable beacon using the given contract address as the implementation.
-     *
-     * @param impl Address of the contract to use as the implementation
-     * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
-     * @return Beacon address
-     */
-    function deployBeacon(address impl, address initialOwner) internal returns (address) {
-        return address(new UpgradeableBeacon(impl, initialOwner));
-    }
-
-    /**
      * @dev Upgrades a beacon to a new implementation contract address.
      *
      * @param beacon Address of the beacon to upgrade
@@ -118,15 +80,4 @@ library UnsafeUpgrades {
     function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal {
         Core.upgradeBeaconTo(beacon, newImpl, tryCaller);
      }
-
-    /**
-     * @dev Deploys a beacon proxy using the given beacon and call data.
-     *
-     * @param beacon Address of the beacon to use
-     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
-     * @return Proxy address
-     */
-    function deployBeaconProxy(address beacon, bytes memory data) internal returns (address) {
-        return address(new BeaconProxy(beacon, data));
-    }
 }

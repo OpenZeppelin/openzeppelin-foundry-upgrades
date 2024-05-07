@@ -5,9 +5,9 @@ import {Options} from "../src/Options.sol";
 import {Core} from "../src/internal/Core.sol";
 
 /**
- * @dev Library for managing upgradeable contracts from Forge scripts or tests.
+ * @dev Library for managing upgradeable contracts from Forge scripts or tests, with validations.
  *
- * @notice This is only for upgrading existing deployments which use OpenZeppelin Contracts v4.
+ * @notice Compatible with existing deployments that use OpenZeppelin Contracts v4.
  */
 library LegacyUpgrades {
     /**
