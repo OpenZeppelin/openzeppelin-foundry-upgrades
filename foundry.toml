@@ -6,8 +6,8 @@ build_info = true
 extra_output = ["storageLayout"]
 
 [profile.contracts-v4]
-src = "src-v4"
-test = "test-v4"
+src = "contracts-v4/src"
+test = "contracts-v4/test"
 remappings = [
   "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts-v4",
   "@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable-v4"

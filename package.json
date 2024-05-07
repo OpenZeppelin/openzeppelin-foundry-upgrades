@@ -9,7 +9,7 @@
     "forge:test": "FOUNDRY_PROFILE=default forge test -vvv --ffi --force",
     "forge:test-v4": "FOUNDRY_PROFILE=contracts-v4 forge test -vvv --ffi --force --use solc:0.8.2",
     "forge:script": "FOUNDRY_PROFILE=default forge script test/Upgrades.s.sol --ffi --force",
-    "forge:script-v4": "FOUNDRY_PROFILE=contracts-v4 forge script test-v4/LegacyUpgrades.s.sol --ffi --force --use solc:0.8.2",
+    "forge:script-v4": "FOUNDRY_PROFILE=contracts-v4 forge script contracts-v4/test/LegacyUpgrades.s.sol --ffi --force --use solc:0.8.2",
     "lint": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --check && solhint 'src/**/*.sol'",
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write",
     "docgen": "hardhat clean && hardhat compile && hardhat docgen && mv docs/modules/api/pages/.adoc docs/modules/api/pages/api-foundry-upgrades.adoc",
