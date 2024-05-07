@@ -50,7 +50,7 @@ library Upgrades {
                     opts.defender
                 );
         } else {
-            return address(new ERC1967Proxy(impl, initializerData));
+            return unsafeDeployUUPSProxy(impl, initializerData);
         }
     }
 
@@ -64,6 +64,17 @@ library Upgrades {
     function deployUUPSProxy(string memory contractName, bytes memory initializerData) internal returns (address) {
         Options memory opts;
         return deployUUPSProxy(contractName, initializerData, opts);
+    }
+
+    /**
+     * @dev Deploys a UUPS proxy using the given contract as the implementation.
+     *
+     * @param impl Address of the contract to use as the implementation
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @return Proxy address
+     */
+    function unsafeDeployUUPSProxy(address impl, bytes memory initializerData) internal returns (address) {
+        return address(new ERC1967Proxy(impl, initializerData));
     }
 
     /**
@@ -91,7 +102,7 @@ library Upgrades {
                     opts.defender
                 );
         } else {
-            return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
+            return unsafeDeployTransparentProxy(impl, initialOwner, initializerData);
         }
     }
 
@@ -110,6 +121,22 @@ library Upgrades {
     ) internal returns (address) {
         Options memory opts;
         return deployTransparentProxy(contractName, initialOwner, initializerData, opts);
+    }
+
+    /**
+     * @dev Deploys a transparent proxy using the given contract as the implementation.
+     *
+     * @param impl Address of the contract to use as the implementation
+     * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @return Proxy address
+     */
+    function unsafeDeployTransparentProxy(
+        address impl,
+        address initialOwner,
+        bytes memory initializerData
+    ) internal returns (address) {
+        return address(new TransparentUpgradeableProxy(impl, initialOwner, initializerData));
     }
 
     /**
@@ -187,6 +214,39 @@ library Upgrades {
     }
 
     /**
+     * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+     *
+     * @param proxy Address of the proxy to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
+     */
+    function unsafeUpgradeProxy(address proxy, address newImpl, bytes memory data) internal {
+        ValidateAndUpgrade.unsafeUpgradeProxy(proxy, newImpl, data);
+    }
+
+    /**
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+     *
+     * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+     *
+     * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+     * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+     *
+     * @param proxy Address of the proxy to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
+     * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
+     */
+    function unsafeUpgradeProxy(
+        address proxy,
+        address newImpl,
+        bytes memory data,
+        address tryCaller
+    ) internal {
+        ValidateAndUpgrade.unsafeUpgradeProxy(proxy, newImpl, data, tryCaller);
+    }
+
+    /**
      * @dev Deploys an upgradeable beacon using the given contract as the implementation.
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
@@ -209,7 +269,7 @@ library Upgrades {
                     opts.defender
                 );
         } else {
-            return address(new UpgradeableBeacon(impl, initialOwner));
+            return unsafeDeployBeacon(impl, initialOwner);
         }
     }
 
@@ -223,6 +283,17 @@ library Upgrades {
     function deployBeacon(string memory contractName, address initialOwner) internal returns (address) {
         Options memory opts;
         return deployBeacon(contractName, initialOwner, opts);
+    }
+
+    /**
+     * @dev Deploys an upgradeable beacon using the given contract as the implementation.
+     *
+     * @param impl Address of the contract to use as the implementation
+     * @param initialOwner Address to set as the owner of the UpgradeableBeacon contract which gets deployed
+     * @return Beacon address
+     */
+    function unsafeDeployBeacon(address impl, address initialOwner) internal returns (address) {
+        return address(new UpgradeableBeacon(impl, initialOwner));
     }
 
     /**
@@ -295,6 +366,32 @@ library Upgrades {
     }
 
     /**
+     * @dev Upgrades a beacon to a new implementation contract.
+     *
+     * @param beacon Address of the beacon to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     */
+    function unsafeUpgradeBeacon(address beacon, address newImpl) internal {
+        ValidateAndUpgrade.unsafeUpgradeBeacon(beacon, newImpl);
+    }
+
+    /**
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+     *
+     * @dev Upgrades a beacon to a new implementation contract.
+     *
+     * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+     * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+     *
+     * @param beacon Address of the beacon to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
+     */
+    function upgradeBeacon(address beacon, address newImpl, address tryCaller) internal {
+        ValidateAndUpgrade.unsafeUpgradeBeacon(beacon, newImpl, tryCaller);
+    }
+
+    /**
      * @dev Deploys a beacon proxy using the given beacon and call data.
      *
      * @param beacon Address of the beacon to use
@@ -318,8 +415,19 @@ library Upgrades {
         if (opts.defender.useDefenderDeploy) {
             return DefenderDeploy.deploy("BeaconProxy.sol:BeaconProxy", abi.encode(beacon, data), opts.defender);
         } else {
-            return address(new BeaconProxy(beacon, data));
+            return unsafeDeployBeaconProxy(beacon, data);
         }
+    }
+
+    /**
+     * @dev Deploys a beacon proxy using the given beacon and call data.
+     *
+     * @param beacon Address of the beacon to use
+     * @param data Encoded call data of the initializer function to call during creation of the proxy, or empty if no initialization is required
+     * @return Proxy address
+     */
+    function unsafeDeployBeaconProxy(address beacon, bytes memory data) internal returns (address) {
+        return address(new BeaconProxy(beacon, data));
     }
 
     /**

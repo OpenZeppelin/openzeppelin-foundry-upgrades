@@ -33,26 +33,7 @@ library ValidateAndUpgrade {
      */
     function upgradeProxy(address proxy, string memory contractName, bytes memory data, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
-
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-
-        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
-        if (adminSlot == bytes32(0)) {
-            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(proxy);
-            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
-                IUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
-            } else {
-                IUpgradeableProxy(proxy).upgradeTo(newImpl);
-            }
-        } else {
-            address admin = address(uint160(uint256(adminSlot)));
-            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(admin);
-            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
-                IProxyAdmin(admin).upgradeAndCall(proxy, newImpl, data);
-            } else {
-                IProxyAdmin(admin).upgrade(proxy, newImpl);
-            }
-        }
+        unsafeUpgradeProxy(proxy, newImpl, data);
     }
 
     /**
@@ -82,6 +63,58 @@ library ValidateAndUpgrade {
     }
 
     /**
+     * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+     *
+     * @param proxy Address of the proxy to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
+     */
+    function unsafeUpgradeProxy(address proxy, address newImpl, bytes memory data) internal {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+
+        bytes32 adminSlot = vm.load(proxy, _ADMIN_SLOT);
+        if (adminSlot == bytes32(0)) {
+            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(proxy);
+            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
+                IUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
+            } else {
+                IUpgradeableProxy(proxy).upgradeTo(newImpl);
+            }
+        } else {
+            address admin = address(uint160(uint256(adminSlot)));
+            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(admin);
+            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
+                IProxyAdmin(admin).upgradeAndCall(proxy, newImpl, data);
+            } else {
+                IProxyAdmin(admin).upgrade(proxy, newImpl);
+            }
+        }
+    }
+
+
+    /**
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+     *
+     * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
+     *
+     * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+     * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+     *
+     * @param proxy Address of the proxy to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param data Encoded call data of an arbitrary function to call during the upgrade process, or empty if no function needs to be called during the upgrade
+     * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the proxy or its ProxyAdmin.
+     */
+    function unsafeUpgradeProxy(
+        address proxy,
+        address newImpl,
+        bytes memory data,
+        address tryCaller
+    ) internal tryPrank(tryCaller) {
+        unsafeUpgradeProxy(proxy, newImpl, data);
+    }
+
+    /**
      * @dev Upgrades a beacon to a new implementation contract.
      *
      * Requires that either the `referenceContract` option is set, or the new implementation contract has a `@custom:oz-upgrades-from <reference>` annotation.
@@ -92,7 +125,7 @@ library ValidateAndUpgrade {
      */
     function upgradeBeacon(address beacon, string memory contractName, Options memory opts) internal {
         address newImpl = prepareUpgrade(contractName, opts);
-        IUpgradeableBeacon(beacon).upgradeTo(newImpl);
+        unsafeUpgradeBeacon(beacon, newImpl);
     }
 
     /**
@@ -117,6 +150,32 @@ library ValidateAndUpgrade {
         address tryCaller
     ) internal tryPrank(tryCaller) {
         upgradeBeacon(beacon, contractName, opts);
+    }
+
+    /**
+     * @dev Upgrades a beacon to a new implementation contract.
+     *
+     * @param beacon Address of the beacon to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     */
+    function unsafeUpgradeBeacon(address beacon, address newImpl) internal {
+        IUpgradeableBeacon(beacon).upgradeTo(newImpl);
+    }
+
+    /**
+     * @notice For tests only. If broadcasting in scripts, use the `--sender <ADDRESS>` option with `forge script` instead.
+     *
+     * @dev Upgrades a beacon to a new implementation contract.
+     *
+     * This function provides an additional `tryCaller` parameter to test an upgrade using a specific caller address.
+     * Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
+     *
+     * @param beacon Address of the beacon to upgrade
+     * @param newImpl Address of the new implementation contract to upgrade to
+     * @param tryCaller Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
+     */
+    function unsafeUpgradeBeacon(address beacon, address newImpl, address tryCaller) internal tryPrank(tryCaller) {
+        unsafeUpgradeBeacon(beacon, newImpl);
     }
 
     /**
