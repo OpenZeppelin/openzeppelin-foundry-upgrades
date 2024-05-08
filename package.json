@@ -12,8 +12,8 @@
     "forge:script-v4": "FOUNDRY_PROFILE=openzeppelin-contracts-v4 forge script test-profiles/openzeppelin-contracts-v4/test/LegacyUpgrades.s.sol --ffi --force --use solc:0.8.2",
     "lint": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --check && solhint 'src/**/*.sol'",
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write",
-    "docgen": "hardhat clean && hardhat compile && hardhat docgen && mv docs/modules/api/pages/.adoc docs/modules/api/pages/api-foundry-upgrades.adoc",
-    "docgen:test": "yarn docgen && git diff --exit-code docs/modules/api/pages/api-foundry-upgrades.adoc"
+    "docgen": "hardhat clean && hardhat compile && hardhat docgen",
+    "docgen:test": "yarn docgen && git diff --exit-code docs/modules/api/pages"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-foundry": "^1.1.1",

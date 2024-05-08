@@ -4,7 +4,7 @@ const path = require('path');
 module.exports['oz-version'] = () => version;
 
 module.exports['readme-path'] = opts => {
-  return path.join('src/', opts.data.root.id.replace(/\.adoc$/, ''), 'README.adoc');
+  return path.join('src/', opts.data.root.id);
 };
 
 module.exports.names = params => params?.map(p => p.name).join(', ');
