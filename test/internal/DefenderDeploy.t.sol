@@ -21,9 +21,9 @@ contract DefenderDeployTest is Test {
     function _toString(string[] memory arr) private pure returns (string memory) {
         string memory result;
         for (uint i = 0; i < arr.length; i++) {
-            result = string(abi.encodePacked(result, arr[i]));
+            result = string.concat(result, arr[i]);
             if (i < arr.length - 1) {
-                result = string(abi.encodePacked(result, " "));
+                result = string.concat(result, " ");
             }
         }
         return result;
@@ -44,14 +44,12 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName MyContractName --contractPath test/contracts/MyContractFile.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile,
-                    ' --licenseType "MIT"'
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName MyContractName --contractPath test/contracts/MyContractFile.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                ' --licenseType "MIT"'
             )
         );
     }
@@ -73,14 +71,12 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile,
-                    ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "MIT"'
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "MIT"'
             )
         );
     }
@@ -111,14 +107,12 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile,
-                    ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "My License Type" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123 --gasLimit 100000 --gasPrice 1000000000 --maxFeePerGas 2000000000 --maxPriorityFeePerGas 500000000'
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "My License Type" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123 --gasLimit 100000 --gasPrice 1000000000 --maxFeePerGas 2000000000 --maxPriorityFeePerGas 500000000'
             )
         );
     }
@@ -142,14 +136,12 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile,
-                    " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false"
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false"
             )
         );
     }
@@ -173,14 +165,12 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile,
-                    " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
             )
         );
     }
@@ -268,13 +258,11 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName NoLicense --contractPath test/contracts/NoLicense.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName NoLicense --contractPath test/contracts/NoLicense.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile
             )
         );
     }
@@ -294,14 +282,12 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " deploy --contractName Unlicensed --contractPath test/contracts/Unlicensed.sol --chainId 31337 --buildInfoFile ",
-                    buildInfoFile,
-                    ' --licenseType "None"'
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " deploy --contractName Unlicensed --contractPath test/contracts/Unlicensed.sol --chainId 31337 --buildInfoFile ",
+                buildInfoFile,
+                ' --licenseType "None"'
             )
         );
     }
@@ -322,13 +308,11 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --contractArtifactFile ",
-                    contractInfo.artifactPath
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --contractArtifactFile ",
+                contractInfo.artifactPath
             )
         );
     }
@@ -358,12 +342,10 @@ contract DefenderDeployTest is Test {
 
         assertEq(
             commandString,
-            string(
-                abi.encodePacked(
-                    "npx @openzeppelin/defender-deploy-client-cli@",
-                    Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                    " getDeployApprovalProcess --chainId 31337"
-                )
+            string.concat(
+                "npx @openzeppelin/defender-deploy-client-cli@",
+                Versions.DEFENDER_DEPLOY_CLIENT_CLI,
+                " getDeployApprovalProcess --chainId 31337"
             )
         );
     }
