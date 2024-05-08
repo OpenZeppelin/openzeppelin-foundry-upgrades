@@ -63,7 +63,7 @@ extra_output = ["storageLayout"]
 
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
-If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety checks, you can skip the above steps and use the xref:api-foundry-upgrades.adoc#Options[`unsafeSkipAllChecks` option] when calling the `Upgrades` library's functions, or use the `UnsafeUpgrades` library instead. Note that these are dangerous options meant to be used as a last resort.
 
 === Optional: Custom output directory
 
@@ -185,6 +185,19 @@ Run your script with `forge script` to broadcast and deploy. See Foundry's https
 IMPORTANT: Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
 
 NOTE: Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
+
+=== Coverage Testing
+
+To enable code coverage reports with `forge coverage`, use the following deployment pattern in your tests: instantiate your implementation contracts directly and use the `UnsafeUpgrades` library. For example:
+```solidity
+address implementation = address(new MyContract());
+address proxy = Upgrades.deployUUPSProxy(
+    implementation,
+    abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
+);
+```
+
+WARNING: `UnsafeUpgrades` is not recommended for use in Forge scripts. It does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using the `Upgrades` library in scripts.
 
 == API
 

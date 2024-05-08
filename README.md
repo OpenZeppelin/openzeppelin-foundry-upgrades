@@ -57,7 +57,7 @@ extra_output = ["storageLayout"]
 3. If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
-If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety checks, you can skip the above steps and use the [`unsafeSkipAllChecks` option](src/Options.sol) when calling the `Upgrades` library's functions, or use the `UnsafeUpgrades` library instead. Note that these are dangerous options meant to be used as a last resort.
 
 ### Optional: Custom output directory
 
@@ -167,3 +167,17 @@ Run your script with `forge script` to broadcast and deploy. See Foundry's [Soli
 
 > **Note**
 > Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
+
+### Coverage Testing
+
+To enable code coverage reports with `forge coverage`, use the following deployment pattern in your tests: instantiate your implementation contracts directly and use the `UnsafeUpgrades` library. For example:
+```solidity
+address implementation = address(new MyContract());
+address proxy = Upgrades.deployUUPSProxy(
+    implementation,
+    abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
+);
+```
+
+> **Warning**
+`UnsafeUpgrades` is not recommended for use in Forge scripts. It does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using the `Upgrades` library in scripts.
