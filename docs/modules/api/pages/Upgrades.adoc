@@ -68,6 +68,8 @@ import { Upgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 Library for deploying and managing upgradeable contracts from Forge scripts or tests.
 
+NOTE: Requires OpenZeppelin Contracts v5 or higher.
+
 [.contract-index]
 .Functions
 --
@@ -491,6 +493,8 @@ Not supported for OpenZeppelin Defender deployments.
 WARNING: Not recommended for use in Forge scripts.
 `UnsafeUpgrades` does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones.
 Use `Upgrades` if you want validations to be run.
+
+NOTE: Requires OpenZeppelin Contracts v5 or higher.
 
 [.contract-index]
 .Functions

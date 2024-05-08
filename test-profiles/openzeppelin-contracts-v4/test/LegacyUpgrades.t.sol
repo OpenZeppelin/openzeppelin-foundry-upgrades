@@ -19,7 +19,7 @@ import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 
 /**
- * @dev Tests for the Upgrades library.
+ * @dev Tests for the Upgrades library in LegacyUpgrades.
  */
 contract LegacyUpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
