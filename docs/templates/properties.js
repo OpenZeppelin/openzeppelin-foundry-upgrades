@@ -4,7 +4,8 @@ const { slug } = require('./helpers');
 module.exports.anchor = function anchor({ item, contract }) {
   let res = '';
   if (contract) {
-    res += contract.name + '-';
+    const fileName = contract.__item_context.file.relativePath.replace(/\.sol$/, '');
+    res += fileName + '-' + contract.name + '-';
   }
   res += item.name;
   if ('parameters' in item) {
