@@ -8,6 +8,7 @@ import {Core} from "../src/internal/Core.sol";
  * @dev Library for managing upgradeable contracts from Forge scripts or tests.
  *
  * NOTE: Only for upgrading existing deployments using OpenZeppelin Contracts v4.
+ * For new deployments, use OpenZeppelin Contracts v5 and Upgrades.sol.
  */
 library Upgrades {
     /**
@@ -246,6 +247,7 @@ library Upgrades {
  * Use `Upgrades` if you want validations to be run.
  *
  * NOTE: Only for upgrading existing deployments using OpenZeppelin Contracts v4.
+ * For new deployments, use OpenZeppelin Contracts v5 and Upgrades.sol.
  */
 library UnsafeUpgrades {
     /**
