@@ -107,9 +107,8 @@ contract UpgradesTest is Test {
     function testUpgradeBeaconWithoutCaller() public {
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
 
-        Vm vm = Vm(CHEATCODE_ADDRESS);
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         Upgrades.upgradeBeacon(beacon, "GreeterV2.sol");
-        vm.stopPrank();
+        Vm(CHEATCODE_ADDRESS).stopPrank();
     }
 }

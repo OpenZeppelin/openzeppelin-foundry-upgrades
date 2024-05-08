@@ -155,27 +155,6 @@ library Upgrades {
     }
 
     /**
-     * @dev Validates an implementation contract, but does not deploy it.
-     *
-     * @param contractName Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param opts Common options
-     */
-    function validateImplementation(string memory contractName, Options memory opts) internal {
-        Core.validateImplementation(contractName, opts);
-    }
-
-    /**
-     * @dev Validates and deploys an implementation contract, and returns its address.
-     *
-     * @param contractName Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param opts Common options
-     * @return Address of the implementation contract
-     */
-    function deployImplementation(string memory contractName, Options memory opts) internal returns (address) {
-        return Core.deployImplementation(contractName, opts);
-    }
-
-    /**
      * @dev Validates a new implementation contract in comparison with a reference contract, but does not deploy it.
      *
      * Requires that either the `referenceContract` option is set, or the contract has a `@custom:oz-upgrades-from <reference>` annotation.

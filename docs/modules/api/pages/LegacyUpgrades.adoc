@@ -7,8 +7,6 @@
 :xref-LegacyUpgrades-Upgrades-upgradeBeacon-address-string-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-upgradeBeacon-address-string-
 :xref-LegacyUpgrades-Upgrades-upgradeBeacon-address-string-struct-Options-address-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-upgradeBeacon-address-string-struct-Options-address-
 :xref-LegacyUpgrades-Upgrades-upgradeBeacon-address-string-address-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-upgradeBeacon-address-string-address-
-:xref-LegacyUpgrades-Upgrades-validateImplementation-string-struct-Options-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-validateImplementation-string-struct-Options-
-:xref-LegacyUpgrades-Upgrades-deployImplementation-string-struct-Options-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-deployImplementation-string-struct-Options-
 :xref-LegacyUpgrades-Upgrades-validateUpgrade-string-struct-Options-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-validateUpgrade-string-struct-Options-
 :xref-LegacyUpgrades-Upgrades-prepareUpgrade-string-struct-Options-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-prepareUpgrade-string-struct-Options-
 :xref-LegacyUpgrades-Upgrades-getAdminAddress-address-: xref:LegacyUpgrades.adoc#LegacyUpgrades-Upgrades-getAdminAddress-address-
@@ -29,8 +27,6 @@
 :upgradeBeacon: pass:normal[xref:#LegacyUpgrades-Upgrades-upgradeBeacon-address-string-[`++upgradeBeacon++`]]
 :upgradeBeacon: pass:normal[xref:#LegacyUpgrades-Upgrades-upgradeBeacon-address-string-struct-Options-address-[`++upgradeBeacon++`]]
 :upgradeBeacon: pass:normal[xref:#LegacyUpgrades-Upgrades-upgradeBeacon-address-string-address-[`++upgradeBeacon++`]]
-:validateImplementation: pass:normal[xref:#LegacyUpgrades-Upgrades-validateImplementation-string-struct-Options-[`++validateImplementation++`]]
-:deployImplementation: pass:normal[xref:#LegacyUpgrades-Upgrades-deployImplementation-string-struct-Options-[`++deployImplementation++`]]
 :validateUpgrade: pass:normal[xref:#LegacyUpgrades-Upgrades-validateUpgrade-string-struct-Options-[`++validateUpgrade++`]]
 :prepareUpgrade: pass:normal[xref:#LegacyUpgrades-Upgrades-prepareUpgrade-string-struct-Options-[`++prepareUpgrade++`]]
 :getAdminAddress: pass:normal[xref:#LegacyUpgrades-Upgrades-getAdminAddress-address-[`++getAdminAddress++`]]
@@ -62,8 +58,6 @@ For new deployments, use OpenZeppelin Contracts v5 and Upgrades.sol.
 * {xref-LegacyUpgrades-Upgrades-upgradeBeacon-address-string-}[`++upgradeBeacon(beacon, contractName)++`]
 * {xref-LegacyUpgrades-Upgrades-upgradeBeacon-address-string-struct-Options-address-}[`++upgradeBeacon(beacon, contractName, opts, tryCaller)++`]
 * {xref-LegacyUpgrades-Upgrades-upgradeBeacon-address-string-address-}[`++upgradeBeacon(beacon, contractName, tryCaller)++`]
-* {xref-LegacyUpgrades-Upgrades-validateImplementation-string-struct-Options-}[`++validateImplementation(contractName, opts)++`]
-* {xref-LegacyUpgrades-Upgrades-deployImplementation-string-struct-Options-}[`++deployImplementation(contractName, opts)++`]
 * {xref-LegacyUpgrades-Upgrades-validateUpgrade-string-struct-Options-}[`++validateUpgrade(contractName, opts)++`]
 * {xref-LegacyUpgrades-Upgrades-prepareUpgrade-string-struct-Options-}[`++prepareUpgrade(contractName, opts)++`]
 * {xref-LegacyUpgrades-Upgrades-getAdminAddress-address-}[`++getAdminAddress(proxy)++`]
@@ -207,32 +201,6 @@ Use this if you encounter `OwnableUnauthorizedAccount` errors in your tests.
 * `beacon` (`address`) - Address of the beacon to upgrade
 * `contractName` (`string`) - Name of the new implementation contract to upgrade to, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
 * `tryCaller` (`address`) - Address to use as the caller of the upgrade function. This should be the address that owns the beacon.
-
-[.contract-item]
-[[LegacyUpgrades-Upgrades-validateImplementation-string-struct-Options-]]
-==== `[.contract-item-name]#++validateImplementation++#++(string contractName, struct Options opts)++` [.item-kind]#internal#
-
-Validates an implementation contract, but does not deploy it.
-
-*Parameters:*
-
-* `contractName` (`string`) - Name of the contract to validate, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-* `opts` (`struct Options`) - Common options
-
-[.contract-item]
-[[LegacyUpgrades-Upgrades-deployImplementation-string-struct-Options-]]
-==== `[.contract-item-name]#++deployImplementation++#++(string contractName, struct Options opts) → address++` [.item-kind]#internal#
-
-Validates and deploys an implementation contract, and returns its address.
-
-*Parameters:*
-
-* `contractName` (`string`) - Name of the contract to deploy, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-* `opts` (`struct Options`) - Common options
-
-*Returns*
-
-* (`address`) - Address of the implementation contract
 
 [.contract-item]
 [[LegacyUpgrades-Upgrades-validateUpgrade-string-struct-Options-]]

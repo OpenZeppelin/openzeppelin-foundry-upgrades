@@ -25,13 +25,11 @@ contract LegacyUpgradesScript is Script {
     function run() public {
         vm.startBroadcast();
 
-        Options memory opts;
+        // deploy initial implementations for testing only
+        address greeter = address(new Greeter());
+        address greeterProxiable = address(new GreeterProxiable());
 
-        // validate and deploy implementations to be used in proxies
-        address greeter = Upgrades.deployImplementation("Greeter.sol", opts);
-        address greeterProxiable = Upgrades.deployImplementation("GreeterProxiable.sol", opts);
-
-        // deploy each type of proxy for testing
+        // deploy each type of proxy for testing only
         address proxyAdmin = address(new ProxyAdmin());
         address transparentProxy = address(new TransparentUpgradeableProxy(greeter, proxyAdmin, abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))));
 

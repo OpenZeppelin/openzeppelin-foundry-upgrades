@@ -110,26 +110,20 @@ contract UnsafeLegacyUpgradesTest is Test {
             address(new GreeterProxiable()),
             abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
 
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-        vm.startPrank(msg.sender);
         UnsafeUpgrades.upgradeProxy(
             proxy,
             address(new GreeterV2Proxiable()),
             abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector)
         );
-        vm.stopPrank();
+        Vm(CHEATCODE_ADDRESS).stopPrank();
     }
 
     function testUpgradeBeaconWithoutCaller() public {
         Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
         address beacon = address(new UpgradeableBeacon(address(new Greeter())));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
 
-        Vm vm = Vm(CHEATCODE_ADDRESS);
-        vm.startPrank(msg.sender);
         UnsafeUpgrades.upgradeBeacon(beacon, address(new GreeterV2()));
-        vm.stopPrank();
+        Vm(CHEATCODE_ADDRESS).stopPrank();
     }
 }
