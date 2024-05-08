@@ -392,7 +392,7 @@ library Core {
         }
     }
 
-    function _deploy(string memory contractName, bytes memory constructorData) internal returns (address) {
+    function _deploy(string memory contractName, bytes memory constructorData) private returns (address) {
         bytes memory creationCode = Vm(Utils.CHEATCODE_ADDRESS).getCode(contractName);
         address deployedAddress = _deployFromBytecode(abi.encodePacked(creationCode, constructorData));
         if (deployedAddress == address(0)) {
