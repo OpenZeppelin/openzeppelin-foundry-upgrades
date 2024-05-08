@@ -6,6 +6,10 @@ Foundry library for deploying and managing upgradeable contracts, which includes
 
 ## Installing
 
+Follow one of the sections below depending on which version of OpenZeppelin Contracts you are using. OpenZeppelin Contracts v5 is required for new deployments.
+
+### Using with OpenZeppelin Contracts v5
+
 Run these commands:
 ```console
 forge install foundry-rs/forge-std
@@ -22,23 +26,32 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 > **Note**
 > The above remappings mean that both `@openzeppelin/contracts/` (including proxy contracts deployed by this library) and `@openzeppelin/contracts-upgradeable/` come from your installation of the `openzeppelin-contracts-upgradeable` submodule and its subdirectories, which includes its own transitive copy of `openzeppelin-contracts` of the same release version number. This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
 
-### Windows installations
+### Using with OpenZeppelin Contracts v4
 
-If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
-For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
-```env
-OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
+Run these commands, replacing `v4.9.6` with the specific version of OpenZeppelin Contracts that you are using:
+```console
+forge install foundry-rs/forge-std
+forge install OpenZeppelin/openzeppelin-foundry-upgrades
+forge install OpenZeppelin/openzeppelin-contracts@v4.9.6
+forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v4.9.6
 ```
+
+Set the following in `remappings.txt`:
+```
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
+```
+
+> **Note**
+> When using OpenZeppelin Contracts v4, only upgrading existing deployments is supported.
 
 ## OpenZeppelin Defender integration
 
 See [DEFENDER.md](DEFENDER.md)
 
-## Version Limitations
+## Foundry Requirements
 
 This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.8.0 or higher.
-
-This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts versions 5.0 or higher.
 
 ## Before Running
 
@@ -72,6 +85,14 @@ fs_permissions = [{ access = "read", path = "my-output-dir" }]
 Then in a `.env` at your project root, set the `FOUNDRY_OUT` environment variable to match the custom output directory, for example:
 ```env
 FOUNDRY_OUT=my-output-dir
+```
+
+### Windows environments
+
+If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
+For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
+```env
+OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 ```
 
 ## Usage
