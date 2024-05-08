@@ -18,8 +18,6 @@ import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
  * @dev Tests for the UnsafeUpgrades library.
  */
 contract UnsafeUpgradesTest is Test {
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
     function testUUPS() public {
         address proxy = UnsafeUpgrades.deployUUPSProxy(
             address(new GreeterProxiable()),
