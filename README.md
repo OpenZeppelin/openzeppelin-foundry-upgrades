@@ -2,13 +2,13 @@
 
 [![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades)
 
-Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
+Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety validations.
 
 ## Installing
 
 Follow one of the sections below depending on which version of OpenZeppelin Contracts you are using. OpenZeppelin Contracts v5 is required for new deployments.
 
-### Using with OpenZeppelin Contracts v5
+### Using OpenZeppelin Contracts v5
 
 Run these commands:
 ```console
@@ -26,7 +26,7 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 > **Note**
 > The above remappings mean that both `@openzeppelin/contracts/` (including proxy contracts deployed by this library) and `@openzeppelin/contracts-upgradeable/` come from your installation of the `openzeppelin-contracts-upgradeable` submodule and its subdirectories, which includes its own transitive copy of `openzeppelin-contracts` of the same release version number. This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
 
-### Using with OpenZeppelin Contracts v4
+### Using OpenZeppelin Contracts v4
 
 Run these commands, replacing `v4.9.6` with the specific version of OpenZeppelin Contracts that you are using:
 ```console
@@ -55,9 +55,9 @@ This library requires [forge-std](https://github.com/foundry-rs/forge-std) versi
 
 ## Before Running
 
-This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks, which are run by default during deployments and upgrades.
+This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety validations, which are run by default during deployments and upgrades.
 
-If you want to be able to run upgrade safety checks, the following are needed:
+If you want to be able to run upgrade safety validations, the following are needed:
 1. Install [Node.js](https://nodejs.org/).
 2. Configure your `foundry.toml` to enable ffi, ast, build info and storage layout:
 ```toml
@@ -70,7 +70,7 @@ extra_output = ["storageLayout"]
 3. If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
-If you do not want to run upgrade safety checks, you can skip the above steps and use the [`unsafeSkipAllChecks` option](src/Options.sol) when calling the `Upgrades` library's functions, or use the `UnsafeUpgrades` library instead. Note that these are dangerous options meant to be used as a last resort.
+If you do not want to run upgrade safety validations, you can skip the above steps and use the [`unsafeSkipAllChecks` option](src/Options.sol) when calling the `Upgrades` library's functions, or use the `UnsafeUpgrades` library instead. Note that these are dangerous options meant to be used as a last resort.
 
 ### Optional: Custom output directory
 
@@ -97,7 +97,15 @@ OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 
 ## Usage
 
-Import the library in your Foundry scripts or tests:
+Depending on which major version of OpenZeppelin Contracts you are using, and whether you want to run upgrade safety validations and/or use OpenZeppelin Defender, use the table below to determine which library to import:
+
+|     | OpenZeppelin Contracts v5 | OpenZeppelin Contracts v4 |
+| --- | --- | --- |
+| **Runs validations, supports Defender** | `import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";` | `import {Upgrades} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";` |
+| **No validations, does not support Defender** | `import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";` | `import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";` |
+
+
+Import one of the above libraries in your Foundry scripts or tests, for example:
 ```solidity
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
@@ -107,9 +115,11 @@ Also import the implementation contract that you want to validate, deploy, or up
 import {MyToken} from "src/MyToken.sol";
 ```
 
-Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
+Then call functions from the imported library to run validations, deployments, or upgrades.
 
 ### Examples
+
+The following examples assume you are using OpenZeppelin Contracts v5 and want to run upgrade safety validations.
 
 Deploy a UUPS proxy:
 ```solidity
@@ -179,16 +189,6 @@ Upgrade a beacon:
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ```
 
-### Deploying and Verifying
-
-Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
-
-> **Important**
-> Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
-
-> **Note**
-> Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
-
 ### Coverage Testing
 
 To enable code coverage reports with `forge coverage`, use the following deployment pattern in your tests: instantiate your implementation contracts directly and use the `UnsafeUpgrades` library. For example:
@@ -202,3 +202,13 @@ address proxy = Upgrades.deployUUPSProxy(
 
 > **Warning**
 `UnsafeUpgrades` is not recommended for use in Forge scripts. It does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using the `Upgrades` library in scripts.
+
+### Deploying and Verifying
+
+Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
+
+> **Important**
+> Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
+
+> **Note**
+> Include the `--verify` flag for the `forge script` command if you want to verify source code such as on Etherscan. This will verify your implementation contracts along with any proxy contracts as part of the deployment.
