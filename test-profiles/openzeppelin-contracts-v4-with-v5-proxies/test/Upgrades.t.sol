@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
@@ -17,15 +16,13 @@ import {GreeterV2Proxiable} from "../../openzeppelin-contracts-v4/test/contracts
  * @dev Tests for the Upgrades library.
  */
 contract UpgradesTest is Test {
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
     function testUUPS() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxy = Upgrades.deployUUPSProxy(
             "GreeterProxiable.sol",
             abi.encodeCall(Greeter.initialize, ("hello"))
         );
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
 
         Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
@@ -45,13 +42,13 @@ contract UpgradesTest is Test {
     }
 
     function testTransparent() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxy = Upgrades.deployTransparentProxy(
             "Greeter.sol",
             msg.sender,
             abi.encodeCall(Greeter.initialize, ("hello"))
         );
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
 
         Greeter instance = Greeter(proxy);
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
@@ -74,9 +71,9 @@ contract UpgradesTest is Test {
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
         address implAddressV1 = IBeacon(beacon).implementation();
 
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxy = Upgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
 
         Greeter instance = Greeter(proxy);
 
@@ -87,7 +84,7 @@ contract UpgradesTest is Test {
         Upgrades.upgradeBeacon(beacon, "GreeterV2.sol", msg.sender);
         address implAddressV2 = IBeacon(beacon).implementation();
 
-        Vm(CHEATCODE_ADDRESS).prank(msg.sender);
+        vm.prank(msg.sender);
         GreeterV2(address(instance)).setGreeting("modified");
 
         assertEq(instance.greeting(), "modified");
@@ -95,20 +92,20 @@ contract UpgradesTest is Test {
     }
 
     function testUpgradeProxyWithoutCaller() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxy = Upgrades.deployUUPSProxy(
             "GreeterProxiable.sol",
             abi.encodeCall(GreeterProxiable.initialize, ("hello"))
         );
         Upgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", abi.encodeCall(GreeterV2Proxiable.resetGreeting, ()));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
     }
 
     function testUpgradeBeaconWithoutCaller() public {
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
 
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         Upgrades.upgradeBeacon(beacon, "GreeterV2.sol");
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
     }
 }

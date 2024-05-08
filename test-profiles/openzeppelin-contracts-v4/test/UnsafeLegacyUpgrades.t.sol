@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
 
 import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";
 
@@ -25,12 +24,12 @@ contract UnsafeLegacyUpgradesTest is Test {
     address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
 
     function testUUPS() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxy = address(new ERC1967Proxy(
             address(new GreeterProxiable()),
             abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
 
         Greeter instance = Greeter(proxy);
         address implAddressV1 = UnsafeUpgrades.getImplementationAddress(proxy);
@@ -50,14 +49,14 @@ contract UnsafeLegacyUpgradesTest is Test {
     }
 
     function testTransparent() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxyAdmin = address(new ProxyAdmin());
         address proxy = address(new TransparentUpgradeableProxy(
             address(new Greeter()),
             proxyAdmin,
             abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
         ));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
 
         Greeter instance = Greeter(proxy);
         address implAddressV1 = UnsafeUpgrades.getImplementationAddress(proxy);
@@ -82,9 +81,9 @@ contract UnsafeLegacyUpgradesTest is Test {
     }
 
     function testBeacon() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address beacon = address(new UpgradeableBeacon(address(new Greeter())));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
 
         address implAddressV1 = IBeacon(beacon).implementation();
 
@@ -105,10 +104,10 @@ contract UnsafeLegacyUpgradesTest is Test {
     }
 
     function testUpgradeProxyWithoutCaller() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address proxy = address(new ERC1967Proxy(
             address(new GreeterProxiable()),
-            abi.encodeWithSelector(Greeter.initialize.selector, ("hello"))
+            abi.encodeWithSelector(GreeterProxiable.initialize.selector, ("hello"))
         ));
 
         UnsafeUpgrades.upgradeProxy(
@@ -116,14 +115,14 @@ contract UnsafeLegacyUpgradesTest is Test {
             address(new GreeterV2Proxiable()),
             abi.encodeWithSelector(GreeterV2Proxiable.resetGreeting.selector)
         );
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
     }
 
     function testUpgradeBeaconWithoutCaller() public {
-        Vm(CHEATCODE_ADDRESS).startPrank(msg.sender);
+        vm.startPrank(msg.sender);
         address beacon = address(new UpgradeableBeacon(address(new Greeter())));
 
         UnsafeUpgrades.upgradeBeacon(beacon, address(new GreeterV2()));
-        Vm(CHEATCODE_ADDRESS).stopPrank();
+        vm.stopPrank();
     }
 }

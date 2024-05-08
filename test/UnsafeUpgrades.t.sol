@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
 
 import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
@@ -100,7 +99,6 @@ contract UnsafeUpgradesTest is Test {
             abi.encodeCall(GreeterProxiable.initialize, (msg.sender, "hello"))
         );
 
-        Vm vm = Vm(CHEATCODE_ADDRESS);
         vm.startPrank(msg.sender);
         UnsafeUpgrades.upgradeProxy(
             proxy,
@@ -113,7 +111,6 @@ contract UnsafeUpgradesTest is Test {
     function testUpgradeBeaconWithoutCaller() public {
         address beacon = UnsafeUpgrades.deployBeacon(address(new Greeter()), msg.sender);
 
-        Vm vm = Vm(CHEATCODE_ADDRESS);
         vm.startPrank(msg.sender);
         UnsafeUpgrades.upgradeBeacon(beacon, address(new GreeterV2()));
         vm.stopPrank();
