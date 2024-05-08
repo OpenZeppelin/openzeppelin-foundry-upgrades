@@ -6,6 +6,8 @@ import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
+import {MyContractName} from "../contracts/MyContractFile.sol";
+
 /**
  * @dev Tests the Utils internal library.
  */

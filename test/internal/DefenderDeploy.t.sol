@@ -12,6 +12,7 @@ import {WithConstructor} from "../contracts/WithConstructor.sol";
 import {UnrecognizedLicense} from "../contracts/UnrecognizedLicense.sol";
 import {NoLicense} from "../contracts/NoLicense.sol";
 import {Unlicensed} from "../contracts/Unlicensed.sol";
+import {MyContractName} from "../contracts/MyContractFile.sol";
 
 /**
  * @dev Tests the DefenderDeploy internal library.
