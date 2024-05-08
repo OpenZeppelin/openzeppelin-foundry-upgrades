@@ -6,12 +6,13 @@ import {Vm} from "forge-std/Vm.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
+import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 
-import {Greeter} from "../contracts/Greeter.sol";
-import {GreeterProxiable} from "../contracts/GreeterProxiable.sol";
-import {GreeterV2} from "../contracts/GreeterV2.sol";
-import {GreeterV2Proxiable} from "../contracts/GreeterV2Proxiable.sol";
+import {Greeter} from "../../openzeppelin-contracts-v4/test/contracts/Greeter.sol";
+import {GreeterProxiable} from "../../openzeppelin-contracts-v4/test/contracts/GreeterProxiable.sol";
+import {GreeterV2} from "../../openzeppelin-contracts-v4/test/contracts/GreeterV2.sol";
+import {GreeterV2Proxiable} from "../../openzeppelin-contracts-v4/test/contracts/GreeterV2Proxiable.sol";
 
 /**
  * @dev Tests for the Upgrades library.
