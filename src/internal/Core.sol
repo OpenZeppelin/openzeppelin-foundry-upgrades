@@ -17,7 +17,7 @@ import {IUpgradeableBeacon} from "./interfaces/IUpgradeableBeacon.sol";
 /**
  * @dev Internal helper methods to validate/deploy implementations and perform upgrades.
  *
- * WARNING: DO NOT USE DIRECTLY. Use Upgrades.sol or Defender.sol instead.
+ * WARNING: DO NOT USE DIRECTLY. Use Upgrades.sol, LegacyUpgrades.sol or Defender.sol instead.
  */
 library Core {
     /**
