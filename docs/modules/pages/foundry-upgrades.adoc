@@ -47,7 +47,7 @@ Set the following in `remappings.txt`:
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 ----
 
-NOTE: When using OpenZeppelin Contracts v4, only upgrading existing deployments is supported.
+NOTE: Use `LegacyUpgrades.sol` instead of `Upgrades.sol` to upgrade existing deployments that were created with OpenZeppelin Contracts v4.
 
 == Foundry Requirements
 

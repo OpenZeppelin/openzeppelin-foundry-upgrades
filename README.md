@@ -43,7 +43,7 @@ Set the following in `remappings.txt`:
 ```
 
 > **Note**
-> When using OpenZeppelin Contracts v4, only upgrading existing deployments is supported.
+> Use [LegacyUpgrades.sol](src/LegacyUpgrades.sol) instead of `Upgrades.sol` to upgrade existing deployments that were created with OpenZeppelin Contracts v4.
 
 ## OpenZeppelin Defender integration
 
