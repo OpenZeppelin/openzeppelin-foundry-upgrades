@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 import {Script} from "forge-std/Script.sol";
 
-import {Greeter} from "./contracts/Greeter.sol";
-import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
-import {GreeterV2} from "./contracts/GreeterV2.sol";
-import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
+import {Greeter} from "../contracts/Greeter.sol";
+import {GreeterProxiable} from "../contracts/GreeterProxiable.sol";
+import {GreeterV2} from "../contracts/GreeterV2.sol";
+import {GreeterV2Proxiable} from "../contracts/GreeterV2Proxiable.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";
 

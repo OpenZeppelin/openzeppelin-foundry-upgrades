@@ -13,10 +13,10 @@ import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/Upgradeabl
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 
-import {Greeter} from "./contracts/Greeter.sol";
-import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
-import {GreeterV2} from "./contracts/GreeterV2.sol";
-import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
+import {Greeter} from "../contracts/Greeter.sol";
+import {GreeterProxiable} from "../contracts/GreeterProxiable.sol";
+import {GreeterV2} from "../contracts/GreeterV2.sol";
+import {GreeterV2Proxiable} from "../contracts/GreeterV2Proxiable.sol";
 
 /**
  * @dev Tests for the UnsafeUpgrades library in LegacyUpgrades.
