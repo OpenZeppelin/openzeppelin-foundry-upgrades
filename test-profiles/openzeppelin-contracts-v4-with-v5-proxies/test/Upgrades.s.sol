@@ -3,10 +3,10 @@ pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 
-import {Greeter} from "./contracts/Greeter.sol";
-import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
-import {GreeterV2} from "./contracts/GreeterV2.sol";
-import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
+import {Greeter} from "../../openzeppelin-contracts-v4/test/contracts/Greeter.sol";
+import {GreeterProxiable} from "../../openzeppelin-contracts-v4/test/contracts/GreeterProxiable.sol";
+import {GreeterV2} from "../../openzeppelin-contracts-v4/test/contracts/GreeterV2.sol";
+import {GreeterV2Proxiable} from "../../openzeppelin-contracts-v4/test/contracts/GreeterV2Proxiable.sol";
 
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
@@ -23,14 +23,14 @@ contract UpgradesScript is Script {
         address transparentProxy = Upgrades.deployTransparentProxy(
             "Greeter.sol",
             msg.sender,
-            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+            abi.encodeCall(Greeter.initialize, ("hello"))
         );
         Upgrades.upgradeProxy(transparentProxy, "GreeterV2.sol", abi.encodeCall(GreeterV2.resetGreeting, ()));
 
         // example deployment and upgrade of a UUPS proxy
         address uupsProxy = Upgrades.deployUUPSProxy(
             "GreeterProxiable.sol",
-            abi.encodeCall(GreeterProxiable.initialize, (msg.sender, "hello"))
+            abi.encodeCall(GreeterProxiable.initialize, ("hello"))
         );
         Upgrades.upgradeProxy(
             uupsProxy,
@@ -40,7 +40,7 @@ contract UpgradesScript is Script {
 
         // example deployment of a beacon proxy and upgrade of the beacon
         address beacon = Upgrades.deployBeacon("Greeter.sol", msg.sender);
-        Upgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, (msg.sender, "hello")));
+        Upgrades.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")));
         Upgrades.upgradeBeacon(beacon, "GreeterV2.sol");
 
         vm.stopBroadcast();

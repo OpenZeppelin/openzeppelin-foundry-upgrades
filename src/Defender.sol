@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import {Options, DefenderOptions} from "./Options.sol";
-import {Upgrades} from "./Upgrades.sol";
+import {Core} from "./internal/Core.sol";
 import {DefenderDeploy} from "./internal/DefenderDeploy.sol";
 
 /**
@@ -109,8 +109,8 @@ library Defender {
         Options memory opts
     ) internal returns (ProposeUpgradeResponse memory) {
         opts.defender.useDefenderDeploy = true;
-        address proxyAdminAddress = Upgrades.getAdminAddress(proxyAddress);
-        address newImplementationAddress = Upgrades.prepareUpgrade(newImplementationContractName, opts);
+        address proxyAdminAddress = Core.getAdminAddress(proxyAddress);
+        address newImplementationAddress = Core.prepareUpgrade(newImplementationContractName, opts);
         return
             DefenderDeploy.proposeUpgrade(
                 proxyAddress,

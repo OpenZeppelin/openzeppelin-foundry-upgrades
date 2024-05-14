@@ -2,9 +2,13 @@
 
 [![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades)
 
-Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety checks.
+Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety validations.
 
 ## Installing
+
+Follow one of the sections below depending on which version of OpenZeppelin Contracts you are using. OpenZeppelin Contracts v5 is required for new deployments.
+
+### Using OpenZeppelin Contracts v5
 
 Run these commands:
 ```console
@@ -22,29 +26,38 @@ Set the following in `remappings.txt`, replacing any previous definitions of the
 > **Note**
 > The above remappings mean that both `@openzeppelin/contracts/` (including proxy contracts deployed by this library) and `@openzeppelin/contracts-upgradeable/` come from your installation of the `openzeppelin-contracts-upgradeable` submodule and its subdirectories, which includes its own transitive copy of `openzeppelin-contracts` of the same release version number. This format is needed for Etherscan verification to work. Particularly, any copies of `openzeppelin-contracts` that you install separately are NOT used.
 
-### Windows installations
+### Using OpenZeppelin Contracts v4
 
-If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
-For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
-```env
-OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
+Run these commands, replacing `v4.9.6` with the specific version of OpenZeppelin Contracts that you are using:
+```console
+forge install foundry-rs/forge-std
+forge install OpenZeppelin/openzeppelin-foundry-upgrades
+forge install OpenZeppelin/openzeppelin-contracts@v4.9.6
+forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v4.9.6
 ```
+
+Set the following in `remappings.txt`:
+```
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
+```
+
+> **Note**
+> Use [LegacyUpgrades.sol](src/LegacyUpgrades.sol) instead of `Upgrades.sol` to upgrade existing deployments that were created with OpenZeppelin Contracts v4.
 
 ## OpenZeppelin Defender integration
 
 See [DEFENDER.md](DEFENDER.md)
 
-## Version Limitations
+## Foundry Requirements
 
 This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.8.0 or higher.
 
-This library only supports proxy contracts and upgrade interfaces from OpenZeppelin Contracts versions 5.0 or higher.
-
 ## Before Running
 
-This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety checks, which are run by default during deployments and upgrades.
+This library uses the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core) for upgrade safety validations, which are run by default during deployments and upgrades.
 
-If you want to be able to run upgrade safety checks, the following are needed:
+If you want to be able to run upgrade safety validations, the following are needed:
 1. Install [Node.js](https://nodejs.org/).
 2. Configure your `foundry.toml` to enable ffi, ast, build info and storage layout:
 ```toml
@@ -57,7 +70,7 @@ extra_output = ["storageLayout"]
 3. If you are upgrading your contract from a previous version, add the `@custom:oz-upgrades-from <reference>` annotation to the new version of your contract according to [Define Reference Contracts](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#define-reference-contracts) or specify the `referenceContract` option when calling the library's functions.
 4. Run `forge clean` before running your Foundry script or tests, or include the `--force` option when running `forge script` or `forge test`.
 
-If you do not want to run upgrade safety checks, you can skip the above steps and use the `unsafeSkipAllChecks` option when calling the library's functions. Note that this is a dangerous option meant to be used as a last resort.
+If you do not want to run upgrade safety validations, you can skip the above steps and use the [`unsafeSkipAllChecks` option](src/Options.sol) when calling the `Upgrades` library's functions, or use the `UnsafeUpgrades` library instead. Note that these are dangerous options meant to be used as a last resort.
 
 ### Optional: Custom output directory
 
@@ -74,9 +87,25 @@ Then in a `.env` at your project root, set the `FOUNDRY_OUT` environment variabl
 FOUNDRY_OUT=my-output-dir
 ```
 
+### Windows environments
+
+If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
+For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
+```env
+OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
+```
+
 ## Usage
 
-Import the library in your Foundry scripts or tests:
+Depending on which major version of OpenZeppelin Contracts you are using, and whether you want to run upgrade safety validations and/or use OpenZeppelin Defender, use the table below to determine which library to import:
+
+|     | OpenZeppelin Contracts v5 | OpenZeppelin Contracts v4 |
+| --- | --- | --- |
+| **Runs validations, supports Defender** | `import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";` | `import {Upgrades} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";` |
+| **No validations, does not support Defender** | `import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";` | `import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/LegacyUpgrades.sol";` |
+
+
+Import one of the above libraries in your Foundry scripts or tests, for example:
 ```solidity
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 ```
@@ -86,9 +115,11 @@ Also import the implementation contract that you want to validate, deploy, or up
 import {MyToken} from "src/MyToken.sol";
 ```
 
-Then call functions from [Upgrades.sol](src/Upgrades.sol) to run validations, deployments, or upgrades.
+Then call functions from the imported library to run validations, deployments, or upgrades.
 
 ### Examples
+
+The following examples assume you are using OpenZeppelin Contracts v5 and want to run upgrade safety validations.
 
 Deploy a UUPS proxy:
 ```solidity
@@ -157,6 +188,20 @@ Upgrade a beacon:
 ```solidity
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ```
+
+### Coverage Testing
+
+To enable code coverage reports with `forge coverage`, use the following deployment pattern in your tests: instantiate your implementation contracts directly and use the `UnsafeUpgrades` library. For example:
+```solidity
+address implementation = address(new MyContract());
+address proxy = Upgrades.deployUUPSProxy(
+    implementation,
+    abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
+);
+```
+
+> **Warning**
+`UnsafeUpgrades` is not recommended for use in Forge scripts. It does not validate whether your contracts are upgrade safe or whether new implementations are compatible with previous ones. Ensure you run validations before any actual deployments or upgrades, such as by using the `Upgrades` library in scripts.
 
 ### Deploying and Verifying
 

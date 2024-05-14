@@ -3,6 +3,10 @@ const { slug } = require('./helpers');
 
 module.exports.anchor = function anchor({ item, contract }) {
   let res = '';
+
+  const fileName = item.__item_context.file.relativePath.replace(/\.sol$/, '');
+  res += fileName + '-';
+
   if (contract) {
     res += contract.name + '-';
   }

@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
@@ -18,8 +17,6 @@ import {strings} from "solidity-stringutils/src/strings.sol";
  * These do not perform any actual deployments, but just checks that the Defender CLI is invoked and catches its error message since we are using a dev network.
  */
 contract UpgradesUseDefenderDeployTest is Test {
-    address constant CHEATCODE_ADDRESS = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D;
-
     using strings for *;
 
     Deployer d;
@@ -40,7 +37,13 @@ contract UpgradesUseDefenderDeployTest is Test {
         Options memory opts;
         opts.defender.useDefenderDeploy = true;
 
-        try d.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(GreeterProxiable.initialize, ("hello")), opts) {
+        try
+            d.deployUUPSProxy(
+                "GreeterProxiable.sol",
+                abi.encodeCall(GreeterProxiable.initialize, (msg.sender, "hello")),
+                opts
+            )
+        {
             fail();
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
@@ -53,7 +56,14 @@ contract UpgradesUseDefenderDeployTest is Test {
         Options memory opts;
         opts.defender.useDefenderDeploy = true;
 
-        try d.deployTransparentProxy("Greeter.sol", msg.sender, abi.encodeCall(Greeter.initialize, ("hello")), opts) {
+        try
+            d.deployTransparentProxy(
+                "Greeter.sol",
+                msg.sender,
+                abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+                opts
+            )
+        {
             fail();
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
@@ -63,7 +73,10 @@ contract UpgradesUseDefenderDeployTest is Test {
     }
 
     function testUpgradeProxy() public {
-        address proxy = Upgrades.deployUUPSProxy("GreeterProxiable.sol", abi.encodeCall(Greeter.initialize, ("hello")));
+        address proxy = Upgrades.deployUUPSProxy(
+            "GreeterProxiable.sol",
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+        );
 
         Options memory opts;
         opts.defender.useDefenderDeploy = true;
@@ -98,7 +111,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         Options memory opts;
         opts.defender.useDefenderDeploy = true;
 
-        try d.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, ("hello")), opts) {
+        try d.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, (msg.sender, "hello")), opts) {
             fail();
         } catch Error(string memory reason) {
             strings.slice memory slice = reason.toSlice();
