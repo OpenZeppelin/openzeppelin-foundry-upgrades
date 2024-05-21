@@ -49,12 +49,7 @@ contract UpgradesTest is Test {
         );
         address implAddressV1 = Upgrades.getImplementationAddress(proxy);
 
-        Upgrades.upgradeProxy(
-            proxy,
-            "GreeterV2Proxiable.sol",
-            "",
-            msg.sender
-        );
+        Upgrades.upgradeProxy(proxy, "GreeterV2Proxiable.sol", "", msg.sender);
         address implAddressV2 = Upgrades.getImplementationAddress(proxy);
 
         assertFalse(implAddressV2 == implAddressV1);

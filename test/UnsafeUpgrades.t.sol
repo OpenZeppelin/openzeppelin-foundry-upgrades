@@ -47,12 +47,7 @@ contract UnsafeUpgradesTest is Test {
         );
         address implAddressV1 = UnsafeUpgrades.getImplementationAddress(proxy);
 
-        UnsafeUpgrades.upgradeProxy(
-            proxy,
-            address(new GreeterV2Proxiable()),
-            "",
-            msg.sender
-        );
+        UnsafeUpgrades.upgradeProxy(proxy, address(new GreeterV2Proxiable()), "", msg.sender);
         address implAddressV2 = UnsafeUpgrades.getImplementationAddress(proxy);
 
         assertFalse(implAddressV2 == implAddressV1);
@@ -97,12 +92,7 @@ contract UnsafeUpgradesTest is Test {
 
         assertFalse(adminAddress == address(0));
 
-        UnsafeUpgrades.upgradeProxy(
-            proxy,
-            address(new GreeterV2()),
-            "",
-            msg.sender
-        );
+        UnsafeUpgrades.upgradeProxy(proxy, address(new GreeterV2()), "", msg.sender);
         address implAddressV2 = UnsafeUpgrades.getImplementationAddress(proxy);
 
         assertEq(UnsafeUpgrades.getAdminAddress(proxy), adminAddress);
