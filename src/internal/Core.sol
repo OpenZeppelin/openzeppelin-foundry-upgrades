@@ -303,7 +303,7 @@ library Core {
     using strings for *;
 
     function _getUpgradeInterfaceVersion(address addr) private returns (string memory) {
-        (bool success, bytes memory returndata) = addr.call(abi.encodeWithSignature("getUpgradeInterfaceVersion()"));
+        (bool success, bytes memory returndata) = addr.call(abi.encodeWithSignature("UPGRADE_INTERFACE_VERSION()"));
         if (success) {
             return abi.decode(returndata, (string));
         } else {
