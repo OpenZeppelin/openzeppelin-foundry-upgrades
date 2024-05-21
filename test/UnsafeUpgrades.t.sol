@@ -40,6 +40,19 @@ contract UnsafeUpgradesTest is Test {
         assertFalse(implAddressV2 == implAddressV1);
     }
 
+    function testUUPS_upgradeWithoutData() public {
+        address proxy = UnsafeUpgrades.deployUUPSProxy(
+            address(new GreeterProxiable()),
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+        );
+        address implAddressV1 = UnsafeUpgrades.getImplementationAddress(proxy);
+
+        UnsafeUpgrades.upgradeProxy(proxy, address(new GreeterV2Proxiable()), "", msg.sender);
+        address implAddressV2 = UnsafeUpgrades.getImplementationAddress(proxy);
+
+        assertFalse(implAddressV2 == implAddressV1);
+    }
+
     function testTransparent() public {
         address proxy = UnsafeUpgrades.deployTransparentProxy(
             address(new Greeter()),
@@ -65,6 +78,25 @@ contract UnsafeUpgradesTest is Test {
         assertEq(UnsafeUpgrades.getAdminAddress(proxy), adminAddress);
 
         assertEq(instance.greeting(), "resetted");
+        assertFalse(implAddressV2 == implAddressV1);
+    }
+
+    function testTransparent_upgradeWithoutData() public {
+        address proxy = UnsafeUpgrades.deployTransparentProxy(
+            address(new Greeter()),
+            msg.sender,
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+        );
+        address implAddressV1 = UnsafeUpgrades.getImplementationAddress(proxy);
+        address adminAddress = UnsafeUpgrades.getAdminAddress(proxy);
+
+        assertFalse(adminAddress == address(0));
+
+        UnsafeUpgrades.upgradeProxy(proxy, address(new GreeterV2()), "", msg.sender);
+        address implAddressV2 = UnsafeUpgrades.getImplementationAddress(proxy);
+
+        assertEq(UnsafeUpgrades.getAdminAddress(proxy), adminAddress);
+
         assertFalse(implAddressV2 == implAddressV1);
     }
 
