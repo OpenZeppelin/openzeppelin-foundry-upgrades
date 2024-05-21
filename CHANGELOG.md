@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 (2024-05-21)
+
+- Fix upgrade interface version detection in `upgradeProxy` function. ([#53](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/53))
+
 ## 0.3.0 (2024-05-14)
 
 - Adds library variations to support `forge coverage` or upgrade existing deployments using OpenZeppelin Contracts v4. ([#50](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/50))
