@@ -13,6 +13,7 @@ import {DefenderDeploy} from "./DefenderDeploy.sol";
 import {IUpgradeableProxy} from "./interfaces/IUpgradeableProxy.sol";
 import {IProxyAdmin} from "./interfaces/IProxyAdmin.sol";
 import {IUpgradeableBeacon} from "./interfaces/IUpgradeableBeacon.sol";
+import {IUpgradeInferfaceVersion} from "./interfaces/IUpgradeInferfaceVersion.sol";
 
 /**
  * @dev Internal helper methods to validate/deploy implementations and perform upgrades.
@@ -302,11 +303,11 @@ library Core {
 
     using strings for *;
 
-    function _getUpgradeInterfaceVersion(address addr) private returns (string memory) {
-        (bool success, bytes memory returndata) = addr.call(abi.encodeWithSignature("UPGRADE_INTERFACE_VERSION()"));
-        if (success) {
-            return abi.decode(returndata, (string));
-        } else {
+    function _getUpgradeInterfaceVersion(address addr) private pure returns (string memory) {
+        IUpgradeInferfaceVersion proxyOrAdmin = IUpgradeInferfaceVersion(addr);
+        try proxyOrAdmin.UPGRADE_INTERFACE_VERSION() returns (string memory version) {
+            return version;
+        } catch {
             return "";
         }
     }
