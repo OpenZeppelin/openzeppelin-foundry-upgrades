@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Fix simulation failure due to revert when upgrading deployments using OpenZeppelin Contracts v4.
+- Fix simulation failure due to revert when upgrading deployments using OpenZeppelin Contracts v4. ([#65](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/65))
 
 ## 0.3.1 (2024-05-21)
 
