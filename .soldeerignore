@@ -17,3 +17,5 @@ cache_hardhat/
 
 # Soldeer dry-run output
 openzeppelin-foundry-upgrades.zip
+
+.git/
