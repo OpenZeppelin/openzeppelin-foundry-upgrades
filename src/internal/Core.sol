@@ -73,7 +73,7 @@ library Core {
 
         bytes32 adminSlot = vm.load(proxy, ADMIN_SLOT);
         if (adminSlot == bytes32(0)) {
-            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(proxy);
+            string memory upgradeInterfaceVersion = getUpgradeInterfaceVersion(proxy);
             if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
                 IUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
             } else {
@@ -81,7 +81,7 @@ library Core {
             }
         } else {
             address admin = address(uint160(uint256(adminSlot)));
-            string memory upgradeInterfaceVersion = _getUpgradeInterfaceVersion(admin);
+            string memory upgradeInterfaceVersion = getUpgradeInterfaceVersion(admin);
             if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
                 IProxyAdmin(admin).upgradeAndCall(proxy, newImpl, data);
             } else {
@@ -302,10 +302,16 @@ library Core {
 
     using strings for *;
 
-    function _getUpgradeInterfaceVersion(address addr) private view returns (string memory) {
+    /**
+     * @dev Gets the upgrade interface version string from a proxy or admin contract using the `UPGRADE_INTERFACE_VERSION()` getter.
+     * If the contract does not have the getter or the return data does not look like a string, this function returns an empty string.
+     */
+    function getUpgradeInterfaceVersion(address addr) internal view returns (string memory) {
         // Use staticcall to prevent forge from broadcasting it
-        (bool success, bytes memory returndata) = addr.staticcall(abi.encodeWithSignature("UPGRADE_INTERFACE_VERSION()"));
-        if (success) {
+        (bool success, bytes memory returndata) = addr.staticcall(
+            abi.encodeWithSignature("UPGRADE_INTERFACE_VERSION()")
+        );
+        if (success && returndata.length > 32) {
             return abi.decode(returndata, (string));
         } else {
             return "";
