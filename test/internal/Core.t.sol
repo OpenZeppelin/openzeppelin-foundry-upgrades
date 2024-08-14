@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 
 import {Core} from "openzeppelin-foundry-upgrades/internal/Core.sol";
 
-import {UpgradeInterfaceVersionString, UpgradeInterfaceVersionNoGetter, UpgradeInterfaceVersionEmpty, UpgradeInterfaceVersionInteger} from "../contracts/UpgradeInterfaceVersions.sol";
+import {UpgradeInterfaceVersionString, UpgradeInterfaceVersionNoGetter, UpgradeInterfaceVersionEmpty, UpgradeInterfaceVersionInteger, UpgradeInterfaceVersionVoid} from "../contracts/UpgradeInterfaceVersions.sol";
 
 /**
  * @dev Tests the Core internal library.
@@ -28,6 +28,11 @@ contract CoreTest is Test {
 
     function testGetUpgradeInterfaceVersion_integer() public {
         UpgradeInterfaceVersionInteger u = new UpgradeInterfaceVersionInteger();
+        assertEq(Core.getUpgradeInterfaceVersion(address(u)), "");
+    }
+
+    function testGetUpgradeInterfaceVersion_void() public {
+        UpgradeInterfaceVersionVoid u = new UpgradeInterfaceVersionVoid();
         assertEq(Core.getUpgradeInterfaceVersion(address(u)), "");
     }
 }

@@ -16,3 +16,7 @@ contract UpgradeInterfaceVersionEmpty {
 contract UpgradeInterfaceVersionInteger {
     uint256 public constant UPGRADE_INTERFACE_VERSION = 5;
 }
+
+contract UpgradeInterfaceVersionVoid {
+    function UPGRADE_INTERFACE_VERSION() external pure {}
+}
