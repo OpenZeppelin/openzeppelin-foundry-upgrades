@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 (2024-08-26)
+
+- Defender: Fix error in `proposeUpgrade` when project path has a space. ([#71](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/71))
+
 ## 0.3.2 (2024-08-14)
 
 - Fix simulation failure due to revert when upgrading deployments using OpenZeppelin Contracts v4. ([#65](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/65))
