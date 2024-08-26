@@ -311,8 +311,9 @@ contract DefenderDeployTest is Test {
             string.concat(
                 "npx @openzeppelin/defender-deploy-client-cli@",
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
-                " proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --contractArtifactFile ",
-                contractInfo.artifactPath
+                ' proposeUpgrade --proxyAddress 0x1230000000000000000000000000000000000456 --newImplementationAddress 0x1110000000000000000000000000000000000222 --chainId 31337 --contractArtifactFile "',
+                contractInfo.artifactPath,
+                '"'
             )
         );
     }
