@@ -11,7 +11,7 @@ import {MyContract} from "./contracts/MyContract.sol";
  * @dev Tests for the Upgrades library.
  */
 contract UpgradesTest is Test {
-    function testValidate() public {
+    function testValidateWithReferenceBuildInfo() public {
         Options memory opts;
         opts.referenceBuildInfoDirs = new string[](1);
         opts.referenceBuildInfoDirs[0] = "test_artifacts/build-info-v1";
