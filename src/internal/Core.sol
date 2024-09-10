@@ -347,9 +347,9 @@ library Core {
     ) private view returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
-        string[] memory inputBuilder = new string[](255);
+        string[] memory inputBuilder = new string[](2**16);
 
-        uint8 i = 0;
+        uint16 i = 0;
 
         inputBuilder[i++] = "npx";
         inputBuilder[i++] = string(abi.encodePacked("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE));
@@ -361,6 +361,22 @@ library Core {
         if (bytes(opts.referenceContract).length != 0) {
             inputBuilder[i++] = "--reference";
             inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
+        }
+
+        for (uint8 j = 0; j < opts.referenceBuildInfoDirs.length; j++) {
+            string memory referenceBuildInfoDir = opts.referenceBuildInfoDirs[j];
+            if (bytes(referenceBuildInfoDir).length > 0) {
+                inputBuilder[i++] = "--referenceBuildInfoDirs";
+                inputBuilder[i++] = referenceBuildInfoDir;
+            }
+        }
+
+        for (uint8 j = 0; j < opts.exclude.length; j++) {
+            string memory exclude = opts.exclude[j];
+            if (bytes(exclude).length > 0) {
+                inputBuilder[i++] = "--exclude";
+                inputBuilder[i++] = exclude;
+            }
         }
 
         if (opts.unsafeSkipStorageCheck) {
@@ -380,7 +396,7 @@ library Core {
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
-        for (uint8 j = 0; j < i; j++) {
+        for (uint16 j = 0; j < i; j++) {
             inputs[j] = inputBuilder[j];
         }
 

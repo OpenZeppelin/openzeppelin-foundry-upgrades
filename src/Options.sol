@@ -17,6 +17,18 @@ struct Options {
      */
     bytes constructorData;
     /*
+     * Optional paths of additional build info directories from previous versions of the project to use for storage layout comparisons.
+     * When using this option, refer to one of these directories using prefix `<dirName>:` before the contract name or fully qualified name
+     * in the `referenceContract` option or `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
+     * Each directory short name must be unique, including compared to the main build info directory.
+     */
+    string[] referenceBuildInfoDirs;
+    /*
+     * Exclude validations for contracts in source file paths that match any of the given glob patterns.
+     * For example, ["contracts/helpers/*.sol"]. Does not apply to reference contracts.
+     */
+    string[] exclude;
+    /*
      * Selectively disable one or more validation errors. Comma-separated list that must be compatible with the
      * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#usage
      */
