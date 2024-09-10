@@ -15,5 +15,7 @@ node_modules/
 artifacts/
 cache_hardhat/
 
+test_artifacts/
+
 # Soldeer dry-run output
 openzeppelin-foundry-upgrades.zip

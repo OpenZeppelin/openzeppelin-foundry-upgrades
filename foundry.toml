@@ -20,3 +20,15 @@ remappings = [
   "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts",
   "@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable-v4"
 ]
+
+[profile.build-v1]
+src = "test-profiles/build-v1/src"
+test = "test-profiles/build-v1/test"
+
+[profile.build-v2]
+src = "test-profiles/build-v2/src"
+test = "test-profiles/build-v2/test"
+
+[profile.build-v2-bad]
+src = "test-profiles/build-v2-bad/src"
+test = "test-profiles/build-v2-bad/test"
