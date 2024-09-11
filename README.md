@@ -204,11 +204,12 @@ When using functions that take a contract name, or the `referenceContract` optio
 #### Annotation format
 Applies to:
 - `@custom:oz-upgrades-from <reference>` annotation
-- `ReferenceBuild.upgradesFrom` option
 
-When using the `@custom:oz-upgrades-from <reference>` annotation or overriding it with the `ReferenceBuild.upgradesFrom` option, the reference contract name must be in one of the following formats (to be compliant with the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/api-core#define-reference-contracts)):
+When using the `@custom:oz-upgrades-from <reference>` annotation, the reference contract name must be in one of the following formats (to be compliant with the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/api-core#define-reference-contracts)):
 - the contract name, e.g. `ContractV1`
 - fully qualified contract name, e.g. `contracts/tokens/ContractV1.sol:ContractV1`
+
+If the `referenceBuildInfoDir` option is set, use one of the following formats:
 - the reference build info directory name and the contract name, e.g. `build-info-v1:ContractV1`
 - the reference build info directory name and the fully qualified contract name, e.g. `build-info-v1:contracts/tokens/ContractV1.sol:ContractV1`
 
