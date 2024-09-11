@@ -12,6 +12,8 @@ import { Options } from "openzeppelin-foundry-upgrades/Options.sol";
 struct Options {
   string referenceContract;
   bytes constructorData;
+  string[] referenceBuildInfoDirs;
+  string[] exclude;
   string unsafeAllow;
   bool unsafeAllowRenames;
   bool unsafeSkipStorageCheck;
