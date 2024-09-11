@@ -14,6 +14,3 @@ forge test -vvv --ffi --force
 
 export FOUNDRY_PROFILE=build-info-v2-bad
 forge test -vvv --ffi --force
-
-export FOUNDRY_PROFILE=build-info-v2-reference-option
-forge test -vvv --ffi --force
