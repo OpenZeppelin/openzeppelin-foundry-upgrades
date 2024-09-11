@@ -189,30 +189,6 @@ Upgrade a beacon:
 Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 ```
 
-### Contract name formats
-
-#### Foundry artifact format
-Applies to:
-- `contractName` parameter
-- `referenceContract` option
-
-When using functions that take a contract name, or the `referenceContract` option, the string must be in one of the following formats (to be compliant with Foundry's [getCode](https://book.getfoundry.sh/cheatcodes/get-code) cheatcode):
-- the Solidity file name, e.g. `ContractV1.sol`
-- the Solidity file name and the contract name, e.g. `ContractV1.sol:ContractV1`
-- the artifact path relative to the project root directory, e.g. `out/ContractV1.sol/ContractV1.json`
-
-#### Annotation format
-Applies to:
-- `@custom:oz-upgrades-from <reference>` annotation
-
-When using the `@custom:oz-upgrades-from <reference>` annotation, the reference contract name must be in one of the following formats (to be compliant with the [OpenZeppelin Upgrades CLI](https://docs.openzeppelin.com/upgrades-plugins/api-core#define-reference-contracts)):
-- the contract name, e.g. `ContractV1`
-- fully qualified contract name, e.g. `contracts/tokens/ContractV1.sol:ContractV1`
-
-If the `referenceBuildInfoDir` option is set, use one of the following formats:
-- the reference build info directory name and the contract name, e.g. `build-info-v1:ContractV1`
-- the reference build info directory name and the fully qualified contract name, e.g. `build-info-v1:contracts/tokens/ContractV1.sol:ContractV1`
-
 ### Coverage Testing
 
 To enable code coverage reports with `forge coverage`, use the following deployment pattern in your tests: instantiate your implementation contracts directly and use the `UnsafeUpgrades` library. For example:

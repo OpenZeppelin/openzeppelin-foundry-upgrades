@@ -11,8 +11,8 @@ import { Options } from "openzeppelin-foundry-upgrades/Options.sol";
 ```solidity
 struct Options {
   string referenceContract;
+  string referenceBuildInfoDir;
   bytes constructorData;
-  string[] referenceBuildInfoDirs;
   string[] exclude;
   string unsafeAllow;
   bool unsafeAllowRenames;
