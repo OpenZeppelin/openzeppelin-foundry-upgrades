@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "forge clean && hardhat clean",
     "compile": "forge build",
-    "test": "npm run forge:test && npm run forge:script && npm run forge:test-v4 && npm run forge:script-v4 && npm run forge:test-v4-with-v5-proxies && npm run forge:script-v4-with-v5-proxies && test-reference-build-info-dirs",
+    "test": "npm run forge:test && npm run forge:script && npm run forge:test-v4 && npm run forge:script-v4 && npm run forge:test-v4-with-v5-proxies && npm run forge:script-v4-with-v5-proxies && npm run test-reference-build-info-dirs",
     "forge:test": "FOUNDRY_PROFILE=default forge test -vvv --ffi --force",
     "forge:script": "FOUNDRY_PROFILE=default forge script test/Upgrades.s.sol --ffi --force",
     "forge:test-v4": "FOUNDRY_PROFILE=openzeppelin-contracts-v4 forge test -vvv --ffi --force --use solc:0.8.2",
