@@ -15,7 +15,8 @@ contract UpgradesTest is Test {
         Options memory opts;
         opts.referenceBuildInfoDirs = new string[](1);
         opts.referenceBuildInfoDirs[0] = "test_artifacts/build-info-v1";
-        opts.referenceContract = "build-info-v1:MyContract";
+
+        opts.reference = "build-info-v1:MyContract";
 
         Upgrades.validateUpgrade(
             "MyContract.sol",
