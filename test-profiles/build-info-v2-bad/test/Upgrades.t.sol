@@ -16,8 +16,7 @@ contract UpgradesTest is Test {
 
     function testValidateWithReferenceBuildInfo_Bad() public {
         Options memory opts;
-        opts.referenceBuildInfoDirs = new string[](1);
-        opts.referenceBuildInfoDirs[0] = "test_artifacts/build-info-v1";
+        opts.referenceBuildInfoDir = "test_artifacts/build-info-v1";
 
         Validator v = new Validator();
         try v.validateUpgrade("MyContract.sol", opts) {

@@ -6,23 +6,32 @@ pragma solidity ^0.8.0;
  */
 struct Options {
     /*
-     * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1".
+     * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1" or
+     * artifact path relative to the project root directory.
+     *
      * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
+     *
+     * NOTE: This option is not compatible with the `referenceBuildInfoDir` option. If using the `referenceBuildInfoDir` option,
+     * set the `@custom:oz-upgrades-from <reference>` annotation.
      */
     string referenceContract;
+    /*
+     * Path of a reference build info directory from a previous version of the project to use for storage layout comparisons.
+     *
+     * When using this option, refer to this directory using prefix `<dirName>:` before the contract name or fully qualified name
+     * in the `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
+     * The directory short name must be unique when compared to the main build info directory.
+     *
+     * For example, if the reference build info directory is `previous-builds/build-info-v1`, and the reference contract is `ContractV1`,
+     * then the annotation should be `/// @custom:oz-upgrades-from old-builds/build-info-v1:ContractV1`
+     */
+    string referenceBuildInfoDir;
     /*
      * Encoded constructor arguments for the implementation contract.
      * Note that these are different from initializer arguments, and will be used in the deployment of the implementation contract itself.
      * Can be used to initialize immutable variables.
      */
     bytes constructorData;
-    /*
-     * Optional paths of additional build info directories from previous versions of the project to use for storage layout comparisons.
-     * When using this option, refer to one of these directories using prefix `<dirName>:` before the contract name or fully qualified name
-     * in the `referenceContract` option or `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
-     * Each directory short name must be unique, including compared to the main build info directory.
-     */
-    string[] referenceBuildInfoDirs;
     /*
      * Exclude validations for contracts in source file paths that match any of the given glob patterns.
      * For example, ["contracts/helpers/*.sol"]. Does not apply to reference contracts.

@@ -358,22 +358,22 @@ library Core {
         inputBuilder[i++] = "--contract";
         inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
 
-        if (bytes(opts.referenceContract).length != 0) {
+        bool hasReferenceContract = bytes(opts.referenceContract).length != 0;
+        bool hasReferenceBuildInfoDir = bytes(opts.referenceBuildInfoDir).length != 0;
+
+        if (hasReferenceContract && hasReferenceBuildInfoDir) {
+            revert("The `referenceContract` option is not compatible with the `referenceBuildInfoDir` option");
+        } else if (hasReferenceContract) {
             inputBuilder[i++] = "--reference";
             inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
-        }
-
-        for (uint8 j = 0; j < opts.referenceBuildInfoDirs.length; j++) {
-            string memory referenceBuildInfoDir = opts.referenceBuildInfoDirs[j];
-            if (bytes(referenceBuildInfoDir).length > 0) {
-                inputBuilder[i++] = "--referenceBuildInfoDirs";
-                inputBuilder[i++] = string(abi.encodePacked('"', referenceBuildInfoDir, '"'));
-            }
+        } else if (hasReferenceBuildInfoDir) {
+            inputBuilder[i++] = "--referenceBuildInfoDirs";
+            inputBuilder[i++] = string(abi.encodePacked('"', opts.referenceBuildInfoDir, '"'));
         }
 
         for (uint8 j = 0; j < opts.exclude.length; j++) {
             string memory exclude = opts.exclude[j];
-            if (bytes(exclude).length > 0) {
+            if (bytes(exclude).length != 0) {
                 inputBuilder[i++] = "--exclude";
                 inputBuilder[i++] = string(abi.encodePacked('"', exclude, '"'));
             }
