@@ -14,21 +14,12 @@ import {NoLicense} from "../contracts/NoLicense.sol";
 import {Unlicensed} from "../contracts/Unlicensed.sol";
 import {MyContractName} from "../contracts/MyContractFile.sol";
 
+import {Strings} from "../utils/Strings.sol";
+
 /**
  * @dev Tests the DefenderDeploy internal library.
  */
 contract DefenderDeployTest is Test {
-    function _toString(string[] memory arr) private pure returns (string memory) {
-        string memory result;
-        for (uint i = 0; i < arr.length; i++) {
-            result = string.concat(result, arr[i]);
-            if (i < arr.length - 1) {
-                result = string.concat(result, " ");
-            }
-        }
-        return result;
-    }
-
     function testBuildDeployCommand() public {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
         string memory buildInfoFile = Utils.getBuildInfoFile(
@@ -38,7 +29,7 @@ contract DefenderDeployTest is Test {
         );
 
         DefenderOptions memory opts;
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
 
@@ -65,7 +56,7 @@ contract DefenderDeployTest is Test {
         bytes memory constructorData = abi.encode(123);
 
         DefenderOptions memory opts;
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -101,7 +92,7 @@ contract DefenderDeployTest is Test {
         opts.txOverrides.maxFeePerGas = 2 gwei;
         opts.txOverrides.maxPriorityFeePerGas = 0.5 gwei;
 
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -130,7 +121,7 @@ contract DefenderDeployTest is Test {
         DefenderOptions memory opts;
         opts.skipVerifySourceCode = true;
 
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -159,7 +150,7 @@ contract DefenderDeployTest is Test {
         DefenderOptions memory opts;
         opts.skipLicenseType = true;
 
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -252,7 +243,7 @@ contract DefenderDeployTest is Test {
         );
 
         DefenderOptions memory opts;
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
 
@@ -276,7 +267,7 @@ contract DefenderDeployTest is Test {
         );
 
         DefenderOptions memory opts;
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
 
@@ -296,7 +287,7 @@ contract DefenderDeployTest is Test {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
         Options memory opts;
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildProposeUpgradeCommand(
                 address(0x1230000000000000000000000000000000000456),
                 address(0),
@@ -337,7 +328,7 @@ contract DefenderDeployTest is Test {
     }
 
     function testBuildGetApprovalProcessCommand() public view {
-        string memory commandString = _toString(
+        string memory commandString = Strings.joinWithSpace(
             DefenderDeploy.buildGetApprovalProcessCommand("getDeployApprovalProcess")
         );
 

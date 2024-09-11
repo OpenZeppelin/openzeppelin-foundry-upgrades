@@ -323,7 +323,7 @@ library Core {
             return;
         }
 
-        string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
+        string[] memory inputs = buildValidateCommand(contractName, opts, requireReference);
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
 
@@ -340,14 +340,14 @@ library Core {
         }
     }
 
-    function _buildValidateCommand(
+    function buildValidateCommand(
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) private view returns (string[] memory) {
+    ) internal view returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
-        string[] memory inputBuilder = new string[](2**16);
+        string[] memory inputBuilder = new string[](2 ** 16);
 
         uint16 i = 0;
 
@@ -367,7 +367,7 @@ library Core {
             string memory referenceBuildInfoDir = opts.referenceBuildInfoDirs[j];
             if (bytes(referenceBuildInfoDir).length > 0) {
                 inputBuilder[i++] = "--referenceBuildInfoDirs";
-                inputBuilder[i++] = referenceBuildInfoDir;
+                inputBuilder[i++] = string(abi.encodePacked('"', referenceBuildInfoDir, '"'));
             }
         }
 
@@ -375,7 +375,7 @@ library Core {
             string memory exclude = opts.exclude[j];
             if (bytes(exclude).length > 0) {
                 inputBuilder[i++] = "--exclude";
-                inputBuilder[i++] = exclude;
+                inputBuilder[i++] = string(abi.encodePacked('"', exclude, '"'));
             }
         }
 
