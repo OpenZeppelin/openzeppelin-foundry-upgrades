@@ -362,6 +362,8 @@ library Core {
         bool hasReferenceBuildInfoDir = bytes(opts.referenceBuildInfoDir).length != 0;
 
         if (hasReferenceContract && hasReferenceBuildInfoDir) {
+            // These need to be mutually exclusive because `referenceContract` is a string in Foundry artifact format,
+            // which cannot have a build info directory name prefix.
             revert("The `referenceContract` option is not compatible with the `referenceBuildInfoDir` option");
         } else if (hasReferenceContract) {
             inputBuilder[i++] = "--reference";
