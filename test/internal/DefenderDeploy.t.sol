@@ -14,7 +14,7 @@ import {NoLicense} from "../contracts/NoLicense.sol";
 import {Unlicensed} from "../contracts/Unlicensed.sol";
 import {MyContractName} from "../contracts/MyContractFile.sol";
 
-import {Strings} from "../utils/Strings.sol";
+import {StringHelper} from "./StringHelper.sol";
 
 /**
  * @dev Tests the DefenderDeploy internal library.
@@ -29,7 +29,7 @@ contract DefenderDeployTest is Test {
         );
 
         DefenderOptions memory opts;
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
 
@@ -56,7 +56,7 @@ contract DefenderDeployTest is Test {
         bytes memory constructorData = abi.encode(123);
 
         DefenderOptions memory opts;
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -92,7 +92,7 @@ contract DefenderDeployTest is Test {
         opts.txOverrides.maxFeePerGas = 2 gwei;
         opts.txOverrides.maxPriorityFeePerGas = 0.5 gwei;
 
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -121,7 +121,7 @@ contract DefenderDeployTest is Test {
         DefenderOptions memory opts;
         opts.skipVerifySourceCode = true;
 
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -150,7 +150,7 @@ contract DefenderDeployTest is Test {
         DefenderOptions memory opts;
         opts.skipLicenseType = true;
 
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, constructorData, opts)
         );
 
@@ -243,7 +243,7 @@ contract DefenderDeployTest is Test {
         );
 
         DefenderOptions memory opts;
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
 
@@ -267,7 +267,7 @@ contract DefenderDeployTest is Test {
         );
 
         DefenderOptions memory opts;
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildDeployCommand(contractInfo, buildInfoFile, "", opts)
         );
 
@@ -287,7 +287,7 @@ contract DefenderDeployTest is Test {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
         Options memory opts;
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildProposeUpgradeCommand(
                 address(0x1230000000000000000000000000000000000456),
                 address(0),
@@ -328,7 +328,7 @@ contract DefenderDeployTest is Test {
     }
 
     function testBuildGetApprovalProcessCommand() public view {
-        string memory commandString = Strings.joinWithSpace(
+        string memory commandString = StringHelper.join(
             DefenderDeploy.buildGetApprovalProcessCommand("getDeployApprovalProcess")
         );
 

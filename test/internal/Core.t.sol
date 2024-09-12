@@ -6,7 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Options} from "openzeppelin-foundry-upgrades/Options.sol";
 import {Core} from "openzeppelin-foundry-upgrades/internal/Core.sol";
 import {Versions} from "openzeppelin-foundry-upgrades/internal/Versions.sol";
-import {Strings} from "../utils/Strings.sol";
+import {StringHelper} from "./StringHelper.sol";
 
 import {UpgradeInterfaceVersionString, UpgradeInterfaceVersionNoGetter, UpgradeInterfaceVersionEmpty, UpgradeInterfaceVersionInteger, UpgradeInterfaceVersionVoid} from "../contracts/UpgradeInterfaceVersions.sol";
 
@@ -42,7 +42,7 @@ contract CoreTest is Test {
     function testBuildValidateCommand() public view {
         Options memory opts;
 
-        string memory commandString = Strings.joinWithSpace(Core.buildValidateCommand("Greeter.sol", opts, false));
+        string memory commandString = StringHelper.join(Core.buildValidateCommand("Greeter.sol", opts, false));
         assertEq(
             commandString,
             string.concat(
@@ -59,7 +59,7 @@ contract CoreTest is Test {
         opts.exclude[0] = "test/contracts/**/{Foo,Bar}.sol";
         opts.exclude[1] = "test/contracts/helpers/**/*.sol";
 
-        string memory commandString = Strings.joinWithSpace(Core.buildValidateCommand("Greeter.sol", opts, false));
+        string memory commandString = StringHelper.join(Core.buildValidateCommand("Greeter.sol", opts, false));
         assertEq(
             commandString,
             string.concat(
