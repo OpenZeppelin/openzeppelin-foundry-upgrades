@@ -8,9 +8,6 @@ import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {MyContract} from "./contracts/MyContract.sol";
 
-/**
- * @dev Tests for the Upgrades library.
- */
 contract UpgradesTest is Test {
     using strings for *;
 

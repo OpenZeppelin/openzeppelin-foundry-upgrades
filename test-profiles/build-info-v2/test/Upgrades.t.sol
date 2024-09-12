@@ -7,9 +7,6 @@ import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {MyContract} from "./contracts/MyContract.sol";
 
-/**
- * @dev Tests for the Upgrades library.
- */
 contract UpgradesTest is Test {
     function testValidateWithReferenceBuildInfo() public {
         Options memory opts;
