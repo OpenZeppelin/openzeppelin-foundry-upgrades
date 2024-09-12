@@ -8,8 +8,9 @@ struct Options {
     /*
      * The reference contract to use for storage layout comparisons.
      *
+     * For supported formats, see https://docs.openzeppelin.com/upgrades-plugins/api-foundry-upgrades#contract_name_formats
+     *
      * If not using the `referenceBuildInfoDir` option, this must be in Foundry artifact format.
-     * See https://docs.openzeppelin.com/upgrades-plugins/api-foundry-upgrades#contract_name_formats
      *
      * If using the `referenceBuildInfoDir` option, this must be in annotation format prefixed with the build info directory short name.
      * For example, if `referenceBuildInfoDir` is `previous-builds/build-info-v1` and the reference contract name is `ContractV1`,
@@ -19,7 +20,8 @@ struct Options {
      */
     string referenceContract;
     /*
-     * Path of a reference build info directory from a previous version of the project to use for storage layout comparisons.
+     * Absolute or relative path to a build info directory from a previous version of the project to use for storage layout comparisons.
+     * Relative paths must be relative to the Foundry project root.
      *
      * When using this option, refer to this directory using prefix `<dirName>:` before the contract name or fully qualified name
      * in the `referenceContract` option or `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
