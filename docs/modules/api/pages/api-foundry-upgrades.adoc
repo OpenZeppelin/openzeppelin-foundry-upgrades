@@ -2,16 +2,16 @@
 
 == Contract name formats
 
-Contract names must be provided in certain scenarios and must be in specific formats. The following are the required formats for each scenario.
+Contract names must be provided in specific formats depending on context. The following are the required formats for each context:
 
 === Foundry artifact format
 
-Use with:
+Contexts:
 
 * `contractName` parameter
-* `referenceContract` option
+* `referenceContract` option if `referenceBuildInfoDir` option is not set
 
-When using functions that take a contract name, or the `referenceContract` option, the string must be in one of the following formats (to be compliant with Foundry's https://book.getfoundry.sh/cheatcodes/get-code[getCode] cheatcode):
+Can be in any of the following forms according to Foundry's https://book.getfoundry.sh/cheatcodes/get-code[getCode] cheatcode:
 
 * the Solidity file name, e.g. `ContractV1.sol`
 * the Solidity file name and the contract name, e.g. `ContractV1.sol:ContractV1`
@@ -19,19 +19,20 @@ When using functions that take a contract name, or the `referenceContract` optio
 
 === Annotation format
 
-Use with:
+Contexts:
 
 * `@custom:oz-upgrades-from <reference>` annotation
+* `referenceContract` option if `referenceBuildInfoDir` option is set
 
-When using the `@custom:oz-upgrades-from <reference>` annotation, the reference contract name must be in one of the following formats (to be compliant with the https://docs.openzeppelin.com/upgrades-plugins/api-core#define-reference-contracts[OpenZeppelin Upgrades CLI]):
+Can be in any of the following forms according to the https://docs.openzeppelin.com/upgrades-plugins/api-core#define-reference-contracts[OpenZeppelin Upgrades CLI]:
 
 * the contract name, e.g. `ContractV1`
 * fully qualified contract name, e.g. `contracts/tokens/ContractV1.sol:ContractV1`
 
-If the `referenceBuildInfoDir` option is set, include the build info directory name before the contract name, resulting in one of the following formats:
+If the `referenceBuildInfoDir` option is set, include the build info directory short name as a prefix, resulting in one of the following forms:
 
-* the reference build info directory name and the contract name, e.g. `build-info-v1:ContractV1`
-* the reference build info directory name and the fully qualified contract name, e.g. `build-info-v1:contracts/tokens/ContractV1.sol:ContractV1`
+* the build info directory short name and the contract name, e.g. `build-info-v1:ContractV1`
+* the build info directory short name and the fully qualified contract name, e.g. `build-info-v1:contracts/tokens/ContractV1.sol:ContractV1`
 
 == Common Options
 

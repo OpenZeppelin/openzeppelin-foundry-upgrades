@@ -6,24 +6,24 @@ pragma solidity ^0.8.0;
  */
 struct Options {
     /*
-     * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1" or
-     * artifact path relative to the project root directory.
+     * The reference contract to use for storage layout comparisons.
+     *
+     * If not using the `referenceBuildInfoDir` option, this must be in Foundry artifact format.
+     * See https://docs.openzeppelin.com/upgrades-plugins/api-foundry-upgrades#contract_name_formats
+     *
+     * If using the `referenceBuildInfoDir` option, this must be in annotation format prefixed with the build info directory short name.
+     * For example, if `referenceBuildInfoDir` is `previous-builds/build-info-v1` and the reference contract name is `ContractV1`,
+     * then set this to `build-info-v1:ContractV1`
      *
      * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
-     *
-     * NOTE: This option is not compatible with the `referenceBuildInfoDir` option. If using the `referenceBuildInfoDir` option,
-     * set the `@custom:oz-upgrades-from <reference>` annotation.
      */
     string referenceContract;
     /*
      * Path of a reference build info directory from a previous version of the project to use for storage layout comparisons.
      *
      * When using this option, refer to this directory using prefix `<dirName>:` before the contract name or fully qualified name
-     * in the `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
+     * in the `referenceContract` option or `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
      * The directory short name must be unique when compared to the main build info directory.
-     *
-     * For example, if the reference build info directory is `previous-builds/build-info-v1`, and the reference contract is `ContractV1`,
-     * then the annotation should be `/// @custom:oz-upgrades-from old-builds/build-info-v1:ContractV1`
      */
     string referenceBuildInfoDir;
     /*

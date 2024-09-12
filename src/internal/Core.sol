@@ -361,14 +361,15 @@ library Core {
         bool hasReferenceContract = bytes(opts.referenceContract).length != 0;
         bool hasReferenceBuildInfoDir = bytes(opts.referenceBuildInfoDir).length != 0;
 
-        if (hasReferenceContract && hasReferenceBuildInfoDir) {
-            // These need to be mutually exclusive because `referenceContract` is a string in Foundry artifact format,
-            // which cannot have a build info directory name prefix.
-            revert("The `referenceContract` option is not compatible with the `referenceBuildInfoDir` option");
-        } else if (hasReferenceContract) {
+        if (hasReferenceContract) {
+            string memory referenceArg = hasReferenceBuildInfoDir
+                ? opts.referenceContract
+                : Utils.getFullyQualifiedName(opts.referenceContract, outDir);
             inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
-        } else if (hasReferenceBuildInfoDir) {
+            inputBuilder[i++] = string(abi.encodePacked('"', referenceArg, '"'));
+        }
+
+        if (hasReferenceBuildInfoDir) {
             inputBuilder[i++] = "--referenceBuildInfoDirs";
             inputBuilder[i++] = string(abi.encodePacked('"', opts.referenceBuildInfoDir, '"'));
         }
