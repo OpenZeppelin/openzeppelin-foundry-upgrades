@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add `referenceBuildInfoDir` and `exclude` options. ([#74](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/74))
+
 ## 0.3.3 (2024-08-26)
 
 - Defender: Fix error in `proposeUpgrade` when project path has a space. ([#71](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/71))
