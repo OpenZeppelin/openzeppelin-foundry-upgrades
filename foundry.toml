@@ -32,3 +32,7 @@ test = "test-profiles/build-info-v2/test"
 [profile.build-info-v2-bad]
 src = "test-profiles/build-info-v2-bad/src"
 test = "test-profiles/build-info-v2-bad/test"
+
+[profile.build-info-v2-reference-option]
+src = "test-profiles/build-info-v2-reference-option/src"
+test = "test-profiles/build-info-v2-reference-option/test"
