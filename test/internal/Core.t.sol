@@ -57,7 +57,7 @@ contract CoreTest is Test {
         Options memory opts;
         opts.exclude = new string[](2);
         opts.exclude[0] = "test/contracts/**/{Foo,Bar}.sol";
-        opts.exclude[1] = "test/contracts/helpers/**.sol";
+        opts.exclude[1] = "test/contracts/helpers/**/*.sol";
 
         string memory commandString = Strings.joinWithSpace(Core.buildValidateCommand("Greeter.sol", opts, false));
         assertEq(
@@ -65,7 +65,7 @@ contract CoreTest is Test {
             string.concat(
                 "npx @openzeppelin/upgrades-core@",
                 Versions.UPGRADES_CORE,
-                ' validate out/build-info --contract test/contracts/Greeter.sol:Greeter --exclude "test/contracts/**/{Foo,Bar}.sol" --exclude "test/contracts/helpers/**.sol"'
+                ' validate out/build-info --contract test/contracts/Greeter.sol:Greeter --exclude "test/contracts/**/{Foo,Bar}.sol" --exclude "test/contracts/helpers/**/*.sol"'
             )
         );
     }

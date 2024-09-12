@@ -36,7 +36,7 @@ struct Options {
     bytes constructorData;
     /*
      * Exclude validations for contracts in source file paths that match any of the given glob patterns.
-     * For example, ["contracts/helpers/*.sol"]. Does not apply to reference contracts.
+     * For example, patterns such as "contracts/helpers/*.sol". Does not apply to reference contracts.
      */
     string[] exclude;
     /*
