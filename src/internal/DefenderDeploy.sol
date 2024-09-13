@@ -117,6 +117,10 @@ library DefenderDeploy {
             inputBuilder[i++] = "--maxPriorityFeePerGas";
             inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.maxPriorityFeePerGas);
         }
+        if (!(defenderOpts.metadata).toSlice().empty()) {
+            inputBuilder[i++] = "--metadata";
+            inputBuilder[i++] = string(abi.encodePacked('"', vm.replace(defenderOpts.metadata, '"', '\\"'), '"'));
+        }
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
