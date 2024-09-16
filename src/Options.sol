@@ -89,6 +89,12 @@ struct DefenderOptions {
      * Transaction overrides for OpenZeppelin Defender deployments.
      */
     TxOverrides txOverrides;
+    /*
+     * When using OpenZeppelin Defender deployments, you can use this to identify, tag, or classify deployments.
+     * See https://docs.openzeppelin.com/defender/module/deploy#metadata.
+     * Must be a JSON string, for example: '{ "commitHash": "4ae3e0d", "tag": "v1.0.0", "anyOtherField": "anyValue" }'
+     */
+    string metadata;
 }
 
 /**

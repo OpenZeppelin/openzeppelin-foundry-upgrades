@@ -23,7 +23,7 @@
     "@openzeppelin/contracts-upgradeable": "^5.0.2",
     "@openzeppelin/contracts-v4": "npm:@openzeppelin/contracts@^v4.9.6",
     "@openzeppelin/contracts-upgradeable-v4": "npm:@openzeppelin/contracts-upgradeable@^v4.9.6",
-    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.7",
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.9",
     "@openzeppelin/upgrades-core": "^1.32.3",
     "hardhat": "^2.21.0",
     "prettier": "^3.0.0",
