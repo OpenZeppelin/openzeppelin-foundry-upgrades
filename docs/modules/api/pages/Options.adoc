@@ -40,6 +40,7 @@ struct DefenderOptions {
   string licenseType;
   bool skipLicenseType;
   struct TxOverrides txOverrides;
+  string metadata;
 }
 ```
 
