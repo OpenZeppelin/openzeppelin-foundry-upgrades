@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Potentially breaking changes
-- Adds a check to ensure `initialOwner` for `deployTransparentProxy` is not a ProxyAdmin contract.
+- Adds a check to ensure `initialOwner` for `deployTransparentProxy` is not a ProxyAdmin contract. ([#76](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/76))
 
 ## 0.3.4 (2024-09-16)
 
