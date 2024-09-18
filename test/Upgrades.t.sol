@@ -14,7 +14,7 @@ import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
-import {HasOwner} from "./contracts/OwnerFunctions.sol";
+import {HasOwner} from "./contracts/HasOwner.sol";
 
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
@@ -142,8 +142,8 @@ contract UpgradesTest is Test {
 
     function testValidateImplementation() public {
         Options memory opts;
-        Validator v = new Validator();
-        try v.validateImplementation("Validations.sol:Unsafe", opts) {
+        Invoker i = new Invoker();
+        try i.validateImplementation("Validations.sol:Unsafe", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -153,8 +153,8 @@ contract UpgradesTest is Test {
     function testValidateLayout() public {
         Options memory opts;
         opts.referenceContract = "Validations.sol:LayoutV1";
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:LayoutV2_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:LayoutV2_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -163,8 +163,8 @@ contract UpgradesTest is Test {
 
     function testValidateLayoutUpgradesFrom() public {
         Options memory opts;
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -174,8 +174,8 @@ contract UpgradesTest is Test {
     function testValidateNamespaced() public {
         Options memory opts;
         opts.referenceContract = "Validations.sol:NamespacedV1";
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:NamespacedV2_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:NamespacedV2_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -184,8 +184,8 @@ contract UpgradesTest is Test {
 
     function testValidateNamespacedUpgradesFrom() public {
         Options memory opts;
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -205,9 +205,9 @@ contract UpgradesTest is Test {
 
     function testValidateNamespacedNoReference() public {
         Options memory opts;
-        Validator v = new Validator();
+        Invoker i = new Invoker();
         // validate upgrade without reference contract - an error is expected from upgrades-core CLI
-        try v.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts) {
+        try i.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -267,9 +267,9 @@ contract UpgradesTest is Test {
     function testProxyAdminCheck() public {
         ProxyAdmin admin = new ProxyAdmin(msg.sender);
 
-        Validator v = new Validator();
+        Invoker i = new Invoker();
         try
-            v.deployTransparentProxy(
+            i.deployTransparentProxy(
                 "Greeter.sol",
                 address(admin), // NOT SAFE
                 abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
@@ -288,9 +288,9 @@ contract UpgradesTest is Test {
         HasOwner hasOwner = new HasOwner(msg.sender);
         Options memory opts;
 
-        Validator v = new Validator();
+        Invoker i = new Invoker();
         try
-            v.deployTransparentProxy(
+            i.deployTransparentProxy(
                 "Greeter.sol",
                 address(hasOwner), // false positive
                 abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
@@ -333,7 +333,7 @@ contract UpgradesTest is Test {
     }
 }
 
-contract Validator {
+contract Invoker {
     function deployTransparentProxy(
         string memory contractName,
         address admin,

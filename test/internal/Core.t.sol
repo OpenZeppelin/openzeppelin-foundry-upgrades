@@ -6,7 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Core} from "openzeppelin-foundry-upgrades/internal/Core.sol";
 
 import {UpgradeInterfaceVersionString, UpgradeInterfaceVersionNoGetter, UpgradeInterfaceVersionEmpty, UpgradeInterfaceVersionInteger, UpgradeInterfaceVersionVoid} from "../contracts/UpgradeInterfaceVersions.sol";
-import {HasOwner, NoGetter, StringOwner, StateChanging} from "../contracts/OwnerFunctions.sol";
+import {HasOwner, NoGetter, StringOwner, StateChanging} from "../contracts/HasOwner.sol";
 
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 
