@@ -60,6 +60,12 @@ library Upgrades {
         bytes memory initializerData,
         Options memory opts
     ) internal returns (address) {
+        if (!opts.unsafeSkipAllChecks && !opts.unsafeSkipProxyAdminCheck && Core.inferProxyAdmin(initialOwner)) {
+            revert(
+                "`initialOwner` must not be a ProxyAdmin contract. If you are sure that it is not a ProxyAdmin contract, skip this check with the `unsafeSkipProxyAdminCheck` option."
+            );
+        }
+
         address impl = deployImplementation(contractName, opts);
 
         return

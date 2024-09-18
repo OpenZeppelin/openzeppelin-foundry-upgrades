@@ -6,6 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
+import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 
 import {Greeter} from "./contracts/Greeter.sol";
 import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
@@ -260,9 +261,92 @@ contract UpgradesTest is Test {
         address proxy = Upgrades.deployTransparentProxy("WithConstructor.sol:NoInitializer", msg.sender, "", opts);
         assertEq(WithConstructor(proxy).a(), 123);
     }
+
+    function testProxyAdminCheck() public {
+        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+
+        Validator v = new Validator();
+        try
+            v.deployTransparentProxy(
+                "Greeter.sol",
+                address(admin), // NOT SAFE
+                abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+            )
+        {
+            fail();
+        } catch Error(string memory reason) {
+            assertEq(
+                reason,
+                "`initialOwner` must not be a ProxyAdmin contract. If you are sure that it is not a ProxyAdmin contract, skip this check with the `unsafeSkipProxyAdminCheck` option."
+            );
+        }
+    }
+
+    function testProxyAdminCheck_opts() public {
+        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+        Options memory opts;
+
+        Validator v = new Validator();
+        try
+            v.deployTransparentProxy(
+                "Greeter.sol",
+                address(admin), // NOT SAFE
+                abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+                opts
+            )
+        {
+            fail();
+        } catch Error(string memory reason) {
+            assertEq(
+                reason,
+                "`initialOwner` must not be a ProxyAdmin contract. If you are sure that it is not a ProxyAdmin contract, skip this check with the `unsafeSkipProxyAdminCheck` option."
+            );
+        }
+    }
+
+    function testProxyAdminCheck_skip() public {
+        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+        Options memory opts;
+        opts.unsafeSkipProxyAdminCheck = true;
+        Upgrades.deployTransparentProxy(
+            "Greeter.sol",
+            address(admin), // NOT SAFE
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+            opts
+        );
+    }
+
+    function testProxyAdminCheck_skipAll() public {
+        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+        Options memory opts;
+        opts.unsafeSkipAllChecks = true;
+        Upgrades.deployTransparentProxy(
+            "Greeter.sol",
+            address(admin), // NOT SAFE
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+            opts
+        );
+    }
 }
 
 contract Validator {
+    function deployTransparentProxy(
+        string memory contractName,
+        address admin,
+        bytes memory data
+    ) public returns (address) {
+        return Upgrades.deployTransparentProxy(contractName, admin, data);
+    }
+
+    function deployTransparentProxy(
+        string memory contractName,
+        address admin,
+        bytes memory data,
+        Options memory opts
+    ) public returns (address) {
+        return Upgrades.deployTransparentProxy(contractName, admin, data, opts);
+    }
+
     function validateImplementation(string memory contractName, Options memory opts) public {
         Upgrades.validateImplementation(contractName, opts);
     }
