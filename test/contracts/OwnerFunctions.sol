@@ -7,6 +7,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 
+// Basic but pointless contract that has its own owner and can call ProxyAdmin functions
 contract HasOwner is Ownable {
     constructor(address initialOwner) Ownable(initialOwner) {}
 

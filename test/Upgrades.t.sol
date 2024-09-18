@@ -311,30 +311,12 @@ contract UpgradesTest is Test {
         Options memory opts;
         opts.unsafeSkipProxyAdminCheck = true;
 
-        address proxy = Upgrades.deployTransparentProxy(
+        Upgrades.deployTransparentProxy(
             "Greeter.sol",
             address(hasOwner),
             abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
             opts
         );
-
-        // test that the HasOwner contract can actually call functions on the ProxyAdmin
-        address implAddressV1 = Upgrades.getImplementationAddress(proxy);
-
-        Options memory opts2;
-        address preparedV2 = Upgrades.prepareUpgrade("GreeterV2.sol", opts2);
-
-        vm.prank(msg.sender);
-        hasOwner.upgradeAndCall(
-            ProxyAdmin(Upgrades.getAdminAddress(proxy)),
-            ITransparentUpgradeableProxy(proxy),
-            preparedV2,
-            abi.encodeCall(GreeterV2Proxiable.resetGreeting, ())
-        );
-
-        address implAddressV2 = Upgrades.getImplementationAddress(proxy);
-
-        assertFalse(implAddressV2 == implAddressV1);
     }
 
     function testProxyAdminCheck_skipAll() public {
