@@ -14,6 +14,7 @@ struct Options {
   bytes constructorData;
   string unsafeAllow;
   bool unsafeAllowRenames;
+  bool unsafeSkipProxyAdminCheck;
   bool unsafeSkipStorageCheck;
   bool unsafeSkipAllChecks;
   struct DefenderOptions defender;
