@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-### Breaking changes
+### Potentially breaking changes
 - Adds a check to ensure `initialOwner` for `deployTransparentProxy` is not a ProxyAdmin contract.
 
 ## 0.3.4 (2024-09-16)
