@@ -7,12 +7,14 @@ import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
+import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 import {Greeter} from "./contracts/Greeter.sol";
 import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
+import {HasOwner} from "./contracts/OwnerFunctions.sol";
 
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
@@ -277,20 +279,20 @@ contract UpgradesTest is Test {
         } catch Error(string memory reason) {
             assertEq(
                 reason,
-                "`initialOwner` must not be a ProxyAdmin contract. If you are sure that it is not a ProxyAdmin contract, skip this check with the `unsafeSkipProxyAdminCheck` option."
+                "`initialOwner` must not be a ProxyAdmin contract. If it is not a ProxyAdmin contract and you are sure that this contract is able to call functions on an actual ProxyAdmin, skip this check with the `unsafeSkipProxyAdminCheck` option."
             );
         }
     }
 
-    function testProxyAdminCheck_opts() public {
-        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+    function testProxyAdminCheck_emptyOpts() public {
+        HasOwner hasOwner = new HasOwner(msg.sender);
         Options memory opts;
 
         Validator v = new Validator();
         try
             v.deployTransparentProxy(
                 "Greeter.sol",
-                address(admin), // NOT SAFE
+                address(hasOwner), // false positive
                 abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
                 opts
             )
@@ -299,30 +301,50 @@ contract UpgradesTest is Test {
         } catch Error(string memory reason) {
             assertEq(
                 reason,
-                "`initialOwner` must not be a ProxyAdmin contract. If you are sure that it is not a ProxyAdmin contract, skip this check with the `unsafeSkipProxyAdminCheck` option."
+                "`initialOwner` must not be a ProxyAdmin contract. If it is not a ProxyAdmin contract and you are sure that this contract is able to call functions on an actual ProxyAdmin, skip this check with the `unsafeSkipProxyAdminCheck` option."
             );
         }
     }
 
     function testProxyAdminCheck_skip() public {
-        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+        HasOwner hasOwner = new HasOwner(msg.sender);
         Options memory opts;
         opts.unsafeSkipProxyAdminCheck = true;
-        Upgrades.deployTransparentProxy(
+
+        address proxy = Upgrades.deployTransparentProxy(
             "Greeter.sol",
-            address(admin), // NOT SAFE
+            address(hasOwner),
             abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
             opts
         );
+
+        // test that the HasOwner contract can actually call functions on the ProxyAdmin
+        address implAddressV1 = Upgrades.getImplementationAddress(proxy);
+
+        Options memory opts2;
+        address preparedV2 = Upgrades.prepareUpgrade("GreeterV2.sol", opts2);
+
+        vm.prank(msg.sender);
+        hasOwner.upgradeAndCall(
+            ProxyAdmin(Upgrades.getAdminAddress(proxy)),
+            ITransparentUpgradeableProxy(proxy),
+            preparedV2,
+            abi.encodeCall(GreeterV2Proxiable.resetGreeting, ())
+        );
+
+        address implAddressV2 = Upgrades.getImplementationAddress(proxy);
+
+        assertFalse(implAddressV2 == implAddressV1);
     }
 
     function testProxyAdminCheck_skipAll() public {
-        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+        HasOwner hasOwner = new HasOwner(msg.sender);
         Options memory opts;
         opts.unsafeSkipAllChecks = true;
+
         Upgrades.deployTransparentProxy(
             "Greeter.sol",
-            address(admin), // NOT SAFE
+            address(hasOwner),
             abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
             opts
         );

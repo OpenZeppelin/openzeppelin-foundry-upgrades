@@ -46,7 +46,7 @@ contract CoreTest is Test {
 
     function testInferProxyAdmin_hasOwner() public {
         HasOwner c = new HasOwner(msg.sender);
-        assertEq(Core.inferProxyAdmin(address(c)), true); // not really a proxy admin, but has an owner
+        assertEq(Core.inferProxyAdmin(address(c)), true); // not actually a proxy admin, but has an owner
     }
 
     function testInferProxyAdmin_noOwner() public {

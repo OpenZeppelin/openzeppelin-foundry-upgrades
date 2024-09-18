@@ -62,7 +62,7 @@ library Upgrades {
     ) internal returns (address) {
         if (!opts.unsafeSkipAllChecks && !opts.unsafeSkipProxyAdminCheck && Core.inferProxyAdmin(initialOwner)) {
             revert(
-                "`initialOwner` must not be a ProxyAdmin contract. If you are sure that it is not a ProxyAdmin contract, skip this check with the `unsafeSkipProxyAdminCheck` option."
+                "`initialOwner` must not be a ProxyAdmin contract. If it is not a ProxyAdmin contract and you are sure that this contract is able to call functions on an actual ProxyAdmin, skip this check with the `unsafeSkipProxyAdminCheck` option."
             );
         }
 
