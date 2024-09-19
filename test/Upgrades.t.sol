@@ -16,6 +16,8 @@ import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
 import {HasOwner} from "./contracts/HasOwner.sol";
 
+import {strings} from "solidity-stringutils/src/strings.sol";
+
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
 
@@ -23,6 +25,8 @@ import "./contracts/Validations.sol";
  * @dev Tests for the Upgrades library.
  */
 contract UpgradesTest is Test {
+    using strings for *;
+
     function testUUPS() public {
         address proxy = Upgrades.deployUUPSProxy(
             "GreeterProxiable.sol",
@@ -277,10 +281,9 @@ contract UpgradesTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            assertEq(
-                reason,
-                "`initialOwner` must not be a ProxyAdmin contract. If it is not a ProxyAdmin contract and you are sure that this contract is able to call functions on an actual ProxyAdmin, skip this check with the `unsafeSkipProxyAdminCheck` option."
-            );
+            strings.slice memory slice = reason.toSlice();
+            assertTrue(slice.contains("`initialOwner` must not be a ProxyAdmin contract.".toSlice()));
+            assertTrue(slice.contains(vm.toString(address(admin)).toSlice()));
         }
     }
 
@@ -299,10 +302,9 @@ contract UpgradesTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            assertEq(
-                reason,
-                "`initialOwner` must not be a ProxyAdmin contract. If it is not a ProxyAdmin contract and you are sure that this contract is able to call functions on an actual ProxyAdmin, skip this check with the `unsafeSkipProxyAdminCheck` option."
-            );
+            strings.slice memory slice = reason.toSlice();
+            assertTrue(slice.contains("`initialOwner` must not be a ProxyAdmin contract.".toSlice()));
+            assertTrue(slice.contains(vm.toString(address(hasOwner)).toSlice()));
         }
     }
 
