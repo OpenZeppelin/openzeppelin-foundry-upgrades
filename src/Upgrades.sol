@@ -6,8 +6,10 @@ import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transpa
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
+import {Vm} from "forge-std/Vm.sol";
 import {Options} from "./Options.sol";
 import {Core} from "./internal/Core.sol";
+import {Utils} from "./internal/Utils.sol";
 
 /**
  * @dev Library for deploying and managing upgradeable contracts from Forge scripts or tests.
@@ -60,6 +62,16 @@ library Upgrades {
         bytes memory initializerData,
         Options memory opts
     ) internal returns (address) {
+        if (!opts.unsafeSkipAllChecks && !opts.unsafeSkipProxyAdminCheck && Core.inferProxyAdmin(initialOwner)) {
+            revert(
+                string.concat(
+                    "`initialOwner` must not be a ProxyAdmin contract. If the contract at address ",
+                    Vm(Utils.CHEATCODE_ADDRESS).toString(initialOwner),
+                    " is not a ProxyAdmin contract and you are sure that this contract is able to call functions on an actual ProxyAdmin, skip this check with the `unsafeSkipProxyAdminCheck` option."
+                )
+            );
+        }
+
         address impl = deployImplementation(contractName, opts);
 
         return
