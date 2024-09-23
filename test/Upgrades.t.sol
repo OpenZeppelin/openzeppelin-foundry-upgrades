@@ -6,12 +6,17 @@ import {Test} from "forge-std/Test.sol";
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
+import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
+import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 import {Greeter} from "./contracts/Greeter.sol";
 import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
+import {HasOwner} from "./contracts/HasOwner.sol";
+
+import {strings} from "solidity-stringutils/src/strings.sol";
 
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
@@ -20,6 +25,8 @@ import "./contracts/Validations.sol";
  * @dev Tests for the Upgrades library.
  */
 contract UpgradesTest is Test {
+    using strings for *;
+
     function testUUPS() public {
         address proxy = Upgrades.deployUUPSProxy(
             "GreeterProxiable.sol",
@@ -139,8 +146,8 @@ contract UpgradesTest is Test {
 
     function testValidateImplementation() public {
         Options memory opts;
-        Validator v = new Validator();
-        try v.validateImplementation("Validations.sol:Unsafe", opts) {
+        Invoker i = new Invoker();
+        try i.validateImplementation("Validations.sol:Unsafe", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -150,8 +157,8 @@ contract UpgradesTest is Test {
     function testValidateLayout() public {
         Options memory opts;
         opts.referenceContract = "Validations.sol:LayoutV1";
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:LayoutV2_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:LayoutV2_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -160,8 +167,8 @@ contract UpgradesTest is Test {
 
     function testValidateLayoutUpgradesFrom() public {
         Options memory opts;
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:LayoutV2_UpgradesFrom_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -171,8 +178,8 @@ contract UpgradesTest is Test {
     function testValidateNamespaced() public {
         Options memory opts;
         opts.referenceContract = "Validations.sol:NamespacedV1";
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:NamespacedV2_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:NamespacedV2_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -181,8 +188,8 @@ contract UpgradesTest is Test {
 
     function testValidateNamespacedUpgradesFrom() public {
         Options memory opts;
-        Validator v = new Validator();
-        try v.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
+        Invoker i = new Invoker();
+        try i.validateUpgrade("Validations.sol:NamespacedV2_UpgradesFrom_Bad", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -202,9 +209,9 @@ contract UpgradesTest is Test {
 
     function testValidateNamespacedNoReference() public {
         Options memory opts;
-        Validator v = new Validator();
+        Invoker i = new Invoker();
         // validate upgrade without reference contract - an error is expected from upgrades-core CLI
-        try v.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts) {
+        try i.validateUpgrade("Validations.sol:NamespacedV2_Ok", opts) {
             fail();
         } catch {
             // TODO: check error message
@@ -260,9 +267,92 @@ contract UpgradesTest is Test {
         address proxy = Upgrades.deployTransparentProxy("WithConstructor.sol:NoInitializer", msg.sender, "", opts);
         assertEq(WithConstructor(proxy).a(), 123);
     }
+
+    function testProxyAdminCheck() public {
+        ProxyAdmin admin = new ProxyAdmin(msg.sender);
+
+        Invoker i = new Invoker();
+        try
+            i.deployTransparentProxy(
+                "Greeter.sol",
+                address(admin), // NOT SAFE
+                abi.encodeCall(Greeter.initialize, (msg.sender, "hello"))
+            )
+        {
+            fail();
+        } catch Error(string memory reason) {
+            strings.slice memory slice = reason.toSlice();
+            assertTrue(slice.contains("`initialOwner` must not be a ProxyAdmin contract.".toSlice()));
+            assertTrue(slice.contains(vm.toString(address(admin)).toSlice()));
+        }
+    }
+
+    function testProxyAdminCheck_emptyOpts() public {
+        HasOwner hasOwner = new HasOwner(msg.sender);
+        Options memory opts;
+
+        Invoker i = new Invoker();
+        try
+            i.deployTransparentProxy(
+                "Greeter.sol",
+                address(hasOwner), // false positive
+                abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+                opts
+            )
+        {
+            fail();
+        } catch Error(string memory reason) {
+            strings.slice memory slice = reason.toSlice();
+            assertTrue(slice.contains("`initialOwner` must not be a ProxyAdmin contract.".toSlice()));
+            assertTrue(slice.contains(vm.toString(address(hasOwner)).toSlice()));
+        }
+    }
+
+    function testProxyAdminCheck_skip() public {
+        HasOwner hasOwner = new HasOwner(msg.sender);
+        Options memory opts;
+        opts.unsafeSkipProxyAdminCheck = true;
+
+        Upgrades.deployTransparentProxy(
+            "Greeter.sol",
+            address(hasOwner),
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+            opts
+        );
+    }
+
+    function testProxyAdminCheck_skipAll() public {
+        HasOwner hasOwner = new HasOwner(msg.sender);
+        Options memory opts;
+        opts.unsafeSkipAllChecks = true;
+
+        Upgrades.deployTransparentProxy(
+            "Greeter.sol",
+            address(hasOwner),
+            abi.encodeCall(Greeter.initialize, (msg.sender, "hello")),
+            opts
+        );
+    }
 }
 
-contract Validator {
+contract Invoker {
+    function deployTransparentProxy(
+        string memory contractName,
+        address admin,
+        bytes memory data
+    ) public returns (address) {
+        return Upgrades.deployTransparentProxy(contractName, admin, data);
+    }
+
+    function deployTransparentProxy(
+        string memory contractName,
+        address admin,
+        bytes memory data,
+        Options memory opts
+    ) public returns (address) {
+        return Upgrades.deployTransparentProxy(contractName, admin, data, opts);
+    }
+
     function validateImplementation(string memory contractName, Options memory opts) public {
         Upgrades.validateImplementation(contractName, opts);
     }

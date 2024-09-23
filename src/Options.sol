@@ -49,6 +49,12 @@ struct Options {
      */
     bool unsafeAllowRenames;
     /*
+     * Skips checking the `initialOwner` parameter of `Upgrades.deployTransparentProxy`.
+     * When deploying a transparent proxy, the `initialOwner` must be the address of an EOA or a contract that can call functions on a ProxyAdmin. It must not be a ProxyAdmin contract itself.
+     * Use this if you encounter an error due to this check and are sure that the `initialOwner` is not a ProxyAdmin contract.
+     */
+    bool unsafeSkipProxyAdminCheck;
+    /*
      * Skips checking for storage layout compatibility errors. This is a dangerous option meant to be used as a last resort.
      */
     bool unsafeSkipStorageCheck;
