@@ -6,16 +6,39 @@ pragma solidity ^0.8.0;
  */
 struct Options {
     /*
-     * The reference contract to use for storage layout comparisons, e.g. "ContractV1.sol" or "ContractV1.sol:ContractV1".
+     * The reference contract to use for storage layout comparisons.
+     *
+     * For supported formats, see https://docs.openzeppelin.com/upgrades-plugins/api-foundry-upgrades#contract_name_formats
+     *
+     * If not using the `referenceBuildInfoDir` option, this must be in Foundry artifact format.
+     *
+     * If using the `referenceBuildInfoDir` option, this must be in annotation format prefixed with the build info directory short name.
+     * For example, if `referenceBuildInfoDir` is `previous-builds/build-info-v1` and the reference contract name is `ContractV1`,
+     * then set this to `build-info-v1:ContractV1`
+     *
      * If not set, attempts to use the `@custom:oz-upgrades-from <reference>` annotation from the contract.
      */
     string referenceContract;
+    /*
+     * Absolute or relative path to a build info directory from a previous version of the project to use for storage layout comparisons.
+     * Relative paths must be relative to the Foundry project root.
+     *
+     * When using this option, refer to this directory using prefix `<dirName>:` before the contract name or fully qualified name
+     * in the `referenceContract` option or `@custom:oz-upgrades-from` annotation, where `<dirName>` is the directory short name.
+     * The directory short name must be unique when compared to the main build info directory.
+     */
+    string referenceBuildInfoDir;
     /*
      * Encoded constructor arguments for the implementation contract.
      * Note that these are different from initializer arguments, and will be used in the deployment of the implementation contract itself.
      * Can be used to initialize immutable variables.
      */
     bytes constructorData;
+    /*
+     * Exclude validations for contracts in source file paths that match any of the given glob patterns.
+     * For example, patterns such as "contracts/helpers/*.sol". Does not apply to reference contracts.
+     */
+    string[] exclude;
     /*
      * Selectively disable one or more validation errors. Comma-separated list that must be compatible with the
      * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#usage
