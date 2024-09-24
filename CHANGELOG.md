@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.6 (2024-09-24)
 
 - Add `referenceBuildInfoDir` and `exclude` options. ([#74](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/74))
 
