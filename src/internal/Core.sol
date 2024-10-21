@@ -307,7 +307,7 @@ library Core {
      * If the contract does not have the getter or the return data does not look like a string, this function returns an empty string.
      */
     function getUpgradeInterfaceVersion(address addr) internal view returns (string memory) {
-        // Use staticcall to prevent forge from broadcasting it
+        // Use staticcall to prevent forge from broadcasting it, and to ensure no state changes
         (bool success, bytes memory returndata) = addr.staticcall(
             abi.encodeWithSignature("UPGRADE_INTERFACE_VERSION()")
         );
@@ -318,12 +318,29 @@ library Core {
         }
     }
 
+    /**
+     * @dev Infers whether the address might be a ProxyAdmin contract.
+     */
+    function inferProxyAdmin(address addr) internal view returns (bool) {
+        return _hasOwner(addr);
+    }
+
+    /**
+     * @dev Returns true if the address is a contract with an `owner()` function that is not state-changing and returns something that might be an address,
+     * otherwise returns false.
+     */
+    function _hasOwner(address addr) private view returns (bool) {
+        // Use staticcall to prevent forge from broadcasting it, and to ensure no state changes
+        (bool success, bytes memory returndata) = addr.staticcall(abi.encodeWithSignature("owner()"));
+        return (success && returndata.length == 32);
+    }
+
     function _validate(string memory contractName, Options memory opts, bool requireReference) private {
         if (opts.unsafeSkipAllChecks) {
             return;
         }
 
-        string[] memory inputs = _buildValidateCommand(contractName, opts, requireReference);
+        string[] memory inputs = buildValidateCommand(contractName, opts, requireReference);
         Vm.FfiResult memory result = Utils.runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
 
@@ -340,16 +357,16 @@ library Core {
         }
     }
 
-    function _buildValidateCommand(
+    function buildValidateCommand(
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) private view returns (string[] memory) {
+    ) internal view returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
-        string[] memory inputBuilder = new string[](255);
+        string[] memory inputBuilder = new string[](2 ** 16);
 
-        uint8 i = 0;
+        uint16 i = 0;
 
         inputBuilder[i++] = "npx";
         inputBuilder[i++] = string(abi.encodePacked("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE));
@@ -358,9 +375,28 @@ library Core {
         inputBuilder[i++] = "--contract";
         inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
 
-        if (bytes(opts.referenceContract).length != 0) {
+        bool hasReferenceContract = bytes(opts.referenceContract).length != 0;
+        bool hasReferenceBuildInfoDir = bytes(opts.referenceBuildInfoDir).length != 0;
+
+        if (hasReferenceContract) {
+            string memory referenceArg = hasReferenceBuildInfoDir
+                ? opts.referenceContract
+                : Utils.getFullyQualifiedName(opts.referenceContract, outDir);
             inputBuilder[i++] = "--reference";
-            inputBuilder[i++] = Utils.getFullyQualifiedName(opts.referenceContract, outDir);
+            inputBuilder[i++] = string(abi.encodePacked('"', referenceArg, '"'));
+        }
+
+        if (hasReferenceBuildInfoDir) {
+            inputBuilder[i++] = "--referenceBuildInfoDirs";
+            inputBuilder[i++] = string(abi.encodePacked('"', opts.referenceBuildInfoDir, '"'));
+        }
+
+        for (uint8 j = 0; j < opts.exclude.length; j++) {
+            string memory exclude = opts.exclude[j];
+            if (bytes(exclude).length != 0) {
+                inputBuilder[i++] = "--exclude";
+                inputBuilder[i++] = string(abi.encodePacked('"', exclude, '"'));
+            }
         }
 
         if (opts.unsafeSkipStorageCheck) {
@@ -380,7 +416,7 @@ library Core {
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
-        for (uint8 j = 0; j < i; j++) {
+        for (uint16 j = 0; j < i; j++) {
             inputs[j] = inputBuilder[j];
         }
 
