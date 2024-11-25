@@ -1,6 +1,7 @@
 {
   "name": "openzeppelin-foundry-upgrades",
   "private": true,
+  "version": "0.3.6",
   "license": "MIT",
   "scripts": {
     "clean": "forge clean && hardhat clean",
