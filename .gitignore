@@ -11,6 +11,9 @@ broadcast/
 # Node modules
 node_modules/
 
+# NPM package files
+*.tgz
+
 # Hardhat build output
 artifacts/
 cache_hardhat/

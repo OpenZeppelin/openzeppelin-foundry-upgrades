@@ -1,8 +1,16 @@
 {
-  "name": "openzeppelin-foundry-upgrades",
-  "private": true,
+  "name": "@openzeppelin/foundry-upgrades",
   "version": "0.3.6",
+  "description": "Foundry library for deploying and managing upgradeable contracts",
   "license": "MIT",
+  "files": [
+    "src/**/*",
+    "lib/solidity-stringutils/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades.git"
+  },
   "scripts": {
     "clean": "forge clean && hardhat clean",
     "compile": "forge build",
@@ -33,5 +41,9 @@
     "solhint": "^3.3.6",
     "solhint-plugin-openzeppelin": "file:scripts/solhint-custom",
     "solidity-docgen": "^0.6.0-beta.36"
+  },
+  "peerDependencies": {
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.9",
+    "@openzeppelin/upgrades-core": "^1.37.0"
   }
 }

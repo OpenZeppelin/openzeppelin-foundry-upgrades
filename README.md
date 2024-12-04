@@ -45,6 +45,31 @@ Set the following in `remappings.txt`:
 > **Note**
 > Use [LegacyUpgrades.sol](src/LegacyUpgrades.sol) instead of `Upgrades.sol` to upgrade existing deployments that were created with OpenZeppelin Contracts v4.
 
+### Optional: Alternative installation methods
+
+#### NPM
+
+Follow the steps above, but instead of running `forge install OpenZeppelin/openzeppelin-foundry-upgrades`, use this command instead:
+```
+npm install @openzeppelin/foundry-upgrades
+```
+
+Then add the following additional lines to `remappings.txt`, in addition to the ones described above:
+```
+openzeppelin-foundry-upgrades/=node_modules/@openzeppelin/foundry-upgrades/src/
+solidity-stringutils/=node_modules/@openzeppelin/foundry-upgrades/lib/solidity-stringutils/
+```
+
+#### Soldeer
+
+Follow the steps above, but instead of running `forge install OpenZeppelin/openzeppelin-foundry-upgrades`, use one of the install commands described in https://soldeer.xyz/project/openzeppelin-foundry-upgrades
+
+Then add the following additional lines to `remappings.txt`, in addition to the ones described above (replace `0.3.6` with the version of the plugin that you installed):
+```
+openzeppelin-foundry-upgrades/=dependencies/openzeppelin-foundry-upgrades-0.3.6/src/
+solidity-stringutils/=dependencies/openzeppelin-foundry-upgrades-0.3.6/lib/solidity-stringutils/
+```
+
 ## OpenZeppelin Defender integration
 
 See [DEFENDER.md](DEFENDER.md)
