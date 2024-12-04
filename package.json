@@ -42,7 +42,7 @@
     "solhint-plugin-openzeppelin": "file:scripts/solhint-custom",
     "solidity-docgen": "^0.6.0-beta.36"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.9",
     "@openzeppelin/upgrades-core": "^1.37.0"
   }
