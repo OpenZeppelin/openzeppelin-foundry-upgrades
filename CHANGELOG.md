@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Update documentation links.
+- Update documentation links. ([#88](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/88))
 
 ## 0.3.6 (2024-09-24)
 
