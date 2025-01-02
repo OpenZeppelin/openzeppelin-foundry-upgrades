@@ -41,7 +41,7 @@ struct Options {
     string[] exclude;
     /*
      * Selectively disable one or more validation errors. Comma-separated list that must be compatible with the
-     * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/1.x/api-core#usage
+     * --unsafeAllow option described in https://docs.openzeppelin.com/upgrades-plugins/api-core#usage
      */
     string unsafeAllow;
     /*
