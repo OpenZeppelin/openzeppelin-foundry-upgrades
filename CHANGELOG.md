@@ -3,7 +3,7 @@
 ## 0.3.7 (2025-01-13)
 
 - Update documentation links. ([#88](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/88))
-- Set Foundry as client origin for Defender deployments.
+- Set Foundry as client origin for Defender deployments. ([#90](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/90))
 
 ## 0.3.6 (2024-09-24)
 
