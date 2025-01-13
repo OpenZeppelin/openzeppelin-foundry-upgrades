@@ -40,7 +40,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName MyContractName --contractPath test/contracts/MyContractFile.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                ' --licenseType "MIT"'
+                ' --licenseType "MIT" --origin Foundry'
             )
         );
     }
@@ -67,7 +67,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "MIT"'
+                ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "MIT" --origin Foundry'
             )
         );
     }
@@ -105,7 +105,8 @@ contract DefenderDeployTest is Test {
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
                 ' --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --licenseType "My License Type" --relayerId my-relayer-id --salt 0xabc0000000000000000000000000000000000000000000000000000000000123 --gasLimit 100000 --gasPrice 1000000000 --maxFeePerGas 2000000000 --maxPriorityFeePerGas 500000000',
-                ' --metadata "{ \\"commitHash\\": \\"4ae3e0d\\", \\"tag\\": \\"v1.0.0\\", \\"anyOtherField\\": \\"anyValue\\" }"'
+                ' --metadata "{ \\"commitHash\\": \\"4ae3e0d\\", \\"tag\\": \\"v1.0.0\\", \\"anyOtherField\\": \\"anyValue\\" }"',
+                " --origin Foundry"
             )
         );
     }
@@ -134,7 +135,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false"
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --verifySourceCode false --origin Foundry"
             )
         );
     }
@@ -163,7 +164,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName WithConstructor --contractPath test/contracts/WithConstructor.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b"
+                " --constructorBytecode 0x000000000000000000000000000000000000000000000000000000000000007b --origin Foundry"
             )
         );
     }
@@ -255,7 +256,8 @@ contract DefenderDeployTest is Test {
                 "npx @openzeppelin/defender-deploy-client-cli@",
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName NoLicense --contractPath test/contracts/NoLicense.sol --chainId 31337 --buildInfoFile ",
-                buildInfoFile
+                buildInfoFile,
+                " --origin Foundry"
             )
         );
     }
@@ -280,7 +282,7 @@ contract DefenderDeployTest is Test {
                 Versions.DEFENDER_DEPLOY_CLIENT_CLI,
                 " deploy --contractName Unlicensed --contractPath test/contracts/Unlicensed.sol --chainId 31337 --buildInfoFile ",
                 buildInfoFile,
-                ' --licenseType "None"'
+                ' --licenseType "None" --origin Foundry'
             )
         );
     }

@@ -121,6 +121,8 @@ library DefenderDeploy {
             inputBuilder[i++] = "--metadata";
             inputBuilder[i++] = string(abi.encodePacked('"', vm.replace(defenderOpts.metadata, '"', '\\"'), '"'));
         }
+        inputBuilder[i++] = "--origin";
+        inputBuilder[i++] = "Foundry";
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);

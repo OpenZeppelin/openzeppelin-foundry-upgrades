@@ -1,6 +1,6 @@
 {
   "name": "@openzeppelin/foundry-upgrades",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Foundry library for deploying and managing upgradeable contracts",
   "license": "MIT",
   "files": [
@@ -33,7 +33,7 @@
     "@openzeppelin/contracts-upgradeable": "^5.0.2",
     "@openzeppelin/contracts-v4": "npm:@openzeppelin/contracts@^v4.9.6",
     "@openzeppelin/contracts-upgradeable-v4": "npm:@openzeppelin/contracts-upgradeable@^v4.9.6",
-    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.9",
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
     "@openzeppelin/upgrades-core": "^1.37.0",
     "hardhat": "^2.21.0",
     "prettier": "^3.0.0",
@@ -43,7 +43,7 @@
     "solidity-docgen": "^0.6.0-beta.36"
   },
   "peerDependencies": {
-    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.9",
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
     "@openzeppelin/upgrades-core": "^1.37.0"
   }
 }
