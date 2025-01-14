@@ -3,7 +3,8 @@ pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/src/strings.sol";
+
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Options} from "../Options.sol";
 import {Versions} from "./Versions.sol";
@@ -61,6 +62,8 @@ library Core {
         upgradeProxy(proxy, contractName, data, opts);
     }
 
+    using Strings for *;
+
     /**
      * @dev Upgrades a proxy to a new implementation contract. Only supported for UUPS or transparent proxies.
      *
@@ -74,7 +77,7 @@ library Core {
         bytes32 adminSlot = vm.load(proxy, ADMIN_SLOT);
         if (adminSlot == bytes32(0)) {
             string memory upgradeInterfaceVersion = getUpgradeInterfaceVersion(proxy);
-            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
+            if (upgradeInterfaceVersion.equal("5.0.0") || data.length > 0) {
                 IUpgradeableProxy(proxy).upgradeToAndCall(newImpl, data);
             } else {
                 IUpgradeableProxy(proxy).upgradeTo(newImpl);
@@ -82,7 +85,7 @@ library Core {
         } else {
             address admin = address(uint160(uint256(adminSlot)));
             string memory upgradeInterfaceVersion = getUpgradeInterfaceVersion(admin);
-            if (upgradeInterfaceVersion.toSlice().equals("5.0.0".toSlice()) || data.length > 0) {
+            if (upgradeInterfaceVersion.equal("5.0.0") || data.length > 0) {
                 IProxyAdmin(admin).upgradeAndCall(proxy, newImpl, data);
             } else {
                 IProxyAdmin(admin).upgrade(proxy, newImpl);
@@ -300,8 +303,6 @@ library Core {
      */
     bytes32 private constant BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
 
-    using strings for *;
-
     /**
      * @dev Gets the upgrade interface version string from a proxy or admin contract using the `UPGRADE_INTERFACE_VERSION()` getter.
      * If the contract does not have the getter or the return data does not look like a string, this function returns an empty string.
@@ -346,7 +347,8 @@ library Core {
 
         // CLI validate command uses exit code to indicate if the validation passed or failed.
         // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
-        if (result.exitCode == 0 && stdout.toSlice().contains("SUCCESS".toSlice())) {
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        if (result.exitCode == 0 && vm.contains(stdout, "SUCCESS")) {
             return;
         } else if (result.stderr.length > 0) {
             // Validations failed to run
@@ -361,7 +363,7 @@ library Core {
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) internal view returns (string[] memory) {
+    ) internal returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
         string[] memory inputBuilder = new string[](2 ** 16);
@@ -456,6 +458,7 @@ library Core {
 
     function _deployFromBytecode(bytes memory bytecode) private returns (address) {
         address addr;
+        /// @solidity memory-safe-assembly
         assembly {
             addr := create(0, add(bytecode, 32), mload(bytecode))
         }

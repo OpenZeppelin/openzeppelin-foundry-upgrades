@@ -4,8 +4,7 @@
   "description": "Foundry library for deploying and managing upgradeable contracts",
   "license": "MIT",
   "files": [
-    "src/**/*",
-    "lib/solidity-stringutils/**/*"
+    "src/**/*"
   ],
   "repository": {
     "type": "git",

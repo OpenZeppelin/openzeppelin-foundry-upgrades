@@ -4,12 +4,13 @@ pragma solidity ^0.8.20;
 import {Test} from "forge-std/Test.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
-import {strings} from "solidity-stringutils/src/strings.sol";
+
+import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.sol";
 
 import {MyContract} from "./contracts/MyContract.sol";
 
 contract UpgradesTest is Test {
-    using strings for *;
+    using StringFinder for string;
 
     function testValidateWithReferenceBuildInfo_Bad() public {
         Options memory opts;
@@ -19,8 +20,7 @@ contract UpgradesTest is Test {
         try v.validateUpgrade("MyContract.sol", opts) {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Deleted `x`".toSlice()));
+            assertTrue(reason.contains("Deleted `x`"));
         }
     }
 }
