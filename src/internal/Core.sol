@@ -377,7 +377,7 @@ library Core {
         string memory contractName,
         Options memory opts,
         bool requireReference
-    ) internal returns (string[] memory) {
+    ) internal view returns (string[] memory) {
         string memory outDir = Utils.getOutDir();
 
         string[] memory inputBuilder = new string[](2 ** 16);

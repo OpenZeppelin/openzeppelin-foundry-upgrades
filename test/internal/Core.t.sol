@@ -42,7 +42,7 @@ contract CoreTest is Test {
         assertEq(Core.getUpgradeInterfaceVersion(address(u)), "");
     }
 
-    function testBuildValidateCommand() public {
+    function testBuildValidateCommand() public view {
         Options memory opts;
 
         string memory commandString = StringHelper.join(Core.buildValidateCommand("Greeter.sol", opts, false));
@@ -56,7 +56,7 @@ contract CoreTest is Test {
         );
     }
 
-    function testBuildValidateCommandExcludes() public {
+    function testBuildValidateCommandExcludes() public view {
         Options memory opts;
         opts.exclude = new string[](2);
         opts.exclude[0] = "test/contracts/**/{Foo,Bar}.sol";

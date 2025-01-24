@@ -42,7 +42,10 @@ library Utils {
      * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return Fully qualified name of the contract, e.g. "src/MyContract.sol:MyContract"
      */
-    function getFullyQualifiedName(string memory contractName, string memory outDir) internal returns (string memory) {
+    function getFullyQualifiedName(
+        string memory contractName,
+        string memory outDir
+    ) internal view returns (string memory) {
         ContractInfo memory info = getContractInfo(contractName, outDir);
         return string(abi.encodePacked(info.contractPath, ":", info.shortName));
     }
@@ -54,7 +57,10 @@ library Utils {
      * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return ContractInfo struct containing information about the contract
      */
-    function getContractInfo(string memory contractName, string memory outDir) internal returns (ContractInfo memory) {
+    function getContractInfo(
+        string memory contractName,
+        string memory outDir
+    ) internal view returns (ContractInfo memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         ContractInfo memory info;
@@ -140,7 +146,7 @@ library Utils {
         return vm.envOr("FOUNDRY_OUT", defaultOutDir);
     }
 
-    function _toFileName(string memory name) private returns (string memory) {
+    function _toFileName(string memory name) private pure returns (string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
         if (name.endsWith(".sol")) {
             return name;
@@ -166,7 +172,7 @@ library Utils {
         }
     }
 
-    function _toShortName(string memory name) private returns (string memory) {
+    function _toShortName(string memory name) private pure returns (string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
         if (name.endsWith(".sol") && name.count(".sol") == 1) {
             return vm.replace(name, ".sol", "");

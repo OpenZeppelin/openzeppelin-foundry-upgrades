@@ -287,7 +287,7 @@ contract DefenderDeployTest is Test {
         );
     }
 
-    function testBuildProposeUpgradeCommand() public {
+    function testBuildProposeUpgradeCommand() public view {
         ContractInfo memory contractInfo = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
         Options memory opts;

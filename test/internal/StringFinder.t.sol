@@ -17,7 +17,7 @@ contract StringFinderTest is Test {
         assertFalse(str.contains("Ello"));
     }
 
-    function testStartsWith() public {
+    function testStartsWith() public pure {
         string memory str = "hello world";
         assertTrue(str.startsWith("hello"));
         assertFalse(str.startsWith("ello"));
@@ -28,7 +28,7 @@ contract StringFinderTest is Test {
         assertFalse(empty.startsWith("a"));
     }
 
-    function testEndsWith() public {
+    function testEndsWith() public pure {
         string memory str = "hello world";
         assertTrue(str.endsWith("world"));
         assertFalse(str.endsWith("worl"));
@@ -39,7 +39,7 @@ contract StringFinderTest is Test {
         assertFalse(empty.endsWith("a"));
     }
 
-    function testCount() public {
+    function testCount() public pure {
         string memory str = "hello world";
         assertEq(str.count("l"), 3);
         assertEq(str.count("ll"), 1);

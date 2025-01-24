@@ -13,7 +13,7 @@ import {MyContractName} from "../contracts/MyContractFile.sol";
  * @dev Tests the Utils internal library.
  */
 contract UtilsTest is Test {
-    function testGetContractInfo_from_file() public {
+    function testGetContractInfo_from_file() public view {
         ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out");
 
         assertEq(info.shortName, "Greeter");
@@ -23,14 +23,14 @@ contract UtilsTest is Test {
         assertEq(info.sourceCodeHash, "0x9564e0245350d0eb5e42a8fed97d87518dbfbddf7668ed383f97a8558b2a9c39"); // source code hash of Greeter.sol
     }
 
-    function testGetContractInfo_from_fileAndName() public {
+    function testGetContractInfo_from_fileAndName() public view {
         ContractInfo memory info = Utils.getContractInfo("MyContractFile.sol:MyContractName", "out");
 
         assertEq(info.shortName, "MyContractName");
         assertEq(info.contractPath, "test/contracts/MyContractFile.sol");
     }
 
-    function testGetContractInfo_from_artifact() public {
+    function testGetContractInfo_from_artifact() public view {
         ContractInfo memory info = Utils.getContractInfo("out/MyContractFile.sol/MyContractName.json", "out");
 
         assertEq(info.shortName, "MyContractName");
@@ -49,7 +49,7 @@ contract UtilsTest is Test {
         }
     }
 
-    function testGetContractInfo_outDirTrailingSlash() public {
+    function testGetContractInfo_outDirTrailingSlash() public view {
         ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out/");
 
         assertEq(info.shortName, "Greeter");
@@ -63,19 +63,19 @@ contract UtilsTest is Test {
         } catch {}
     }
 
-    function testGetFullyQualifiedName_from_file() public {
+    function testGetFullyQualifiedName_from_file() public view {
         string memory fqName = Utils.getFullyQualifiedName("Greeter.sol", "out");
 
         assertEq(fqName, "test/contracts/Greeter.sol:Greeter");
     }
 
-    function testGetFullyQualifiedName_from_fileAndName() public {
+    function testGetFullyQualifiedName_from_fileAndName() public view {
         string memory fqName = Utils.getFullyQualifiedName("MyContractFile.sol:MyContractName", "out");
 
         assertEq(fqName, "test/contracts/MyContractFile.sol:MyContractName");
     }
 
-    function testGetFullyQualifiedName_from_artifact() public {
+    function testGetFullyQualifiedName_from_artifact() public view {
         string memory fqName = Utils.getFullyQualifiedName("out/MyContractFile.sol/MyContractName.json", "out");
 
         assertEq(fqName, "test/contracts/MyContractFile.sol:MyContractName");
@@ -134,11 +134,11 @@ contract UtilsTest is Test {
 }
 
 contract Invoker {
-    function getContractInfo(string memory contractName, string memory outDir) public {
+    function getContractInfo(string memory contractName, string memory outDir) public view {
         Utils.getContractInfo(contractName, outDir);
     }
 
-    function getFullyQualifiedName(string memory contractName, string memory outDir) public {
+    function getFullyQualifiedName(string memory contractName, string memory outDir) public view {
         Utils.getFullyQualifiedName(contractName, outDir);
     }
 }
