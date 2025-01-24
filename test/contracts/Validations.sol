@@ -79,3 +79,12 @@ contract NamespacedV2_UpgradesFrom_Ok {
         uint256 c;
     }
 }
+
+contract HasWarningAndError {
+    uint256 immutable x = 1; // allow `state-variable-immutable` using option to turn into a warning
+
+    function unsafe() public {
+        (bool s, ) = msg.sender.delegatecall("");
+        s;
+    }
+}
