@@ -29,23 +29,17 @@ library StringFinder {
     /**
      * Returns whether the subject string ends with the search string.
      */
-    function endsWith(string memory subject, string memory search) internal returns (bool) {
+    function endsWith(string memory subject, string memory search) internal pure returns (bool) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-        if (!vm.contains(subject, search)) {
-            return false;
-        }
         string[] memory tokens = vm.split(subject, search);
-        return bytes(tokens[tokens.length - 1]).length == 0;
+        return tokens.length > 1 && bytes(tokens[tokens.length - 1]).length == 0;
     }
 
     /**
-     * Returns the number of occurrences of the search string in the subject string.
+     * Returns the number of non-overlapping occurrences of the search string in the subject string.
      */
-    function count(string memory subject, string memory search) internal returns (uint256) {
+    function count(string memory subject, string memory search) internal pure returns (uint256) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-        if (!vm.contains(subject, search)) {
-            return 0;
-        }
         string[] memory tokens = vm.split(subject, search);
         return tokens.length - 1;
     }

@@ -22,6 +22,10 @@ contract StringFinderTest is Test {
         assertTrue(str.startsWith("hello"));
         assertFalse(str.startsWith("ello"));
         assertFalse(str.startsWith("Hello"));
+        assertTrue(str.startsWith(""));
+
+        string memory empty = "";
+        assertFalse(empty.startsWith("a"));
     }
 
     function testEndsWith() public {
@@ -29,6 +33,10 @@ contract StringFinderTest is Test {
         assertTrue(str.endsWith("world"));
         assertFalse(str.endsWith("worl"));
         assertFalse(str.endsWith("World"));
+        assertTrue(str.endsWith(""));
+
+        string memory empty = "";
+        assertFalse(empty.endsWith("a"));
     }
 
     function testCount() public {
@@ -36,5 +44,13 @@ contract StringFinderTest is Test {
         assertEq(str.count("l"), 3);
         assertEq(str.count("ll"), 1);
         assertEq(str.count("a"), 0);
+        assertEq(str.count(""), 12);
+
+        string memory overlap = "aaa";
+        assertEq(overlap.count("aa"), 1); // does not count overlapping occurrences
+
+        string memory empty = "";
+        assertEq(empty.count("a"), 0);
+        assertEq(empty.count(""), 1);
     }
 }
