@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.8 (2025-01-24)
+
+- Fix error conditions when warnings occur in validation output. ([#94](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/94))
+
 ## 0.3.7 (2025-01-13)
 
 - Update documentation links. ([#88](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/88))
