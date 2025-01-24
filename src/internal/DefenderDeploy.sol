@@ -232,10 +232,19 @@ library DefenderDeploy {
         if (vm.contains(stdout, expectedPrefix)) {
             // Get the substring after the prefix
             string[] memory segments = vm.split(stdout, expectedPrefix);
-            string memory suffix = "";
-            for (uint256 i = 1; i < segments.length; i++) {
-                suffix = string(abi.encodePacked(suffix, segments[i]));
+            if (segments.length > 2) {
+                revert(
+                    string(
+                        abi.encodePacked(
+                            "Found multiple occurrences of prefix '",
+                            expectedPrefix,
+                            "' in output: ",
+                            stdout
+                        )
+                    )
+                );
             }
+            string memory suffix = segments[1];
             // Remove any following lines
             if (vm.contains(suffix, "\n")) {
                 suffix = vm.split(suffix, "\n")[0];
