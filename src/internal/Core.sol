@@ -346,16 +346,30 @@ library Core {
         string memory stdout = string(result.stdout);
 
         // CLI validate command uses exit code to indicate if the validation passed or failed.
-        // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-        if (result.exitCode == 0 && vm.contains(stdout, "SUCCESS")) {
-            return;
-        } else if (result.stderr.length > 0) {
-            // Validations failed to run
-            revert(string(abi.encodePacked("Failed to run upgrade safety validation: ", string(result.stderr))));
+        if (result.exitCode == 0) {
+            // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
+            if (vm.contains(stdout, "SUCCESS")) {
+                if (result.stderr.length > 0) {
+                    // Prints warnings from stderr
+                    console.log(string(result.stderr));
+                }
+                return;
+            } else {
+                revert(string(abi.encodePacked("Failed to run upgrade safety validation: ", stdout)));
+            }
         } else {
-            // Validations ran but some contracts were not upgrade safe
-            revert(string(abi.encodePacked("Upgrade safety validation failed:\n", stdout)));
+            if (vm.contains(stdout, "FAILED")) {
+                if (result.stderr.length > 0) {
+                    // Prints warnings from stderr
+                    console.log(string(result.stderr));
+                }
+                // Validations ran but some contracts were not upgrade safe
+                revert(string(abi.encodePacked("Upgrade safety validation failed:\n", stdout)));
+            } else {
+                // Validations failed to run
+                revert(string(abi.encodePacked("Failed to run upgrade safety validation: ", string(result.stderr))));
+            }
         }
     }
 

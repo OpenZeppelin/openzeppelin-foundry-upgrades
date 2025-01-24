@@ -331,6 +331,18 @@ contract UpgradesTest is Test {
             opts
         );
     }
+
+    function testWarningAndError() public {
+        Options memory opts;
+        opts.unsafeAllow = "state-variable-immutable";
+
+        Invoker i = new Invoker();
+        try i.validateImplementation("Validations.sol:HasWarningAndError", opts) {
+            fail();
+        } catch Error(string memory reason) {
+            assertTrue(vm.contains(reason, "Use of delegatecall is not allowed"));
+        }
+    }
 }
 
 contract Invoker {

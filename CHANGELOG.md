@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-- Remove dependency on `solidity-stringutils`.
+- Remove dependency on `solidity-stringutils`. ([#91](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/91))
+
+## 0.3.8 (2025-01-24)
+
+- Fix error conditions when warnings occur in validation output. ([#94](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/94))
 
 ## 0.3.7 (2025-01-13)
 
