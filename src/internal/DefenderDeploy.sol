@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/src/strings.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -18,8 +17,6 @@ import {ProposeUpgradeResponse, ApprovalProcessResponse} from "../Defender.sol";
  * WARNING: DO NOT USE DIRECTLY. Use Defender.sol instead.
  */
 library DefenderDeploy {
-    using strings for *;
-
     function deploy(
         string memory contractName,
         bytes memory constructorData,
@@ -54,7 +51,7 @@ library DefenderDeploy {
     ) internal view returns (string[] memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
-        if (!(defenderOpts.licenseType).toSlice().empty()) {
+        if (bytes(defenderOpts.licenseType).length != 0) {
             if (defenderOpts.skipVerifySourceCode) {
                 revert("The `licenseType` option cannot be used when the `skipVerifySourceCode` option is `true`");
             } else if (defenderOpts.skipLicenseType) {
@@ -86,14 +83,14 @@ library DefenderDeploy {
         if (defenderOpts.skipVerifySourceCode) {
             inputBuilder[i++] = "--verifySourceCode";
             inputBuilder[i++] = "false";
-        } else if (!(defenderOpts.licenseType).toSlice().empty()) {
+        } else if (bytes(defenderOpts.licenseType).length != 0) {
             inputBuilder[i++] = "--licenseType";
             inputBuilder[i++] = string(abi.encodePacked('"', defenderOpts.licenseType, '"'));
-        } else if (!defenderOpts.skipLicenseType && !(contractInfo.license).toSlice().empty()) {
+        } else if (!defenderOpts.skipLicenseType && bytes(contractInfo.license).length != 0) {
             inputBuilder[i++] = "--licenseType";
             inputBuilder[i++] = string(abi.encodePacked('"', _toLicenseType(contractInfo), '"'));
         }
-        if (!(defenderOpts.relayerId).toSlice().empty()) {
+        if (bytes(defenderOpts.relayerId).length != 0) {
             inputBuilder[i++] = "--relayerId";
             inputBuilder[i++] = defenderOpts.relayerId;
         }
@@ -117,7 +114,7 @@ library DefenderDeploy {
             inputBuilder[i++] = "--maxPriorityFeePerGas";
             inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.maxPriorityFeePerGas);
         }
-        if (!(defenderOpts.metadata).toSlice().empty()) {
+        if (bytes(defenderOpts.metadata).length != 0) {
             inputBuilder[i++] = "--metadata";
             inputBuilder[i++] = string(abi.encodePacked('"', vm.replace(defenderOpts.metadata, '"', '\\"'), '"'));
         }
@@ -133,35 +130,37 @@ library DefenderDeploy {
         return inputs;
     }
 
+    using Strings for string;
+
     function _toLicenseType(ContractInfo memory contractInfo) private pure returns (string memory) {
-        strings.slice memory id = contractInfo.license.toSlice();
-        if (id.equals("UNLICENSED".toSlice())) {
+        string memory id = contractInfo.license;
+        if (id.equal("UNLICENSED")) {
             return "None";
-        } else if (id.equals("Unlicense".toSlice())) {
+        } else if (id.equal("Unlicense")) {
             return "Unlicense";
-        } else if (id.equals("MIT".toSlice())) {
+        } else if (id.equal("MIT")) {
             return "MIT";
-        } else if (id.equals("GPL-2.0-only".toSlice()) || id.equals("GPL-2.0-or-later".toSlice())) {
+        } else if (id.equal("GPL-2.0-only") || id.equal("GPL-2.0-or-later")) {
             return "GNU GPLv2";
-        } else if (id.equals("GPL-3.0-only".toSlice()) || id.equals("GPL-3.0-or-later".toSlice())) {
+        } else if (id.equal("GPL-3.0-only") || id.equal("GPL-3.0-or-later")) {
             return "GNU GPLv3";
-        } else if (id.equals("LGPL-2.1-only".toSlice()) || id.equals("LGPL-2.1-or-later".toSlice())) {
+        } else if (id.equal("LGPL-2.1-only") || id.equal("LGPL-2.1-or-later")) {
             return "GNU LGPLv2.1";
-        } else if (id.equals("LGPL-3.0-only".toSlice()) || id.equals("LGPL-3.0-or-later".toSlice())) {
+        } else if (id.equal("LGPL-3.0-only") || id.equal("LGPL-3.0-or-later")) {
             return "GNU LGPLv3";
-        } else if (id.equals("BSD-2-Clause".toSlice())) {
+        } else if (id.equal("BSD-2-Clause")) {
             return "BSD-2-Clause";
-        } else if (id.equals("BSD-3-Clause".toSlice())) {
+        } else if (id.equal("BSD-3-Clause")) {
             return "BSD-3-Clause";
-        } else if (id.equals("MPL-2.0".toSlice())) {
+        } else if (id.equal("MPL-2.0")) {
             return "MPL-2.0";
-        } else if (id.equals("OSL-3.0".toSlice())) {
+        } else if (id.equal("OSL-3.0")) {
             return "OSL-3.0";
-        } else if (id.equals("Apache-2.0".toSlice())) {
+        } else if (id.equal("Apache-2.0")) {
             return "Apache-2.0";
-        } else if (id.equals("AGPL-3.0-only".toSlice()) || id.equals("AGPL-3.0-or-later".toSlice())) {
+        } else if (id.equal("AGPL-3.0-only") || id.equal("AGPL-3.0-or-later")) {
             return "GNU AGPLv3";
-        } else if (id.equals("BUSL-1.1".toSlice())) {
+        } else if (id.equal("BUSL-1.1")) {
             return "BSL 1.1";
         } else {
             revert(
@@ -217,7 +216,7 @@ library DefenderDeploy {
         return parseProposeUpgradeResponse(stdout);
     }
 
-    function parseProposeUpgradeResponse(string memory stdout) internal pure returns (ProposeUpgradeResponse memory) {
+    function parseProposeUpgradeResponse(string memory stdout) internal returns (ProposeUpgradeResponse memory) {
         ProposeUpgradeResponse memory response;
         response.proposalId = _parseLine("Proposal ID: ", stdout, true);
         response.url = _parseLine("Proposal URL: ", stdout, false);
@@ -228,15 +227,26 @@ library DefenderDeploy {
         string memory expectedPrefix,
         string memory stdout,
         bool required
-    ) private pure returns (string memory) {
-        strings.slice memory delim = expectedPrefix.toSlice();
-        if (stdout.toSlice().contains(delim)) {
-            strings.slice memory slice = stdout.toSlice().copy().find(delim).beyond(delim);
-            // Remove any following lines
-            if (slice.contains("\n".toSlice())) {
-                slice = slice.split("\n".toSlice());
+    ) private returns (string memory) {
+        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
+        if (vm.contains(stdout, expectedPrefix)) {
+            // Get the substring after the prefix
+            string[] memory segments = vm.split(stdout, expectedPrefix);
+            if (segments.length > 2) {
+                revert(
+                    string(
+                        abi.encodePacked(
+                            "Found multiple occurrences of prefix '",
+                            expectedPrefix,
+                            "' in output: ",
+                            stdout
+                        )
+                    )
+                );
             }
-            return slice.toString();
+            string memory suffix = segments[1];
+            // Keep only the first line
+            return vm.split(suffix, "\n")[0];
         } else if (required) {
             revert(
                 string(abi.encodePacked("Failed to find line with prefix '", expectedPrefix, "' in output: ", stdout))
@@ -276,7 +286,7 @@ library DefenderDeploy {
             inputBuilder[i++] = "--proxyAdminAddress";
             inputBuilder[i++] = vm.toString(proxyAdminAddress);
         }
-        if (!(opts.defender.upgradeApprovalProcessId).toSlice().empty()) {
+        if (bytes(opts.defender.upgradeApprovalProcessId).length != 0) {
             inputBuilder[i++] = "--approvalProcessId";
             inputBuilder[i++] = opts.defender.upgradeApprovalProcessId;
         }
@@ -303,7 +313,7 @@ library DefenderDeploy {
         return parseApprovalProcessResponse(stdout);
     }
 
-    function parseApprovalProcessResponse(string memory stdout) internal pure returns (ApprovalProcessResponse memory) {
+    function parseApprovalProcessResponse(string memory stdout) internal returns (ApprovalProcessResponse memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
         ApprovalProcessResponse memory response;
@@ -311,7 +321,7 @@ library DefenderDeploy {
         response.approvalProcessId = _parseLine("Approval process ID: ", stdout, true);
 
         string memory viaString = _parseLine("Via: ", stdout, false);
-        if (viaString.toSlice().len() != 0) {
+        if (bytes(viaString).length != 0) {
             response.via = vm.parseAddress(viaString);
         }
 

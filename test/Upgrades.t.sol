@@ -5,6 +5,8 @@ import {Test} from "forge-std/Test.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
+import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.sol";
+
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
@@ -16,8 +18,6 @@ import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
 import {HasOwner} from "./contracts/HasOwner.sol";
 
-import {strings} from "solidity-stringutils/src/strings.sol";
-
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
 
@@ -25,7 +25,7 @@ import "./contracts/Validations.sol";
  * @dev Tests for the Upgrades library.
  */
 contract UpgradesTest is Test {
-    using strings for *;
+    using StringFinder for string;
 
     function testUUPS() public {
         address proxy = Upgrades.deployUUPSProxy(
@@ -281,9 +281,8 @@ contract UpgradesTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("`initialOwner` must not be a ProxyAdmin contract.".toSlice()));
-            assertTrue(slice.contains(vm.toString(address(admin)).toSlice()));
+            assertTrue(reason.contains("`initialOwner` must not be a ProxyAdmin contract."));
+            assertTrue(reason.contains(vm.toString(address(admin))));
         }
     }
 
@@ -302,9 +301,8 @@ contract UpgradesTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("`initialOwner` must not be a ProxyAdmin contract.".toSlice()));
-            assertTrue(slice.contains(vm.toString(address(hasOwner)).toSlice()));
+            assertTrue(reason.contains("`initialOwner` must not be a ProxyAdmin contract."));
+            assertTrue(reason.contains(vm.toString(address(hasOwner))));
         }
     }
 
@@ -342,8 +340,7 @@ contract UpgradesTest is Test {
         try i.validateImplementation("Validations.sol:HasWarningAndError", opts) {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Use of delegatecall is not allowed".toSlice()));
+            assertTrue(vm.contains(reason, "Use of delegatecall is not allowed"));
         }
     }
 }

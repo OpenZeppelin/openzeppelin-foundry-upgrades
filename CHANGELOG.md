@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 (2025-01-27)
+
+- Remove dependency on `solidity-stringutils`. ([#91](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/91))
+
+### Breaking changes
+- Requires `forge-std` version v1.9.5 or higher.
+
 ## 0.3.8 (2025-01-24)
 
 - Fix error conditions when warnings occur in validation output. ([#94](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/94))

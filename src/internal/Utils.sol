@@ -3,7 +3,8 @@ pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
-import {strings} from "solidity-stringutils/src/strings.sol";
+
+import {StringFinder} from "./StringFinder.sol";
 
 struct ContractInfo {
     /*
@@ -97,7 +98,7 @@ library Utils {
         return info;
     }
 
-    using strings for *;
+    using StringFinder for string;
 
     /**
      * Gets the path to the build-info file that contains the given bytecode.
@@ -121,7 +122,7 @@ library Utils {
         Vm.FfiResult memory result = runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
 
-        if (!stdout.toSlice().endsWith(".json".toSlice())) {
+        if (!stdout.endsWith(".json")) {
             revert(
                 string(
                     abi.encodePacked(
@@ -145,26 +146,15 @@ library Utils {
         return vm.envOr("FOUNDRY_OUT", defaultOutDir);
     }
 
-    function _split(
-        strings.slice memory inputSlice,
-        strings.slice memory delimSlice
-    ) private pure returns (string[] memory) {
-        string[] memory parts = new string[](inputSlice.count(delimSlice) + 1);
-        for (uint i = 0; i < parts.length; i++) {
-            parts[i] = inputSlice.split(delimSlice).toString();
-        }
-        return parts;
-    }
-
-    function _toFileName(string memory contractName) private pure returns (string memory) {
-        strings.slice memory name = contractName.toSlice();
-        if (name.endsWith(".sol".toSlice())) {
-            return name.toString();
-        } else if (name.count(":".toSlice()) == 1) {
-            return name.split(":".toSlice()).toString();
+    function _toFileName(string memory name) private pure returns (string memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+        if (name.endsWith(".sol")) {
+            return name;
+        } else if (name.count(":") == 1) {
+            return vm.split(name, ":")[0];
         } else {
-            if (name.endsWith(".json".toSlice())) {
-                string[] memory parts = _split(name, "/".toSlice());
+            if (name.endsWith(".json")) {
+                string[] memory parts = vm.split(name, "/");
                 if (parts.length > 1) {
                     return parts[parts.length - 2];
                 }
@@ -174,7 +164,7 @@ library Utils {
                 string(
                     abi.encodePacked(
                         "Contract name ",
-                        contractName,
+                        name,
                         " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
                     )
                 )
@@ -182,23 +172,22 @@ library Utils {
         }
     }
 
-    function _toShortName(string memory contractName) private pure returns (string memory) {
-        strings.slice memory name = contractName.toSlice();
-        if (name.endsWith(".sol".toSlice())) {
-            return name.until(".sol".toSlice()).toString();
-        } else if (name.count(":".toSlice()) == 1) {
-            name.split(":".toSlice());
-            return name.split(":".toSlice()).toString();
-        } else if (name.endsWith(".json".toSlice())) {
-            string[] memory parts = _split(name, "/".toSlice());
+    function _toShortName(string memory name) private pure returns (string memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+        if (name.endsWith(".sol") && name.count(".sol") == 1) {
+            return vm.replace(name, ".sol", "");
+        } else if (name.count(":") == 1) {
+            return vm.split(name, ":")[1];
+        } else if (name.endsWith(".json") && name.count(".json") == 1) {
+            string[] memory parts = vm.split(name, "/");
             string memory jsonName = parts[parts.length - 1];
-            return jsonName.toSlice().until(".json".toSlice()).toString();
+            return vm.replace(jsonName, ".json", "");
         } else {
             revert(
                 string(
                     abi.encodePacked(
                         "Contract name ",
-                        contractName,
+                        name,
                         " must be in the format MyContract.sol:MyContract or MyContract.sol or out/MyContract.sol/MyContract.json"
                     )
                 )

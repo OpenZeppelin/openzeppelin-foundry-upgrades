@@ -313,7 +313,7 @@ contract DefenderDeployTest is Test {
         );
     }
 
-    function testParseProposeUpgradeResponse() public pure {
+    function testParseProposeUpgradeResponse() public {
         string memory output = "Upgrade proposal created.\nProposal ID: 123\nProposal URL: https://my.url/my-tx";
 
         ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
@@ -322,7 +322,7 @@ contract DefenderDeployTest is Test {
         assertEq(response.url, "https://my.url/my-tx");
     }
 
-    function testParseProposeUpgradeResponseNoUrl() public pure {
+    function testParseProposeUpgradeResponseNoUrl() public {
         string memory output = "Upgrade proposal created.\nProposal ID: 123";
 
         ProposeUpgradeResponse memory response = DefenderDeploy.parseProposeUpgradeResponse(output);
@@ -346,7 +346,7 @@ contract DefenderDeployTest is Test {
         );
     }
 
-    function testParseApprovalProcessResponse() public pure {
+    function testParseApprovalProcessResponse() public {
         string
             memory output = "Approval process ID: abc\nVia: 0x1230000000000000000000000000000000000456\nVia type: Relayer";
 
@@ -357,7 +357,7 @@ contract DefenderDeployTest is Test {
         assertEq(response.viaType, "Relayer");
     }
 
-    function testParseApprovalProcessResponseIdOnly() public pure {
+    function testParseApprovalProcessResponseIdOnly() public {
         string memory output = "Approval process ID: abc";
 
         ApprovalProcessResponse memory response = DefenderDeploy.parseApprovalProcessResponse(output);

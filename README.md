@@ -54,20 +54,18 @@ Follow the steps above, but instead of running `forge install OpenZeppelin/openz
 npm install @openzeppelin/foundry-upgrades
 ```
 
-Then add the following additional lines to `remappings.txt`, in addition to the ones described above:
+Then add the following additional line to `remappings.txt`, in addition to the ones described above:
 ```
 openzeppelin-foundry-upgrades/=node_modules/@openzeppelin/foundry-upgrades/src/
-solidity-stringutils/=node_modules/@openzeppelin/foundry-upgrades/lib/solidity-stringutils/
 ```
 
 #### Soldeer
 
 Follow the steps above, but instead of running `forge install OpenZeppelin/openzeppelin-foundry-upgrades`, use one of the install commands described in https://soldeer.xyz/project/openzeppelin-foundry-upgrades
 
-Then add the following additional lines to `remappings.txt`, in addition to the ones described above (replace `0.3.6` with the version of the plugin that you installed):
+Then add the following additional line to `remappings.txt`, in addition to the ones described above (replace `0.3.6` with the version of the plugin that you installed):
 ```
 openzeppelin-foundry-upgrades/=dependencies/openzeppelin-foundry-upgrades-0.3.6/src/
-solidity-stringutils/=dependencies/openzeppelin-foundry-upgrades-0.3.6/lib/solidity-stringutils/
 ```
 
 ## OpenZeppelin Defender integration
@@ -76,7 +74,7 @@ See [DEFENDER.md](DEFENDER.md)
 
 ## Foundry Requirements
 
-This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.8.0 or higher.
+This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.9.5 or higher.
 
 ## Before Running
 

@@ -5,19 +5,19 @@ import {Test} from "forge-std/Test.sol";
 
 import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
+import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.sol";
+
 import {Greeter} from "./contracts/Greeter.sol";
 import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
-
-import {strings} from "solidity-stringutils/src/strings.sol";
 
 /**
  * @dev Tests that the `defender.useDefenderDeploy` flag is recognized in the Upgrades library.
  * These do not perform any actual deployments, but just checks that the Defender CLI is invoked and catches its error message since we are using a dev network.
  */
 contract UpgradesUseDefenderDeployTest is Test {
-    using strings for *;
+    using StringFinder for string;
 
     Deployer d;
 
@@ -25,11 +25,10 @@ contract UpgradesUseDefenderDeployTest is Test {
         d = new Deployer();
     }
 
-    function _assertDefenderNotAvailable(strings.slice memory slice) private pure {
+    function _assertDefenderNotAvailable(string memory str) private {
         assertTrue(
-            slice.contains(
-                "The current network with chainId 31337 is not supported by OpenZeppelin Defender".toSlice()
-            ) || slice.contains("DEFENDER_KEY and DEFENDER_SECRET must be set in environment variables".toSlice())
+            str.contains("The current network with chainId 31337 is not supported by OpenZeppelin Defender") ||
+                str.contains("DEFENDER_KEY and DEFENDER_SECRET must be set in environment variables")
         );
     }
 
@@ -46,9 +45,8 @@ contract UpgradesUseDefenderDeployTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Failed to deploy contract GreeterProxiable.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract GreeterProxiable.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
@@ -66,9 +64,8 @@ contract UpgradesUseDefenderDeployTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Failed to deploy contract Greeter.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract Greeter.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
@@ -86,9 +83,8 @@ contract UpgradesUseDefenderDeployTest is Test {
         {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Failed to deploy contract GreeterV2Proxiable.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract GreeterV2Proxiable.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
@@ -99,9 +95,8 @@ contract UpgradesUseDefenderDeployTest is Test {
         try d.deployBeacon("Greeter.sol", msg.sender, opts) {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Failed to deploy contract Greeter.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract Greeter.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
@@ -114,10 +109,9 @@ contract UpgradesUseDefenderDeployTest is Test {
         try d.deployBeaconProxy(beacon, abi.encodeCall(Greeter.initialize, (msg.sender, "hello")), opts) {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
             // Note the below is not the implementation contract, because this function only deploys the BeaconProxy contract
-            assertTrue(slice.contains("Failed to deploy contract BeaconProxy.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract BeaconProxy.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
@@ -130,9 +124,8 @@ contract UpgradesUseDefenderDeployTest is Test {
         try d.upgradeBeacon(beacon, "GreeterV2.sol", opts) {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Failed to deploy contract GreeterV2.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract GreeterV2.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
@@ -143,9 +136,8 @@ contract UpgradesUseDefenderDeployTest is Test {
         try d.prepareUpgrade("GreeterV2.sol", opts) {
             fail();
         } catch Error(string memory reason) {
-            strings.slice memory slice = reason.toSlice();
-            assertTrue(slice.contains("Failed to deploy contract GreeterV2.sol".toSlice()));
-            _assertDefenderNotAvailable(slice);
+            assertTrue(reason.contains("Failed to deploy contract GreeterV2.sol"));
+            _assertDefenderNotAvailable(reason);
         }
     }
 
