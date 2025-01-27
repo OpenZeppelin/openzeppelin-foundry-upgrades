@@ -245,11 +245,8 @@ library DefenderDeploy {
                 );
             }
             string memory suffix = segments[1];
-            // Remove any following lines
-            if (vm.contains(suffix, "\n")) {
-                suffix = vm.split(suffix, "\n")[0];
-            }
-            return suffix;
+            // Keep only the first line
+            return vm.split(suffix, "\n")[0];
         } else if (required) {
             revert(
                 string(abi.encodePacked("Failed to find line with prefix '", expectedPrefix, "' in output: ", stdout))
