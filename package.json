@@ -1,6 +1,6 @@
 {
   "name": "@openzeppelin/foundry-upgrades",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "description": "Foundry library for deploying and managing upgradeable contracts",
   "license": "MIT",
   "files": [
