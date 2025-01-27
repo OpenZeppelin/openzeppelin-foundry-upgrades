@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.9 (2025-01-27)
 
 - Remove dependency on `solidity-stringutils`. ([#91](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/91))
 
