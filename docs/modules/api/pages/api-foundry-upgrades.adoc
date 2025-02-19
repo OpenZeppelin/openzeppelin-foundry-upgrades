@@ -1,5 +1,5 @@
 = OpenZeppelin Foundry Upgrades API
-CHANGE
+
 == Contract name formats
 
 Contract names must be provided in specific formats depending on context. The following are the required formats for each context:
