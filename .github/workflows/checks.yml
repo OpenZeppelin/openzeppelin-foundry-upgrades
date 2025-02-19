@@ -6,6 +6,7 @@ on:
   pull_request: {}
   workflow_dispatch: {}
 
+
 env:
   FOUNDRY_PROFILE: ci
 
@@ -65,3 +66,14 @@ jobs:
         run: |
           yarn test
         id: test
+
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger repository_dispatch
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN_OZ_UPGRADE_TRIGGER }}" \
+            https://api.github.com/repos/CoveMB/openzeppelin-upgrades/dispatches \
+            -d '{"event_type":"custom-event","client_payload":{"key":"value"}}'
