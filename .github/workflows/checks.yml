@@ -72,7 +72,21 @@ jobs:
     # needs: [lint, docs, tests]
     # if: success()
     steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Check for changes in the `docs/` folder
+        id: check_changes
+        run: |
+          git fetch origin main
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- docs/)
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "SHOULD_TRIGGER_DOC_UPDATE=true" >> $GITHUB_ENV
+          fi
+
       - name: Trigger repository_dispatch
+        if: env.SHOULD_TRIGGER_DOC_UPDATE == 'true'
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
