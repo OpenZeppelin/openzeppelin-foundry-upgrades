@@ -74,6 +74,6 @@ jobs:
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN_OZ_UPGRADE_TRIGGER }}" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/CoveMB/openzeppelin-upgrades/dispatches \
             -d '{"event_type":"custom-event","client_payload":{"key":"value"}}'
