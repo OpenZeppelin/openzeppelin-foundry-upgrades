@@ -75,6 +75,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 2
 
       - name: Check for changes in the `docs/` folder
         id: check_changes
