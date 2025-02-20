@@ -89,5 +89,5 @@ jobs:
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.OZ_UPGRADE_TRIGGER_TOKEN }}" \
-            https://api.github.com/repos/CoveMB/openzeppelin-upgrades/dispatches \
+            https://api.github.com/repos/OpenZeppelin/openzeppelin-upgrades/dispatches \
             -d '{"event_type":"update-foundry-submodule-docs"}'
