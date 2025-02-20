@@ -8,9 +8,8 @@ Contract names must be provided in specific formats depending on context. The fo
 
 Contexts:
 
-* `contractName` parameter
+* `contractName` parameter tmp
 * `referenceContract` option if `referenceBuildInfoDir` option is not set
-* `tmp` to be removed
 
 Can be in any of the following forms according to Foundry's https://book.getfoundry.sh/cheatcodes/get-code[getCode] cheatcode:
 
