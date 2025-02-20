@@ -1,4 +1,4 @@
-= OpenZeppelin Foundry Upgrades API TMP
+= OpenZeppelin Foundry Upgrades API
 
 == Contract name formats
 
@@ -10,6 +10,7 @@ Contexts:
 
 * `contractName` parameter
 * `referenceContract` option if `referenceBuildInfoDir` option is not set
+* `tmp` to remove
 
 Can be in any of the following forms according to Foundry's https://book.getfoundry.sh/cheatcodes/get-code[getCode] cheatcode:
 
