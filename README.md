@@ -241,7 +241,7 @@ address proxy = Upgrades.deployUUPSProxy(
 
 ## Deploying and Verifying
 
-Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/tutorials/solidity-scripting) guide.
+Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/guides/scripting-with-solidity) guide.
 
 > **Important**
 > Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
