@@ -1,4 +1,4 @@
-= OpenZeppelin Foundry Upgrades API
+= OpenZeppelin Foundry Upgrades API TMP
 
 == Contract name formats
 
@@ -8,7 +8,7 @@ Contract names must be provided in specific formats depending on context. The fo
 
 Contexts:
 
-* `contractName` parameter tmp
+* `contractName` parameter
 * `referenceContract` option if `referenceBuildInfoDir` option is not set
 
 Can be in any of the following forms according to Foundry's https://book.getfoundry.sh/cheatcodes/get-code[getCode] cheatcode:
