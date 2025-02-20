@@ -10,7 +10,7 @@ Contexts:
 
 * `contractName` parameter
 * `referenceContract` option if `referenceBuildInfoDir` option is not set
-* `tmp` to remove
+* `tmp` to remove after
 
 Can be in any of the following forms according to Foundry's https://book.getfoundry.sh/cheatcodes/get-code[getCode] cheatcode:
 
