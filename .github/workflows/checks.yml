@@ -81,10 +81,7 @@ jobs:
         id: check_changes
         run: |
           git fetch origin main
-          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- docs/)
-          if [ -n "$CHANGED_FILES" ]; then
-            echo "SHOULD_TRIGGER_DOC_UPDATE=true" >> $GITHUB_ENV
-          fi
+          [ -n "$(git diff --name-only origin/main -- docs/)" ] && echo "SHOULD_TRIGGER_DOC_UPDATE=true" >> $GITHUB_ENV
 
       - name: Trigger repository_dispatch
         if: env.SHOULD_TRIGGER_DOC_UPDATE == 'true'
