@@ -93,4 +93,4 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.OZ_UPGRADE_TRIGGER_TOKEN }}" \
             https://api.github.com/repos/CoveMB/openzeppelin-upgrades/dispatches \
-            -d '{"event_type":"custom-event","client_payload":{"key":"value"}}'
+            -d '{"event_type":"update-foundry-submodule"}'
