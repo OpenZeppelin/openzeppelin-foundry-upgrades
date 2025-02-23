@@ -230,7 +230,7 @@ Upgrades.upgradeBeacon(beacon, "MyContractV2.sol");
 To enable code coverage reports with `forge coverage`, use the following deployment pattern in your tests: instantiate your implementation contracts directly and use the `UnsafeUpgrades` library. For example:
 ```solidity
 address implementation = address(new MyContract());
-address proxy = Upgrades.deployUUPSProxy(
+address proxy = UnsafeUpgrades.deployUUPSProxy(
     implementation,
     abi.encodeCall(MyContract.initialize, ("arguments for the initialize function"))
 );
