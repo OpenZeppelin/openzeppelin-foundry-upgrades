@@ -246,9 +246,9 @@ TIP: If possible, keep the old version of the implementation contract's source c
 ----
 Options memory opts;
 opts.referenceBuildInfoDir = "/old-builds/build-info-v1";
-opts.referenceContract = "build-info-v1:MyContract";
-Upgrades.upgradeProxy(proxy, "MyContract.sol", "", opts);
-// or Upgrades.upgradeBeacon(beacon, "MyContract.sol", opts);
+opts.referenceContract = "build-info-v1:MyContractV1.sol";
+Upgrades.upgradeProxy(proxy, "MyContractV2.sol", "", opts);
+// or Upgrades.upgradeBeacon(beacon, "MyContractV2.sol", opts);
 ----
 
 == Coverage Testing
