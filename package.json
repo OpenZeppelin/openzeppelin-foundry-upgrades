@@ -25,8 +25,8 @@
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write",
     "docgen": "hardhat clean && hardhat compile && hardhat docgen",
     "docgen:test": "yarn docgen && git diff --exit-code docs/modules/api/pages",
-    "version": "bash scripts/release/version.sh",
-    "publish": "bash scripts/release/publish.sh"
+    "version-package": "bash scripts/release/version.sh",
+    "publish-package": "bash scripts/release/publish.sh"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-foundry": "^1.1.1",
