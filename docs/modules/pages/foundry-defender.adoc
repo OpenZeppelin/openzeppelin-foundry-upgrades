@@ -34,7 +34,7 @@ DEFENDER_KEY=<Your API key>
 DEFENDER_SECRET=<Your API secret>
 ----
 
-NOTE: These API keys are specifically for the Deploy Environment (Production or Test) that you configured in Defender. You can obtain these keys from the Deploy module in Defender during the environment setup process. For more information, see https://docs.openzeppelin.com/defender/v2/tutorial/deploy#environment_setup.
+NOTE: The API key for the above must at least have the capability to Manage Deployments. You can configure your API keys at https://defender.openzeppelin.com/#/settings/api-keys.
 
 == Network Selection
 
