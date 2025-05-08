@@ -34,6 +34,8 @@ DEFENDER_KEY=<Your API key>
 DEFENDER_SECRET=<Your API secret>
 ----
 
+NOTE: These API keys are specifically for the Deploy Environment (Production or Test) that you configured in Defender. You can obtain these keys from the Deploy module in Defender during the environment setup process. For more information, see https://docs.openzeppelin.com/defender/v2/tutorial/deploy#environment_setup.
+
 == Network Selection
 
 The network that is used with OpenZeppelin Defender is determined by the network that Foundry is connected to.
