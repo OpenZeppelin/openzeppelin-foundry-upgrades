@@ -1,0 +1,57 @@
+name: Publish Packages
+
+on:
+  workflow_dispatch:
+
+concurrency: version-or-publish-${{ github.ref }}
+
+jobs:
+  publish:
+    name: Publish Packages
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    environment: publish
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # To get all tags
+          ref: ${{ github.ref }}
+      - name: Set up environment
+        uses: ./.github/actions/setup
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@82dee4ba654bd2146511f85f0d013af94670c4de # v1.4.0
+      - name: Create Prepare Release PR or Publish
+        id: changesets
+        uses: changesets/action@001cd79f0a536e733315164543a727bdf2d70aff # v1.5.1
+        with:
+          title: Prepare Release
+          commit: Prepare Release
+          version: npm run version-package
+          publish: npm run publish-package
+          commitMode: github-api
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Check changesets status
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: |
+          echo "Changesets found. Merge Prepare Release PR before publishing."
+          exit 1
+      - name: Check publish status
+        if: steps.changesets.outputs.published == 'false'
+        run: |
+          echo "Publish failed. Check the logs for more details."
+          exit 1
+      - name: Publish to Soldeer
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          mkdir -p ~/.soldeer
+          echo "$SOLDEER_TOKEN" > ~/.soldeer/.soldeer_login
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          echo "Publishing version $PACKAGE_VERSION to Soldeer..."
+          forge soldeer push openzeppelin-foundry-upgrades~$PACKAGE_VERSION
+        shell: bash
+        env:
+          SOLDEER_TOKEN: ${{ secrets.SOLDEER_TOKEN }}

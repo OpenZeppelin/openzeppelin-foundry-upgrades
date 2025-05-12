@@ -24,7 +24,9 @@
     "lint": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --check && solhint 'src/**/*.sol'",
     "lint:fix": "prettier --log-level warn --ignore-path .gitignore '{src,test}/**/*.sol' --write",
     "docgen": "hardhat clean && hardhat compile && hardhat docgen",
-    "docgen:test": "yarn docgen && git diff --exit-code docs/modules/api/pages"
+    "docgen:test": "yarn docgen && git diff --exit-code docs/modules/api/pages",
+    "version-package": "bash scripts/release/version.sh",
+    "publish-package": "bash scripts/release/publish.sh"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-foundry": "^1.1.1",
@@ -39,7 +41,9 @@
     "prettier-plugin-solidity": "^1.1.0",
     "solhint": "^3.3.6",
     "solhint-plugin-openzeppelin": "file:scripts/solhint-custom",
-    "solidity-docgen": "^0.6.0-beta.36"
+    "solidity-docgen": "^0.6.0-beta.36",
+    "@changesets/cli": "^2.29.3",
+    "@changesets/changelog-github": "^0.5.1"
   },
   "peerDependencies": {
     "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
