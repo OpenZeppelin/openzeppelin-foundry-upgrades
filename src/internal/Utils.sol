@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
-import {console} from "forge-std/console.sol";
 
 import {StringFinder} from "./StringFinder.sol";
 
@@ -45,7 +44,7 @@ library Utils {
     function getFullyQualifiedName(
         string memory contractName,
         string memory outDir
-    ) internal view returns (string memory) {
+    ) internal returns (string memory) {
         ContractInfo memory info = getContractInfo(contractName, outDir);
         return string(abi.encodePacked(info.contractPath, ":", info.shortName));
     }
@@ -60,7 +59,7 @@ library Utils {
     function getContractInfo(
         string memory contractName,
         string memory outDir
-    ) internal view returns (ContractInfo memory) {
+    ) internal returns (ContractInfo memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         ContractInfo memory info;
@@ -69,10 +68,31 @@ library Utils {
 
         string memory fileName = _toFileName(contractName);
 
+        // Try direct path first (original behavior)
         string memory artifactPath = string(
             abi.encodePacked(vm.projectRoot(), "/", outDir, "/", fileName, "/", info.shortName, ".json")
         );
-        string memory artifactJson = vm.readFile(artifactPath);
+
+        // Guard clause: try direct path first, fallback to recursive search
+        try vm.readFile(artifactPath) returns (string memory artifactJson) {
+            return _processArtifact(vm, info, artifactPath, artifactJson);
+        } catch {
+            artifactPath = _findArtifactRecursive(vm, outDir, info.shortName);
+            string memory artifactJson = vm.readFile(artifactPath);
+            return _processArtifact(vm, info, artifactPath, artifactJson);
+        }
+    }
+
+    /**
+     * @dev Processes artifact JSON and populates ContractInfo.
+     */
+    function _processArtifact(
+        Vm vm,
+        ContractInfo memory info,
+        string memory artifactPath,
+        string memory artifactJson
+    ) private view returns (ContractInfo memory) {
+        info.artifactPath = artifactPath;
 
         if (!vm.keyExistsJson(artifactJson, ".ast")) {
             revert(
@@ -80,7 +100,7 @@ library Utils {
                     abi.encodePacked(
                         "Could not find AST in artifact ",
                         artifactPath,
-                        ". Set `ast = true` in foundry.toml"
+                        ". Set ast = true in foundry.toml"
                     )
                 )
             );
@@ -93,9 +113,43 @@ library Utils {
             artifactJson,
             string(abi.encodePacked(".metadata.sources.['", info.contractPath, "'].keccak256"))
         );
-        info.artifactPath = artifactPath;
 
         return info;
+    }
+
+    /**
+     * @dev Recursively searches for artifact file. Fallback for when direct path fails.
+     */
+    function _findArtifactRecursive(
+        Vm vm,
+        string memory outDir,
+        string memory shortName
+    ) private returns (string memory) {
+        string[] memory inputs = new string[](6);
+        inputs[0] = "find";
+        inputs[1] = string(abi.encodePacked(vm.projectRoot(), "/", outDir));
+        inputs[2] = "-type";
+        inputs[3] = "f";
+        inputs[4] = "-name";
+        inputs[5] = string(abi.encodePacked(shortName, ".json"));
+
+        Vm.FfiResult memory result = runAsBashCommand(inputs);
+        if (result.exitCode != 0) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "Could not find artifact for contract ",
+                        shortName,
+                        " in directory ",
+                        outDir
+                    )
+                )
+            );
+        }
+
+        // Get first line only (first match)
+        string[] memory lines = vm.split(string(result.stdout), "\n");
+        return lines.length > 0 ? lines[0] : "";
     }
 
     using StringFinder for string;
