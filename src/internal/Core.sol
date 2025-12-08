@@ -387,7 +387,7 @@ library Core {
         inputBuilder[i++] = "npx";
         inputBuilder[i++] = string(abi.encodePacked("@openzeppelin/upgrades-core@", Versions.UPGRADES_CORE));
         inputBuilder[i++] = "validate";
-        inputBuilder[i++] = string(abi.encodePacked(outDir, "/build-info"));
+        inputBuilder[i++] = Utils.getBuildInfoDir(outDir);
         inputBuilder[i++] = "--contract";
         inputBuilder[i++] = Utils.getFullyQualifiedName(contractName, outDir);
 

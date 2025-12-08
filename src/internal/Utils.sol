@@ -3,6 +3,8 @@ pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+
 import {StringFinder} from "./StringFinder.sol";
 
 struct ContractInfo {
@@ -105,13 +107,34 @@ library Utils {
                 )
             );
         }
-        info.contractPath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
+        
+        string memory absolutePath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
+        
+        // For Hardhat 3, remove "project/" prefix to get user source name
+        // Hardhat 3 uses canonical names (project/contracts/...) but CLI expects user names (contracts/...)
+        if (vm.keyExistsJson(artifactJson, "._format")) {
+            string memory format = vm.parseJsonString(artifactJson, "._format");
+            // Compare strings using Strings.equal() from OpenZeppelin
+            if (Strings.equal(format, "hh3-artifact-1")) {
+                // Remove "project/" prefix if present
+                if (StringFinder.startsWith(absolutePath, "project/")) {
+                    info.contractPath = vm.replace(absolutePath, "project/", "");
+                } else {
+                    info.contractPath = absolutePath;
+                }
+            } else {
+                info.contractPath = absolutePath;
+            }
+        } else {
+            info.contractPath = absolutePath;
+        }
+        
         if (vm.keyExistsJson(artifactJson, ".ast.license")) {
             info.license = vm.parseJsonString(artifactJson, ".ast.license");
         }
         info.sourceCodeHash = vm.parseJsonString(
             artifactJson,
-            string(abi.encodePacked(".metadata.sources.['", info.contractPath, "'].keccak256"))
+            string(abi.encodePacked(".metadata.sources.['", absolutePath, "'].keccak256"))
         );
 
         return info;
@@ -155,6 +178,26 @@ library Utils {
     using StringFinder for string;
 
     /**
+     * @dev Gets the build info directory. Checks for Hardhat's artifacts/build-info first,
+     * then falls back to outDir/build-info for Foundry.
+     *
+     * @param outDir Foundry output directory (e.g., "out" or "artifacts/contracts")
+     * @return The path to the build-info directory
+     */
+    function getBuildInfoDir(string memory outDir) internal view returns (string memory) {
+        Vm vm = Vm(CHEATCODE_ADDRESS);
+
+        // Check if Hardhat build-info exists (Hardhat 3 stores it at artifacts/build-info)
+        string memory hardhatBuildInfo = "artifacts/build-info";
+        if (vm.isDir(hardhatBuildInfo)) {
+            return hardhatBuildInfo;
+        }
+
+        // Default: Foundry style (outDir/build-info)
+        return string(abi.encodePacked(outDir, "/build-info"));
+    }
+
+    /**
      * Gets the path to the build-info file that contains the given bytecode.
      *
      * @param sourceCodeHash keccak256 hash of the source code from metadata
@@ -167,11 +210,12 @@ library Utils {
         string memory contractName,
         string memory outDir
     ) internal returns (string memory) {
+        string memory buildInfoDir = getBuildInfoDir(outDir);
         string[] memory inputs = new string[](4);
         inputs[0] = "grep";
         inputs[1] = "-rl";
         inputs[2] = string(abi.encodePacked('"', sourceCodeHash, '"'));
-        inputs[3] = string(abi.encodePacked(outDir, "/build-info"));
+        inputs[3] = buildInfoDir;
 
         Vm.FfiResult memory result = runAsBashCommand(inputs);
         string memory stdout = string(result.stdout);
