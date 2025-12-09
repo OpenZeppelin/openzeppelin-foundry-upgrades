@@ -43,10 +43,7 @@ library Utils {
      * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return Fully qualified name of the contract, e.g. "src/MyContract.sol:MyContract"
      */
-    function getFullyQualifiedName(
-        string memory contractName,
-        string memory outDir
-    ) internal returns (string memory) {
+    function getFullyQualifiedName(string memory contractName, string memory outDir) internal returns (string memory) {
         ContractInfo memory info = getContractInfo(contractName, outDir);
         return string(abi.encodePacked(info.contractPath, ":", info.shortName));
     }
@@ -58,10 +55,7 @@ library Utils {
      * @param outDir Foundry output directory to search in if contractName is not an artifact path
      * @return ContractInfo struct containing information about the contract
      */
-    function getContractInfo(
-        string memory contractName,
-        string memory outDir
-    ) internal returns (ContractInfo memory) {
+    function getContractInfo(string memory contractName, string memory outDir) internal returns (ContractInfo memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
         ContractInfo memory info;
@@ -107,9 +101,9 @@ library Utils {
                 )
             );
         }
-        
+
         string memory absolutePath = vm.parseJsonString(artifactJson, ".ast.absolutePath");
-        
+
         // For Hardhat 3, remove "project/" prefix to get user source name
         // Hardhat 3 uses canonical names (project/contracts/...) but CLI expects user names (contracts/...)
         if (vm.keyExistsJson(artifactJson, "._format")) {
@@ -128,7 +122,7 @@ library Utils {
         } else {
             info.contractPath = absolutePath;
         }
-        
+
         if (vm.keyExistsJson(artifactJson, ".ast.license")) {
             info.license = vm.parseJsonString(artifactJson, ".ast.license");
         }
@@ -159,14 +153,7 @@ library Utils {
         Vm.FfiResult memory result = runAsBashCommand(inputs);
         if (result.exitCode != 0) {
             revert(
-                string(
-                    abi.encodePacked(
-                        "Could not find artifact for contract ",
-                        shortName,
-                        " in directory ",
-                        outDir
-                    )
-                )
+                string(abi.encodePacked("Could not find artifact for contract ", shortName, " in directory ", outDir))
             );
         }
 
