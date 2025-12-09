@@ -165,8 +165,9 @@ library Utils {
     using StringFinder for string;
 
     /**
-     * @dev Gets the build info directory. Checks for Hardhat's artifacts/build-info first,
-     * then falls back to outDir/build-info for Foundry.
+     * @dev Gets the build info directory. Detects the environment by checking for Hardhat config files.
+     * If hardhat.config.ts or hardhat.config.js exists, returns artifacts/build-info (Hardhat 3).
+     * Otherwise, returns outDir/build-info (Foundry).
      *
      * @param outDir Foundry output directory (e.g., "out" or "artifacts/contracts")
      * @return The path to the build-info directory
@@ -174,13 +175,10 @@ library Utils {
     function getBuildInfoDir(string memory outDir) internal view returns (string memory) {
         Vm vm = Vm(CHEATCODE_ADDRESS);
 
-        // Check if Hardhat build-info exists (Hardhat 3 stores it at artifacts/build-info)
-        string memory hardhatBuildInfo = "artifacts/build-info";
-        if (vm.isDir(hardhatBuildInfo)) {
-            return hardhatBuildInfo;
+        if (vm.exists("hardhat.config.ts") || vm.exists("hardhat.config.js")) {
+            return "artifacts/build-info";
         }
 
-        // Default: Foundry style (outDir/build-info)
         return string(abi.encodePacked(outDir, "/build-info"));
     }
 
