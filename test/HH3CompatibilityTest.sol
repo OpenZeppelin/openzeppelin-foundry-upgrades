@@ -3,18 +3,18 @@ pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
 
-import {Utils} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
+import {Utils, ContractInfo} from "openzeppelin-foundry-upgrades/internal/Utils.sol";
 
 import {Greeter} from "./contracts/Greeter.sol";
 
 /**
  * @dev Tests to ensure compatibility with Hardhat 3 environment.
- * 
+ *
  * Hardhat 3 uses:
  * - artifacts/contracts/ as the output directory (instead of out/)
  * - artifacts/build-info/ for build info files
  * - FOUNDRY_OUT environment variable should point to artifacts/contracts
- * 
+ *
  * This test ensures that the foundry-upgrades library works correctly
  * when FOUNDRY_OUT is set to match Hardhat's structure.
  */
@@ -42,8 +42,8 @@ contract HH3CompatibilityTest is Test {
         // This test verifies that getContractInfo works with Foundry's default structure
         // We temporarily override FOUNDRY_OUT to test with "out" directory
         vm.setEnv("FOUNDRY_OUT", "out");
-        
-        Utils.ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out");
+
+        ContractInfo memory info = Utils.getContractInfo("Greeter.sol", "out");
         assertEq(info.shortName, "Greeter");
         assertEq(info.contractPath, "test/contracts/Greeter.sol");
     }
