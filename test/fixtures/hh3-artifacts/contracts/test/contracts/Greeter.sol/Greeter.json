@@ -1,0 +1,647 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "Greeter",
+  "sourceName": "contracts/Greeter.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "greet",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_greeting",
+          "type": "string"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_greeting",
+          "type": "string"
+        }
+      ],
+      "name": "setGreeting",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b506103f6806100206000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c8063a413686214610046578063cfae321714610101578063f62d188814610184575b600080fd5b6100ff6004803603602081101561005c57600080fd5b810190808035906020019064010000000081111561007957600080fd5b82018360208201111561008b57600080fd5b803590602001918460018302840111640100000000831117156100ad57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f82011690508083019250505050505050919291929050505061023f565b005b610109610259565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561014957808201518184015260208101905061012e565b50505050905090810190601f1680156101765780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b61023d6004803603602081101561019a57600080fd5b81019080803590602001906401000000008111156101b757600080fd5b8201836020820111156101c957600080fd5b803590602001918460018302840111640100000000831117156101eb57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192905050506102fb565b005b8060009080519060200190610255929190610315565b5050565b606060008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156102f15780601f106102c6576101008083540402835291602001916102f1565b820191906000526020600020905b8154815290600101906020018083116102d457829003601f168201915b5050505050905090565b8060009080519060200190610311929190610315565b5050565b828054600181600116156101000203166002900490600052602060002090601f01602090048101928261034b5760008555610392565b82601f1061036457805160ff1916838001178555610392565b82800160010185558215610392579182015b82811115610391578251825591602001919060010190610376565b5b50905061039f91906103a3565b5090565b5b808211156103bc5760008160009055506001016103a4565b509056fea26469706673582212204a89854c9ea34d48f8a8910561ff261f658df41b9c91c3f474349d3fc83f477864736f6c63430007060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100415760003560e01c8063a413686214610046578063cfae321714610101578063f62d188814610184575b600080fd5b6100ff6004803603602081101561005c57600080fd5b810190808035906020019064010000000081111561007957600080fd5b82018360208201111561008b57600080fd5b803590602001918460018302840111640100000000831117156100ad57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f82011690508083019250505050505050919291929050505061023f565b005b610109610259565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561014957808201518184015260208101905061012e565b50505050905090810190601f1680156101765780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b61023d6004803603602081101561019a57600080fd5b81019080803590602001906401000000008111156101b757600080fd5b8201836020820111156101c957600080fd5b803590602001918460018302840111640100000000831117156101eb57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192905050506102fb565b005b8060009080519060200190610255929190610315565b5050565b606060008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156102f15780601f106102c6576101008083540402835291602001916102f1565b820191906000526020600020905b8154815290600101906020018083116102d457829003601f168201915b5050505050905090565b8060009080519060200190610311929190610315565b5050565b828054600181600116156101000203166002900490600052602060002090601f01602090048101928261034b5760008555610392565b82601f1061036457805160ff1916838001178555610392565b82800160010185558215610392579182015b82811115610391578251825591602001919060010190610376565b5b50905061039f91906103a3565b5090565b5b808211156103bc5760008160009055506001016103a4565b509056fea26469706673582212204a89854c9ea34d48f8a8910561ff261f658df41b9c91c3f474349d3fc83f477864736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "test/contracts/Greeter.sol",
+  "buildInfoId": "solc-0_7_6-51c08450b6699f09037e73d478a18151a7ab2c2f",
+  "ast": {
+    "absolutePath": "test/contracts/Greeter.sol",
+    "exportedSymbols": {
+      "Greeter": [
+        32
+      ],
+      "GreeterProxiable": [
+        38
+      ],
+      "GreeterProxiable40": [
+        44
+      ],
+      "Proxiable": [
+        497
+      ],
+      "Proxiable40": [
+        557
+      ]
+    },
+    "id": 45,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".22",
+          "<",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:33:0"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 32,
+        "linearizedBaseContracts": [
+          32
+        ],
+        "name": "Greeter",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 3,
+            "mutability": "mutable",
+            "name": "greeting",
+            "nodeType": "VariableDeclaration",
+            "scope": 32,
+            "src": "59:15:0",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_string_storage",
+              "typeString": "string"
+            },
+            "typeName": {
+              "id": 2,
+              "name": "string",
+              "nodeType": "ElementaryTypeName",
+              "src": "59:6:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_string_storage_ptr",
+                "typeString": "string"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 12,
+              "nodeType": "Block",
+              "src": "133:37:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 10,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 8,
+                      "name": "greeting",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3,
+                      "src": "143:8:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage",
+                        "typeString": "string storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 9,
+                      "name": "_greeting",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5,
+                      "src": "154:9:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_memory_ptr",
+                        "typeString": "string memory"
+                      }
+                    },
+                    "src": "143:20:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "id": 11,
+                  "nodeType": "ExpressionStatement",
+                  "src": "143:20:0"
+                }
+              ]
+            },
+            "functionSelector": "f62d1888",
+            "id": 13,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "initialize",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5,
+                  "mutability": "mutable",
+                  "name": "_greeting",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 13,
+                  "src": "101:23:0",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "101:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "100:25:0"
+            },
+            "returnParameters": {
+              "id": 7,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "133:0:0"
+            },
+            "scope": 32,
+            "src": "81:89:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 20,
+              "nodeType": "Block",
+              "src": "229:32:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 18,
+                    "name": "greeting",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 3,
+                    "src": "246:8:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 17,
+                  "id": 19,
+                  "nodeType": "Return",
+                  "src": "239:15:0"
+                }
+              ]
+            },
+            "functionSelector": "cfae3217",
+            "id": 21,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "greet",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "190:2:0"
+            },
+            "returnParameters": {
+              "id": 17,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 16,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 21,
+                  "src": "214:13:0",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 15,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "214:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "213:15:0"
+            },
+            "scope": 32,
+            "src": "176:85:0",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 30,
+              "nodeType": "Block",
+              "src": "320:37:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 28,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 26,
+                      "name": "greeting",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3,
+                      "src": "330:8:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage",
+                        "typeString": "string storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 27,
+                      "name": "_greeting",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23,
+                      "src": "341:9:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_memory_ptr",
+                        "typeString": "string memory"
+                      }
+                    },
+                    "src": "330:20:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "id": 29,
+                  "nodeType": "ExpressionStatement",
+                  "src": "330:20:0"
+                }
+              ]
+            },
+            "functionSelector": "a4136862",
+            "id": 31,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setGreeting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 24,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23,
+                  "mutability": "mutable",
+                  "name": "_greeting",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31,
+                  "src": "288:23:0",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 22,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "288:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "287:25:0"
+            },
+            "returnParameters": {
+              "id": 25,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "320:0:0"
+            },
+            "scope": 32,
+            "src": "267:90:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 45,
+        "src": "35:325:0"
+      },
+      {
+        "absolutePath": "test/contracts/utils/Proxiable.sol",
+        "file": "./utils/Proxiable.sol",
+        "id": 33,
+        "nodeType": "ImportDirective",
+        "scope": 45,
+        "sourceUnit": 498,
+        "src": "362:31:0",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 34,
+              "name": "Greeter",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 32,
+              "src": "423:7:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Greeter_$32",
+                "typeString": "contract Greeter"
+              }
+            },
+            "id": 35,
+            "nodeType": "InheritanceSpecifier",
+            "src": "423:7:0"
+          },
+          {
+            "baseName": {
+              "id": 36,
+              "name": "Proxiable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 497,
+              "src": "432:9:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Proxiable_$497",
+                "typeString": "contract Proxiable"
+              }
+            },
+            "id": 37,
+            "nodeType": "InheritanceSpecifier",
+            "src": "432:9:0"
+          }
+        ],
+        "contractDependencies": [
+          32,
+          497
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 38,
+        "linearizedBaseContracts": [
+          38,
+          497,
+          32
+        ],
+        "name": "GreeterProxiable",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 45,
+        "src": "394:50:0"
+      },
+      {
+        "absolutePath": "test/contracts/utils/Proxiable40.sol",
+        "file": "./utils/Proxiable40.sol",
+        "id": 39,
+        "nodeType": "ImportDirective",
+        "scope": 45,
+        "sourceUnit": 558,
+        "src": "446:33:0",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 40,
+              "name": "Greeter",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 32,
+              "src": "511:7:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Greeter_$32",
+                "typeString": "contract Greeter"
+              }
+            },
+            "id": 41,
+            "nodeType": "InheritanceSpecifier",
+            "src": "511:7:0"
+          },
+          {
+            "baseName": {
+              "id": 42,
+              "name": "Proxiable40",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 557,
+              "src": "520:11:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Proxiable40_$557",
+                "typeString": "contract Proxiable40"
+              }
+            },
+            "id": 43,
+            "nodeType": "InheritanceSpecifier",
+            "src": "520:11:0"
+          }
+        ],
+        "contractDependencies": [
+          32,
+          557
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 44,
+        "linearizedBaseContracts": [
+          44,
+          557,
+          32
+        ],
+        "name": "GreeterProxiable40",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 45,
+        "src": "480:54:0"
+      }
+    ],
+    "src": "0:534:0"
+  },
+  "metadata": {
+    "compiler": {
+      "version": "0.7.6+commit.7338295f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "name": "greet",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_greeting",
+              "type": "string"
+            }
+          ],
+          "name": "initialize",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_greeting",
+              "type": "string"
+            }
+          ],
+          "name": "setGreeting",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "compilationTarget": {
+        "test/contracts/Greeter.sol": "Greeter"
+      },
+      "evmVersion": "istanbul",
+      "libraries": {},
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "optimizer": {
+        "enabled": false,
+        "runs": 200
+      },
+      "remappings": []
+    },
+    "sources": {
+      "test/contracts/Greeter.sol": {
+        "keccak256": "0x51311dacbda20abbf7e67dca9c851e0ea2f29f6e88bd90909028c1c5a2fd9017",
+        "urls": [
+          "bzz-raw://166a690e58f661b9a270755566a52ca6e8fbe7ef8cf464c67e523778f820211b",
+          "dweb:/ipfs/QmYm3rJQg2V9YT8G7SqEKuudZdFBcY18NQ4rvrSscGBbLt"
+        ]
+      },
+      "test/contracts/utils/Proxiable.sol": {
+        "keccak256": "0xc486a5a226413915c4b399796d2222a39a0599d1aa6632cddc49f6ec550f4f98",
+        "urls": [
+          "bzz-raw://7314e1dab4fd27179da0490e3ee001413f8a1013f4eecec4e39f00752c0d28f8",
+          "dweb:/ipfs/QmWyXY2xMmagMxhsyQW4MCQfKQ9agc9m6fzo4y7mmpjh9B"
+        ]
+      },
+      "test/contracts/utils/Proxiable40.sol": {
+        "keccak256": "0x8627392264916a7831e03be2a18846ce9a0fa9670d11d1d9bf5141f496a5843f",
+        "urls": [
+          "bzz-raw://dca321cbf7df9389f67da4e36a6de9d27adee6603c614df0ed34df37631ca650",
+          "dweb:/ipfs/QmfHUow3ttYoRLFbra8EXwbG3L5HpGkcFoSGET9Z1SNj5j"
+        ]
+      }
+    },
+    "version": 1
+  }
+}
