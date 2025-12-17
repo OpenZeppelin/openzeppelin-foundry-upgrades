@@ -1,0 +1,68 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_7_6-51c08450b6699f09037e73d478a18151a7ab2c2f",
+  "solcVersion": "0.7.6",
+  "solcLongVersion": "0.7.6+commit.7338295f",
+  "userSourceNameMap": {
+    "contracts/Greeter.sol": "project/contracts/Greeter.sol",
+    "contracts/GreeterDefender.sol": "project/contracts/GreeterDefender.sol",
+    "contracts/GreeterFallback.sol": "project/contracts/GreeterFallback.sol",
+    "contracts/GreeterProxiable40Fallback.sol": "project/contracts/GreeterProxiable40Fallback.sol",
+    "contracts/GreeterProxiable40FallbackString.sol": "project/contracts/GreeterProxiable40FallbackString.sol",
+    "contracts/GreeterTransparent40Fallback.sol": "project/contracts/GreeterTransparent40Fallback.sol",
+    "contracts/GreeterTransparent40FallbackString.sol": "project/contracts/GreeterTransparent40FallbackString.sol",
+    "contracts/utils/Proxiable.sol": "project/contracts/utils/Proxiable.sol",
+    "contracts/utils/Proxiable40.sol": "project/contracts/utils/Proxiable40.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "istanbul",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata",
+            "storageLayout"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/Greeter.sol": {
+        "content": "pragma solidity >= 0.4.22 <0.8.0;\n\ncontract Greeter {\n\n    string greeting;\n\n    function initialize(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    function greet() public view returns (string memory) {\n        return greeting;\n    }\n\n    function setGreeting(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n}\n\nimport \"./utils/Proxiable.sol\";\ncontract GreeterProxiable is Greeter, Proxiable {}\n\nimport \"./utils/Proxiable40.sol\";\ncontract GreeterProxiable40 is Greeter, Proxiable40 {}"
+      },
+      "project/contracts/GreeterDefender.sol": {
+        "content": "pragma solidity >= 0.4.22 <0.8.0;\n\ncontract GreeterDefender {\n    function version() external pure returns (uint256) {\n      return 1;\n    }\n}\n\ncontract GreeterDefenderV2 {\n    function version() external pure returns (uint256) {\n      return 2;\n    }\n}\n\ncontract GreeterDefenderV2Bad {\n  function x() public {\n    (bool ok, ) = address(this).delegatecall(\"\");\n    require(ok);\n  }\n}\n\ncontract GreeterDefenderV3 {\n  uint256 immutable versionNumber;\n  constructor(uint256 initialVersion) public {\n    versionNumber = initialVersion;\n  }\n  function version() external view returns (uint256) {\n    return versionNumber;\n  }\n}\n\nimport \"./utils/Proxiable.sol\";\ncontract GreeterDefenderProxiable is GreeterDefender, Proxiable {}\ncontract GreeterDefenderV2Proxiable is GreeterDefenderV2, Proxiable {}\n"
+      },
+      "project/contracts/GreeterFallback.sol": {
+        "content": "pragma solidity >= 0.6.0 <0.8.0;\n\ncontract GreeterFallback {\n\n    string greeting;\n\n    function initialize(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    function greet() public view returns (string memory) {\n        return greeting;\n    }\n\n    function setGreeting(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    fallback() external {}\n}\n"
+      },
+      "project/contracts/GreeterProxiable40Fallback.sol": {
+        "content": "pragma solidity >= 0.6.0 <0.8.0;\n\nimport { Proxiable40 } from \"./utils/Proxiable40.sol\";\n\ncontract GreeterProxiable40Fallback is Proxiable40 {\n    string greeting;\n\n    function initialize(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    function greet() public view returns (string memory) {\n        return greeting;\n    }\n\n    fallback() external {}\n}\n\ncontract GreeterProxiable40FallbackV2 is GreeterProxiable40Fallback {\n    function resetGreeting() public {\n        greeting = \"Hello World\";\n    }\n}"
+      },
+      "project/contracts/GreeterProxiable40FallbackString.sol": {
+        "content": "pragma solidity >= 0.6.0 <0.8.0;\n\nimport { Proxiable40 } from \"./utils/Proxiable40.sol\";\n\ncontract GreeterProxiable40FallbackString is Proxiable40 {\n    string greeting;\n\n    function initialize(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    function greet() public view returns (string memory) {\n        return greeting;\n    }\n\n    fallback(bytes calldata) external returns (bytes memory) {\n        return abi.encode(greeting);\n    }\n}\n\ncontract GreeterProxiable40FallbackStringV2 is GreeterProxiable40FallbackString {\n    function resetGreeting() public {\n        greeting = \"Hello World\";\n    }\n}"
+      },
+      "project/contracts/GreeterTransparent40Fallback.sol": {
+        "content": "pragma solidity >= 0.6.0 <0.8.0;\n\n// These contracts are for testing only, they are not safe for use in production.\n\ninterface ITransparentUpgradeableProxy {\n    function upgradeTo(address) external;\n    function upgradeToAndCall(address, bytes memory) external payable;\n}\n\ncontract UnsafeAdminFallback {\n    // NOT SAFE FOR PRODUCTION USE. ANYONE CAN UPGRADE THE PROXY THROUGH THE BELOW.\n\n    function upgrade(ITransparentUpgradeableProxy proxy, address implementation) public virtual {\n        proxy.upgradeTo(implementation);\n    }\n\n    function upgradeAndCall(\n        ITransparentUpgradeableProxy proxy,\n        address implementation,\n        bytes memory data\n    ) public payable virtual {\n        proxy.upgradeToAndCall{value: msg.value}(implementation, data);\n    }\n\n    fallback() external {}\n}\n\ncontract GreeterTransparent40Fallback {\n    string greeting;\n\n    function initialize(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    function greet() public view returns (string memory) {\n        return greeting;\n    }\n}\n\ncontract GreeterTransparent40FallbackV2 is GreeterTransparent40Fallback {\n    function resetGreeting() public {\n        greeting = \"Hello World\";\n    }\n}"
+      },
+      "project/contracts/GreeterTransparent40FallbackString.sol": {
+        "content": "pragma solidity >= 0.6.0 <0.8.0;\n\n// These contracts are for testing only, they are not safe for use in production.\n\ninterface ITransparentUpgradeableProxy {\n    function upgradeTo(address) external;\n    function upgradeToAndCall(address, bytes memory) external payable;\n}\n\ncontract UnsafeAdminFallbackString {\n    // NOT SAFE FOR PRODUCTION USE. ANYONE CAN UPGRADE THE PROXY THROUGH THE BELOW.\n\n    function upgrade(ITransparentUpgradeableProxy proxy, address implementation) public virtual {\n        proxy.upgradeTo(implementation);\n    }\n\n    function upgradeAndCall(\n        ITransparentUpgradeableProxy proxy,\n        address implementation,\n        bytes memory data\n    ) public payable virtual {\n        proxy.upgradeToAndCall{value: msg.value}(implementation, data);\n    }\n\n    fallback(bytes calldata) external returns (bytes memory) {\n        return abi.encode(\"foo\");\n    }\n}\n\ncontract GreeterTransparent40FallbackString {\n    string greeting;\n\n    function initialize(string memory _greeting) public {\n        greeting = _greeting;\n    }\n\n    function greet() public view returns (string memory) {\n        return greeting;\n    }\n}\n\ncontract GreeterTransparent40FallbackStringV2 is GreeterTransparent40FallbackString {\n    function resetGreeting() public {\n        greeting = \"Hello World\";\n    }\n}"
+      },
+      "project/contracts/utils/Proxiable.sol": {
+        "content": "pragma solidity >= 0.4.22 <0.8.0;\n\n// This contract is for testing only, it is not safe for use in production.\n\ncontract Proxiable {\n    bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;\n\n    string public constant UPGRADE_INTERFACE_VERSION = \"5.0.0\";\n\n    function upgradeToAndCall(address newImplementation, bytes calldata data) external {\n        _setImplementation(newImplementation);\n        if (data.length > 0) {\n            /**\n             * Using address(this).call is dangerous as the call can impersonate the proxy being upgraded.\n             * a better option is to use a delegate call with an oz-upgrades-unsafe-allow, but this is not\n             * supported by the early version of solidity used here.\n             *\n             * /// @custom:oz-upgrades-unsafe-allow delegatecall\n             * (bool success, ) = newImplementation.delegatecall(data);\n             *\n             * Note that using delegate call can make your implementation contract vulnerable if this function\n             * is not protected with the `onlyProxy` modifier. Again, This contract is for testing only, it is\n             * not safe for use in production. Instead, use the `UUPSUpgradeable` contract available in\n             * @openzeppelin/contracts-upgradeable\n             */\n            (bool success, ) = address(this).call(data);\n            require(success, \"upgrade call reverted\");\n        } else {\n            _checkNonPayable();\n        }\n    }\n\n    function _checkNonPayable() private {\n        if (msg.value > 0) {\n            revert('non-payable upgrade call');\n        }\n    }\n\n    function _setImplementation(address newImplementation) private {\n        bytes32 slot = _IMPLEMENTATION_SLOT;\n        // solhint-disable-next-line no-inline-assembly\n        assembly {\n            sstore(slot, newImplementation)\n        }\n    }\n}\n"
+      },
+      "project/contracts/utils/Proxiable40.sol": {
+        "content": "pragma solidity >= 0.4.22 <0.8.0;\n\n// This contract is for testing only, it is not safe for use in production.\n\ncontract Proxiable40 {\n    bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;\n\n    function upgradeTo(address newImplementation) external {\n        _setImplementation(newImplementation);\n    }\n\n    function upgradeToAndCall(address newImplementation, bytes calldata data) external {\n        _setImplementation(newImplementation);\n        if (data.length > 0) {\n            /**\n             * Using address(this).call is dangerous as the call can impersonate the proxy being upgraded.\n             * a better option is to use a delegate call with an oz-upgrades-unsafe-allow, but this is not\n             * supported by the early version of solidity used here.\n             *\n             * /// @custom:oz-upgrades-unsafe-allow delegatecall\n             * (bool success, ) = newImplementation.delegatecall(data);\n             *\n             * Note that using delegate call can make your implementation contract vulnerable if this function\n             * is not protected with the `onlyProxy` modifier. Again, This contract is for testing only, it is\n             * not safe for use in production. Instead, use the `UUPSUpgradeable` contract available in\n             * @openzeppelin/contracts-upgradeable\n             */\n            (bool success, ) = address(this).call(data);\n            require(success, \"upgrade call reverted\");\n        }\n    }\n\n    function _setImplementation(address newImplementation) private {\n        bytes32 slot = _IMPLEMENTATION_SLOT;\n        // solhint-disable-next-line no-inline-assembly\n        assembly {\n            sstore(slot, newImplementation)\n        }\n    }\n}\n"
+      }
+    }
+  }
+}
