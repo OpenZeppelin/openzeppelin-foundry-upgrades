@@ -118,7 +118,10 @@ contract HH3CompatibilityTest is Test {
             HH3_OUT_DIR
         );
 
-        assertTrue(buildInfoFile.startsWith("artifacts/build-info"), "Build-info path should start with artifacts/build-info for HH3");
+        assertTrue(
+            buildInfoFile.startsWith("artifacts/build-info"),
+            "Build-info path should start with artifacts/build-info for HH3"
+        );
         assertTrue(buildInfoFile.endsWith(".json"), "Build-info path should end with .json");
     }
 }
