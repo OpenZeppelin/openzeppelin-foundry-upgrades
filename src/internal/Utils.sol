@@ -136,6 +136,7 @@ library Utils {
 
     /**
      * @dev Recursively searches for artifact file. Fallback for when direct path fails.
+     * Fails if zero or multiple matches are found to avoid ambiguity.
      */
     function _findArtifactRecursive(
         Vm vm,
@@ -151,36 +152,87 @@ library Utils {
         inputs[5] = string(abi.encodePacked(shortName, ".json"));
 
         Vm.FfiResult memory result = runAsBashCommand(inputs);
-        if (result.exitCode != 0) {
+        string memory stdout = string(result.stdout);
+
+        // Check for no matches (empty output or find failure)
+        if (result.exitCode != 0 || bytes(stdout).length == 0) {
             revert(
                 string(abi.encodePacked("Could not find artifact for contract ", shortName, " in directory ", outDir))
             );
         }
 
-        // Get first line only (first match)
-        string[] memory lines = vm.split(string(result.stdout), "\n");
-        return lines.length > 0 ? lines[0] : "";
+        // Split by newlines and filter empty entries
+        string[] memory lines = vm.split(stdout, "\n");
+        uint256 matchCount = 0;
+        string memory firstMatch;
+
+        for (uint256 i = 0; i < lines.length; i++) {
+            if (bytes(lines[i]).length > 0) {
+                if (matchCount == 0) {
+                    firstMatch = lines[i];
+                }
+                matchCount++;
+            }
+        }
+
+        // Fail on zero matches
+        if (matchCount == 0) {
+            revert(
+                string(abi.encodePacked("Could not find artifact for contract ", shortName, " in directory ", outDir))
+            );
+        }
+
+        // Fail on multiple matches to avoid ambiguity
+        if (matchCount > 1) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "Found multiple artifacts for contract ",
+                        shortName,
+                        " in directory ",
+                        outDir,
+                        ". Please specify the full contract name in the format 'MyContract.sol:MyContract' or use the artifact path."
+                    )
+                )
+            );
+        }
+
+        return firstMatch;
     }
 
     using StringFinder for string;
 
     /**
-     * @dev Gets the build info directory. Detects the environment by checking the outDir value.
-     * If outDir is not "out", it means the project is using Hardhat (which sets FOUNDRY_OUT=artifacts/contracts),
-     * so return artifacts/build-info. Otherwise, return the Foundry default outDir/build-info.
+     * @dev Gets the build info directory. Detects the environment by checking if outDir
+     * starts with "artifacts/contracts" (Hardhat convention).
      *
      * @param outDir Foundry output directory (e.g., "out" or "artifacts/contracts")
      * @return The path to the build-info directory
      */
-    function getBuildInfoDir(string memory outDir) internal view returns (string memory) {
-        // If outDir is not "out", this is likely Hardhat (which uses artifacts/contracts)
-        // In that case, use artifacts/build-info
-        if (!Strings.equal(outDir, "out")) {
+    function getBuildInfoDir(string memory outDir) internal pure returns (string memory) {
+        // Normalize outDir by removing trailing slash if present
+        string memory normalizedOutDir = outDir;
+        if (outDir.endsWith("/")) {
+            // Remove trailing slash by taking substring
+            bytes memory outDirBytes = bytes(outDir);
+            bytes memory trimmed = new bytes(outDirBytes.length - 1);
+            for (uint256 i = 0; i < trimmed.length; i++) {
+                trimmed[i] = outDirBytes[i];
+            }
+            normalizedOutDir = string(trimmed);
+        }
+
+        // Detect Hardhat specifically by checking for artifacts/contracts prefix
+        // Hardhat sets FOUNDRY_OUT=artifacts/contracts, and build-info is at artifacts/build-info
+        if (
+            StringFinder.startsWith(normalizedOutDir, "artifacts/contracts") ||
+            StringFinder.startsWith(normalizedOutDir, "artifacts\\contracts")
+        ) {
             return "artifacts/build-info";
         }
 
-        // Default: Foundry uses outDir/build-info
-        return string(abi.encodePacked(outDir, "/build-info"));
+        // Default: Foundry uses outDir/build-info (works for custom FOUNDRY_OUT values)
+        return string(abi.encodePacked(normalizedOutDir, "/build-info"));
     }
 
     /**

@@ -29,14 +29,14 @@
       "version-package": "bash scripts/release/version.sh",
       "publish-package": "bash scripts/release/publish.sh"
     },
-    "devDependencies": {
-      "@nomicfoundation/hardhat-foundry": "^1.1.1",
-      "@openzeppelin/contracts": "^5.0.2",
-      "@openzeppelin/contracts-upgradeable": "^5.0.2",
-      "@openzeppelin/contracts-v4": "npm:@openzeppelin/contracts@^v4.9.6",
-      "@openzeppelin/contracts-upgradeable-v4": "npm:@openzeppelin/contracts-upgradeable@^v4.9.6",
-      "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
-      "@openzeppelin/upgrades-core": "2.0.0-alpha.0",
+"devDependencies": {
+    "@nomicfoundation/hardhat-foundry": "^1.1.1",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
+    "@openzeppelin/contracts-v4": "npm:@openzeppelin/contracts@^v4.9.6",
+    "@openzeppelin/contracts-upgradeable-v4": "npm:@openzeppelin/contracts-upgradeable@^v4.9.6",
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
+    "@openzeppelin/upgrades-core": "2.0.0-alpha.0",
       "hardhat": "^2.21.0",
       "prettier": "^3.0.0",
       "prettier-plugin-solidity": "^1.1.0",
@@ -46,8 +46,8 @@
       "@changesets/cli": "^2.29.3",
       "@changesets/changelog-github": "^0.5.1"
     },
-    "peerDependencies": {
-      "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
-      "@openzeppelin/upgrades-core": "2.0.0-alpha.0"
-    }
+"peerDependencies": {
+    "@openzeppelin/defender-deploy-client-cli": "0.0.1-alpha.10",
+    "@openzeppelin/upgrades-core": "2.0.0-alpha.0"
+  }
   }
