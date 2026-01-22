@@ -191,7 +191,7 @@ library Utils {
                         shortName,
                         " in directory ",
                         outDir,
-                        ". Please specify the full contract name in the format 'MyContract.sol:MyContract' or use the artifact path."
+                        ". Specify the Solidity file name and the contract name in the format 'MyContract.sol:MyContract' or use the artifact path."
                     )
                 )
             );
