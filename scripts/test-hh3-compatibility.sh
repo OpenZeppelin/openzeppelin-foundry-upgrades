@@ -12,4 +12,5 @@ mkdir -p artifacts/build-info
 cp test/fixtures/hh3-artifacts/build-info/* artifacts/build-info/
 
 export FOUNDRY_OUT=artifacts/contracts
+export FOUNDRY_PROFILE=hh3-compatibility
 forge test --match-contract HH3CompatibilityTest -vvv --ffi --force

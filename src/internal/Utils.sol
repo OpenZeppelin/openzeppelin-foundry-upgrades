@@ -96,7 +96,7 @@ library Utils {
                     abi.encodePacked(
                         "Could not find AST in artifact ",
                         artifactPath,
-                        ". Set ast = true in foundry.toml"
+                        ". Set `ast = true` in foundry.toml"
                     )
                 )
             );
@@ -106,19 +106,11 @@ library Utils {
 
         // For Hardhat 3, remove "project/" prefix to get user source name
         // Hardhat 3 uses canonical names (project/contracts/...) but CLI expects user names (contracts/...)
-        if (vm.keyExistsJson(artifactJson, "._format")) {
-            string memory format = vm.parseJsonString(artifactJson, "._format");
-            // Compare strings using Strings.equal() from OpenZeppelin
-            if (Strings.equal(format, "hh3-artifact-1")) {
-                // Remove "project/" prefix if present
-                if (StringFinder.startsWith(absolutePath, "project/")) {
-                    info.contractPath = vm.replace(absolutePath, "project/", "");
-                } else {
-                    info.contractPath = absolutePath;
-                }
-            } else {
-                info.contractPath = absolutePath;
-            }
+        bool isHH3Format = vm.keyExistsJson(artifactJson, "._format") &&
+            Strings.equal(vm.parseJsonString(artifactJson, "._format"), "hh3-artifact-1");
+
+        if (isHH3Format && StringFinder.startsWith(absolutePath, "project/")) {
+            info.contractPath = vm.replace(absolutePath, "project/", "");
         } else {
             info.contractPath = absolutePath;
         }
