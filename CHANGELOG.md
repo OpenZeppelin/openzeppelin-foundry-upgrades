@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1-alpha.0 (2026-01-23)
+
+Support use in Hardhat 3 solidity tests
+**Note** :warning: This version is still in testing and is not encouraged for use in production.
+
 ## 0.4.0 (2025-01-27)
 
 - Remove dependency on `solidity-stringutils`. ([#91](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/91))

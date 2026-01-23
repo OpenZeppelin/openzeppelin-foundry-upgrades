@@ -4,9 +4,6 @@ out = "out"
 libs = ["node_modules", "lib"]
 build_info = true
 extra_output = ["storageLayout"]
-fs_permissions = [
-    { access = "read", path = "out" },
-]
 
 [profile.openzeppelin-contracts-v4]
 src = "test-profiles/openzeppelin-contracts-v4/src"
@@ -45,6 +42,4 @@ out = "artifacts/contracts"
 fs_permissions = [
     { access = "read", path = "test/fixtures" },
     { access = "read-write", path = "artifacts" },
-    { access = "read", path = "out" },
 ]
-ffi = true
