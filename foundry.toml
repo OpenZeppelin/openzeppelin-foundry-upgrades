@@ -6,8 +6,6 @@ build_info = true
 extra_output = ["storageLayout"]
 fs_permissions = [
     { access = "read", path = "out" },
-    { access = "read", path = "test/fixtures" },
-    { access = "read-write", path = "artifacts" }
 ]
 
 [profile.openzeppelin-contracts-v4]
@@ -43,14 +41,10 @@ src = "test-profiles/build-info-v2-reference-contract/src"
 test = "test-profiles/build-info-v2-reference-contract/test"
 
 [profile.hh3-compatibility]
-src = "src"
 out = "artifacts/contracts"
-libs = ["node_modules", "lib"]
-build_info = true
-extra_output = ["storageLayout"]
 fs_permissions = [
     { access = "read", path = "test/fixtures" },
     { access = "read-write", path = "artifacts" },
-    { access = "read", path = "out" }
+    { access = "read", path = "out" },
 ]
 ffi = true
