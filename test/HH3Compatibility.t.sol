@@ -100,10 +100,7 @@ contract HH3CompatibilityTest is Test {
 
         // Verify this is actually an HH3 build-info file by checking its format
         string memory buildInfoJson = vm.readFile(buildInfoFile);
-        assertTrue(
-            vm.keyExistsJson(buildInfoJson, "._format"),
-            "Build-info should have _format field"
-        );
+        assertTrue(vm.keyExistsJson(buildInfoJson, "._format"), "Build-info should have _format field");
         string memory format = vm.parseJsonString(buildInfoJson, "._format");
         assertEq(format, "hh3-sol-build-info-output-1", "Build-info should be HH3 format");
     }
