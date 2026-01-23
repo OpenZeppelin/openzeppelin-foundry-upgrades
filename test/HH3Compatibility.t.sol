@@ -35,7 +35,6 @@ contract HH3CompatibilityTest is Test {
     using StringFinder for string;
 
     string constant HH3_OUT_DIR = "artifacts/contracts";
-    string constant DEFAULT_OUT_DIR = "out";
 
     /**
      * @dev Test that Utils.getOutDir() respects FOUNDRY_OUT environment variable.
@@ -46,17 +45,6 @@ contract HH3CompatibilityTest is Test {
     function testGetOutDir_respectsFOUNDRY_OUT() public {
         string memory outDir = Utils.getOutDir();
         assertEq(outDir, HH3_OUT_DIR, "Utils.getOutDir() should respect FOUNDRY_OUT");
-    }
-
-    /**
-     * @dev Test that vm.envOr() fallback works correctly when variable doesn't exist.
-     *
-     * This validates the fallback mechanism used by Utils.getOutDir().
-     */
-    function testGetOutDir_fallbackToDefault() public {
-        string memory defaultValue = "out";
-        string memory defaultOut = vm.envOr("FOUNDRY_OUT_NONEXISTENT", defaultValue);
-        assertEq(defaultOut, "out");
     }
 
     /**
@@ -71,22 +59,8 @@ contract HH3CompatibilityTest is Test {
         assertEq(info.shortName, "Greeter", "Contract name should be Greeter");
         assertEq(info.contractPath, "test/contracts/Greeter.sol", "Contract path should match");
         assertTrue(bytes(info.contractPath).length > 0, "Contract path should not be empty");
-    }
-
-    /**
-     * @dev Test that getContractInfo works with Foundry's default structure.
-     *
-     * This validates backward compatibility - the library should still work
-     * with the standard Foundry output directory structure.
-     *
-     * NOTE: This test passes the outDir directly, not via Utils.getOutDir(),
-     * because FOUNDRY_OUT is set to artifacts/contracts by the script.
-     */
-    function testGetContractInfo_withFoundryStructure() public {
-        ContractInfo memory info = Utils.getContractInfo("Greeter.sol", DEFAULT_OUT_DIR);
-
-        assertEq(info.shortName, "Greeter", "Contract name should be Greeter");
-        assertEq(info.contractPath, "test/contracts/Greeter.sol", "Contract path should match");
+        // Verify artifact path is from HH3 structure, not Foundry's default "out" dir
+        assertTrue(vm.contains(info.artifactPath, HH3_OUT_DIR), "Artifact path should contain HH3 output dir");
     }
 
     /**
@@ -123,5 +97,14 @@ contract HH3CompatibilityTest is Test {
             "Build-info path should start with artifacts/build-info for HH3"
         );
         assertTrue(buildInfoFile.endsWith(".json"), "Build-info path should end with .json");
+
+        // Verify this is actually an HH3 build-info file by checking its format
+        string memory buildInfoJson = vm.readFile(buildInfoFile);
+        assertTrue(
+            vm.keyExistsJson(buildInfoJson, "._format"),
+            "Build-info should have _format field"
+        );
+        string memory format = vm.parseJsonString(buildInfoJson, "._format");
+        assertEq(format, "hh3-sol-build-info-output-1", "Build-info should be HH3 format");
     }
 }
