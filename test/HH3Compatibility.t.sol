@@ -104,4 +104,63 @@ contract HH3CompatibilityTest is Test {
         string memory format = vm.parseJsonString(buildInfoJson, "._format");
         assertEq(format, "hh3-sol-build-info-output-1", "Build-info should be HH3 format");
     }
+
+    /**
+     * @dev Exercises the by-name fallback in getContractInfo. When the direct lookup
+     * misses, the fallback must still resolve the artifact and return an absolute path,
+     * so callers get a consistent result regardless of how it was found.
+     */
+    function testGetContractInfo_byNameFallback() public {
+        string[] memory mkdirArgs = new string[](3);
+        mkdirArgs[0] = "mkdir";
+        mkdirArgs[1] = "-p";
+        mkdirArgs[2] = "artifacts/contracts/recursive-probe/Stub.sol";
+        vm.ffi(mkdirArgs);
+
+        string[] memory cpArgs = new string[](3);
+        cpArgs[0] = "cp";
+        cpArgs[1] = "test/fixtures/hh3-artifacts/contracts/test/contracts/Greeter.sol/Greeter.json";
+        cpArgs[2] = "artifacts/contracts/recursive-probe/Stub.sol/Stub.json";
+        vm.ffi(cpArgs);
+
+        ContractInfo memory info = Utils.getContractInfo("Stub.sol", HH3_OUT_DIR);
+
+        assertEq(info.shortName, "Stub");
+        assertTrue(info.artifactPath.startsWith(vm.projectRoot()), "artifactPath should be absolute");
+        assertTrue(
+            vm.contains(info.artifactPath, "recursive-probe/Stub.sol/Stub.json"),
+            "artifactPath should point to the nested fixture"
+        );
+    }
+
+    /**
+     * @dev By-name fallback must still resolve the artifact when the search directory
+     * contains spaces. Guards against regressing to an unquoted path being passed to the
+     * underlying shell command, where bash would split the single argument on whitespace.
+     */
+    function testGetContractInfo_byNameFallback_outDirWithSpaces() public {
+        string memory spacesOutDir = "artifacts/dir with spaces";
+        string memory nestedDir = string.concat(spacesOutDir, "/nested/Stub.sol");
+
+        string[] memory mkdirArgs = new string[](3);
+        mkdirArgs[0] = "mkdir";
+        mkdirArgs[1] = "-p";
+        mkdirArgs[2] = nestedDir;
+        vm.ffi(mkdirArgs);
+
+        string[] memory cpArgs = new string[](3);
+        cpArgs[0] = "cp";
+        cpArgs[1] = "test/fixtures/hh3-artifacts/contracts/test/contracts/Greeter.sol/Greeter.json";
+        cpArgs[2] = string.concat(nestedDir, "/Stub.json");
+        vm.ffi(cpArgs);
+
+        ContractInfo memory info = Utils.getContractInfo("Stub.sol", spacesOutDir);
+
+        assertEq(info.shortName, "Stub");
+        assertTrue(info.artifactPath.startsWith(vm.projectRoot()), "artifactPath should be absolute");
+        assertTrue(
+            vm.contains(info.artifactPath, "dir with spaces/nested/Stub.sol/Stub.json"),
+            "artifactPath should resolve through the spaces-containing outDir"
+        );
+    }
 }

@@ -69,11 +69,10 @@ library Utils {
             abi.encodePacked(vm.projectRoot(), "/", outDir, "/", fileName, "/", info.shortName, ".json")
         );
 
-        // Guard clause: try direct path first, fallback to recursive search
         try vm.readFile(artifactPath) returns (string memory artifactJson) {
             return _processArtifact(vm, info, artifactPath, artifactJson);
         } catch {
-            artifactPath = _findArtifactRecursive(vm, outDir, info.shortName);
+            artifactPath = _findArtifactByName(vm, outDir, info.shortName);
             string memory artifactJson = vm.readFile(artifactPath);
             return _processArtifact(vm, info, artifactPath, artifactJson);
         }
@@ -127,17 +126,23 @@ library Utils {
     }
 
     /**
-     * @dev Recursively searches for artifact file. Fallback for when direct path fails.
-     * Fails if zero or multiple matches are found to avoid ambiguity.
+     * @dev Fallback artifact lookup for when the direct path doesn't exist. Searches for
+     * `<shortName>.json` anywhere under outDir. Needed for layouts like Hardhat's, where
+     * artifacts are nested by source path (e.g. `<outDir>/contracts/foo/Bar.sol/Bar.json`)
+     * rather than Foundry's flat `<outDir>/Bar.sol/Bar.json`. Reverts on zero or multiple
+     * matches.
+     * @return Absolute path to the matching artifact.
      */
-    function _findArtifactRecursive(
+    function _findArtifactByName(
         Vm vm,
         string memory outDir,
         string memory shortName
     ) private returns (string memory) {
+        // inputs are space-joined unquoted into one bash command — quote any operand
+        // that could contain spaces or other shell-special characters.
         string[] memory inputs = new string[](6);
         inputs[0] = "find";
-        inputs[1] = string(abi.encodePacked(vm.projectRoot(), "/", outDir));
+        inputs[1] = string(abi.encodePacked('"', outDir, '"'));
         inputs[2] = "-type";
         inputs[3] = "f";
         inputs[4] = "-name";
@@ -189,7 +194,7 @@ library Utils {
             );
         }
 
-        return firstMatch;
+        return string(abi.encodePacked(vm.projectRoot(), "/", firstMatch));
     }
 
     using StringFinder for string;
