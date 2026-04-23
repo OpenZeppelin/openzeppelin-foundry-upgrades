@@ -38,8 +38,7 @@ contract HH3CompatibilityTest is Test {
     string constant HH3_SOURCE_CODE_HASH = "0x9564e0245350d0eb5e42a8fed97d87518dbfbddf7668ed383f97a8558b2a9c39";
     string constant HH3_FIXTURE_ARTIFACT_PATH =
         "test/fixtures/hh3-artifacts/contracts/contracts/HH3CompatibilityFixture.sol/HH3CompatibilityFixture.json";
-    string constant HH3_ARTIFACT_PATH =
-        "artifacts/contracts/HH3CompatibilityFixture.sol/HH3CompatibilityFixture.json";
+    string constant HH3_ARTIFACT_PATH = "artifacts/contracts/HH3CompatibilityFixture.sol/HH3CompatibilityFixture.json";
     string constant HH3_BUILD_INFO_OUTPUT_PATH =
         "artifacts/build-info/solc-0_8_29-907fbafcc0740e4f31aafd9a5fe5d66a6e55db92.output.json";
 
@@ -143,8 +142,7 @@ contract HH3CompatibilityTest is Test {
         string[] memory cpArgs = new string[](3);
         cpArgs[0] = "cp";
         cpArgs[1] = HH3_FIXTURE_ARTIFACT_PATH;
-        cpArgs[2] =
-            "artifacts/contracts/nested-hh3-fixture/NestedHH3FallbackFixture.sol/NestedHH3FallbackFixture.json";
+        cpArgs[2] = "artifacts/contracts/nested-hh3-fixture/NestedHH3FallbackFixture.sol/NestedHH3FallbackFixture.json";
         vm.ffi(cpArgs);
 
         ContractInfo memory info = Utils.getContractInfo("NestedHH3FallbackFixture.sol", HH3_OUT_DIR);
