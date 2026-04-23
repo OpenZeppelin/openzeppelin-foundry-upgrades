@@ -6,9 +6,19 @@
 # contracts/ rather than inside it. The fallback tests create their own nested
 # copies during execution to exercise recursive lookup paths.
 
-set -e
+set -euo pipefail
+
+# `artifacts/` is only a temporary HH3 staging area for this script. Leaving it
+# behind makes later default-profile forge commands resolve implicit read access
+# against `artifacts` instead of `out`.
+cleanup() {
+  rm -rf artifacts
+}
+
+trap cleanup EXIT
 
 forge clean
+rm -rf artifacts
 
 # Unique direct-lookup HH3 artifact fixture. Since no compiled source in this
 # repo uses this name, Foundry will not overwrite it during `forge test`.
