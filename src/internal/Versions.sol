@@ -3,6 +3,6 @@ pragma solidity ^0.8.0;
 
 library Versions {
     // TODO add a workflow to update this automatically based on package.json
-    string constant UPGRADES_CORE = "1.45.0-alpha.0";
+    string constant UPGRADES_CORE = "^1.45.0-alpha.0";
     string constant DEFENDER_DEPLOY_CLIENT_CLI = "0.0.1-alpha.10";
 }
