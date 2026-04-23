@@ -22,21 +22,22 @@ import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.
  * correct location. Tests stage uniquely named HH3 fixture copies so they
  * cannot conflict with other artifacts compiled for this repo's test suite.
  *
- * HH3 Fixture Generation:
- * Generated from the openzeppelin-upgrades repo (https://github.com/OpenZeppelin/openzeppelin-upgrades).
- * Compile in packages/plugin-hardhat with `npx hardhat compile`. The plugin-hardhat hook injects AST
- * into artifacts during compilation, which is required for upgrade safety checks.
- *
- * After compilation, copy files from packages/plugin-hardhat to this repo's fixtures directory:
- * - Artifacts: from artifacts/contracts/<source-path>/<Contract>.json to test/fixtures/hh3-artifacts/contracts/...
- * - Build-info: from artifacts/build-info/*.json to test/fixtures/hh3-artifacts/build-info/
+ * Minimal HH3 fixtures:
+ * This suite keeps only the HH3-specific fields that `Utils` actually reads,
+ * so it remains a focused parser/layout regression test rather than duplicating
+ * the full integration coverage that lives in the plugin-hardhat repo.
  */
 contract HH3CompatibilityTest is Test {
     using StringFinder for string;
 
     string constant HH3_OUT_DIR = "artifacts/contracts";
+    string constant HH3_ABSOLUTE_PATH = "project/contracts/Greeter.sol";
+    string constant HH3_CONTRACT_PATH = "contracts/Greeter.sol";
+    string constant HH3_SOURCE_CODE_HASH = "0x9564e0245350d0eb5e42a8fed97d87518dbfbddf7668ed383f97a8558b2a9c39";
     string constant HH3_FIXTURE_ARTIFACT_PATH =
         "test/fixtures/hh3-artifacts/contracts/test/contracts/Greeter.sol/Greeter.json";
+    string constant HH3_BUILD_INFO_OUTPUT_PATH =
+        "artifacts/build-info/solc-0_8_29-907fbafcc0740e4f31aafd9a5fe5d66a6e55db92.output.json";
     string constant HH3_CONTRACT_INFO_FIXTURE = "HH3DirectLookupFixture.sol:Greeter";
     string constant HH3_CONTRACT_INFO_FIXTURE_DIR = "artifacts/contracts/HH3DirectLookupFixture.sol";
     string constant HH3_CONTRACT_INFO_FIXTURE_PATH = "artifacts/contracts/HH3DirectLookupFixture.sol/Greeter.json";
@@ -71,10 +72,10 @@ contract HH3CompatibilityTest is Test {
         string memory artifactJson = vm.readFile(info.artifactPath);
 
         assertEq(info.shortName, "Greeter", "Contract name should be Greeter");
-        assertEq(info.contractPath, "contracts/Greeter.sol", "Contract path should match HH3 fixture");
+        assertEq(info.contractPath, HH3_CONTRACT_PATH, "Contract path should match HH3 fixture");
         assertEq(
             info.sourceCodeHash,
-            "0x9564e0245350d0eb5e42a8fed97d87518dbfbddf7668ed383f97a8558b2a9c39",
+            HH3_SOURCE_CODE_HASH,
             "Source code hash should come from the HH3 fixture metadata"
         );
         assertEq(
@@ -85,12 +86,12 @@ contract HH3CompatibilityTest is Test {
         assertEq(vm.parseJsonString(artifactJson, "._format"), "hh3-artifact-1", "Artifact should retain HH3 format");
         assertEq(
             vm.parseJsonString(artifactJson, ".inputSourceName"),
-            "project/contracts/Greeter.sol",
+            HH3_ABSOLUTE_PATH,
             "Artifact should preserve the HH3 input source name"
         );
         assertEq(
             vm.parseJsonString(artifactJson, ".ast.absolutePath"),
-            "project/contracts/Greeter.sol",
+            HH3_ABSOLUTE_PATH,
             "Artifact should preserve the HH3 absolute path"
         );
     }
@@ -110,11 +111,8 @@ contract HH3CompatibilityTest is Test {
     /**
      * @dev Test that getBuildInfoFile works with HH3 structure.
      *
-     * This verifies that build-info files can be found in artifacts/build-info/
-     * (not out/build-info/) when using HH3 structure.
-     *
-     * The HH3 build-info files were copied from fixtures by the script and placed
-     * in artifacts/build-info/
+     * This verifies that the HH3 source hash resolves to the minimal build-info
+     * fixture under artifacts/build-info/ rather than out/build-info/.
      */
     function testGetBuildInfoFile_withHH3Structure() public {
         ContractInfo memory contractInfo = _stageFixtureAndGetContractInfo(
@@ -128,11 +126,7 @@ contract HH3CompatibilityTest is Test {
             HH3_OUT_DIR
         );
 
-        assertTrue(
-            buildInfoFile.startsWith("artifacts/build-info"),
-            "Build-info path should start with artifacts/build-info for HH3"
-        );
-        assertTrue(buildInfoFile.endsWith(".json"), "Build-info path should end with .json");
+        assertEq(buildInfoFile, HH3_BUILD_INFO_OUTPUT_PATH, "Build-info path should resolve to the HH3 output fixture");
 
         // Verify this is actually an HH3 build-info file by checking its format
         string memory buildInfoJson = vm.readFile(buildInfoFile);
