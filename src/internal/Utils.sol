@@ -133,11 +133,7 @@ library Utils {
      * matches.
      * @return Absolute path to the matching artifact.
      */
-    function _findArtifactByName(
-        Vm vm,
-        string memory outDir,
-        string memory shortName
-    ) private returns (string memory) {
+    function _findArtifactByName(Vm vm, string memory outDir, string memory shortName) private returns (string memory) {
         // inputs are space-joined unquoted into one bash command — quote any operand
         // that could contain spaces or other shell-special characters.
         string[] memory inputs = new string[](6);
