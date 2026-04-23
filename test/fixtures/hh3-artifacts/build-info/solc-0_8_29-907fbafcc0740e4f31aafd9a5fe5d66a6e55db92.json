@@ -2,6 +2,6 @@
   "_format": "hh3-sol-build-info-1",
   "id": "solc-0_8_29-907fbafcc0740e4f31aafd9a5fe5d66a6e55db92",
   "userSourceNameMap": {
-    "contracts/Greeter.sol": "project/contracts/Greeter.sol"
+    "contracts/HH3CompatibilityFixture.sol": "project/contracts/HH3CompatibilityFixture.sol"
   }
 }

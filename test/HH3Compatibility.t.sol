@@ -18,9 +18,9 @@ import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.
  * when FOUNDRY_OUT is set to match Hardhat's structure.
  *
  * NOTE: This test MUST be run via scripts/test-hh3-compatibility.sh
- * which sets up the HH3 build-info files and environment variables in the
- * correct location. Tests stage uniquely named HH3 fixture copies so they
- * cannot conflict with other artifacts compiled for this repo's test suite.
+ * which sets up the direct-lookup HH3 artifact fixture, HH3 build-info files,
+ * and environment variables in the correct location. The fallback tests still
+ * stage nested copies to exercise recursive lookup paths.
  *
  * Minimal HH3 fixtures:
  * This suite keeps only the HH3-specific fields that `Utils` actually reads,
@@ -31,19 +31,17 @@ contract HH3CompatibilityTest is Test {
     using StringFinder for string;
 
     string constant HH3_OUT_DIR = "artifacts/contracts";
-    string constant HH3_ABSOLUTE_PATH = "project/contracts/Greeter.sol";
-    string constant HH3_CONTRACT_PATH = "contracts/Greeter.sol";
+    string constant HH3_CONTRACT_NAME = "HH3CompatibilityFixture.sol";
+    string constant HH3_SHORT_NAME = "HH3CompatibilityFixture";
+    string constant HH3_ABSOLUTE_PATH = "project/contracts/HH3CompatibilityFixture.sol";
+    string constant HH3_CONTRACT_PATH = "contracts/HH3CompatibilityFixture.sol";
     string constant HH3_SOURCE_CODE_HASH = "0x9564e0245350d0eb5e42a8fed97d87518dbfbddf7668ed383f97a8558b2a9c39";
     string constant HH3_FIXTURE_ARTIFACT_PATH =
-        "test/fixtures/hh3-artifacts/contracts/test/contracts/Greeter.sol/Greeter.json";
+        "test/fixtures/hh3-artifacts/contracts/contracts/HH3CompatibilityFixture.sol/HH3CompatibilityFixture.json";
+    string constant HH3_ARTIFACT_PATH =
+        "artifacts/contracts/HH3CompatibilityFixture.sol/HH3CompatibilityFixture.json";
     string constant HH3_BUILD_INFO_OUTPUT_PATH =
         "artifacts/build-info/solc-0_8_29-907fbafcc0740e4f31aafd9a5fe5d66a6e55db92.output.json";
-    string constant HH3_CONTRACT_INFO_FIXTURE = "HH3DirectLookupFixture.sol:Greeter";
-    string constant HH3_CONTRACT_INFO_FIXTURE_DIR = "artifacts/contracts/HH3DirectLookupFixture.sol";
-    string constant HH3_CONTRACT_INFO_FIXTURE_PATH = "artifacts/contracts/HH3DirectLookupFixture.sol/Greeter.json";
-    string constant HH3_BUILD_INFO_FIXTURE = "HH3BuildInfoFixture.sol:Greeter";
-    string constant HH3_BUILD_INFO_FIXTURE_DIR = "artifacts/contracts/HH3BuildInfoFixture.sol";
-    string constant HH3_BUILD_INFO_FIXTURE_PATH = "artifacts/contracts/HH3BuildInfoFixture.sol/Greeter.json";
 
     /**
      * @dev Test that Utils.getOutDir() respects FOUNDRY_OUT environment variable.
@@ -59,19 +57,16 @@ contract HH3CompatibilityTest is Test {
     /**
      * @dev Test that getContractInfo works with HH3 artifact structure.
      *
-     * The HH3 artifact fixture is staged under a unique direct-lookup path so the
-     * test reads the committed HH3 fixture rather than some other artifact already
-     * present under artifacts/contracts.
+     * The script stages the direct-lookup HH3 fixture under artifacts/contracts,
+     * so this test can call Utils.getContractInfo without any in-test copying.
      */
     function testGetContractInfo_withHH3Structure() public {
-        ContractInfo memory info = _stageFixtureAndGetContractInfo(
-            HH3_CONTRACT_INFO_FIXTURE,
-            HH3_CONTRACT_INFO_FIXTURE_DIR,
-            HH3_CONTRACT_INFO_FIXTURE_PATH
-        );
+        assertTrue(vm.isFile(HH3_ARTIFACT_PATH), "HH3 fixture should be staged by the test script before lookup");
+
+        ContractInfo memory info = Utils.getContractInfo(HH3_CONTRACT_NAME, HH3_OUT_DIR);
         string memory artifactJson = vm.readFile(info.artifactPath);
 
-        assertEq(info.shortName, "Greeter", "Contract name should be Greeter");
+        assertEq(info.shortName, HH3_SHORT_NAME, "Contract name should match HH3 fixture");
         assertEq(info.contractPath, HH3_CONTRACT_PATH, "Contract path should match HH3 fixture");
         assertEq(
             info.sourceCodeHash,
@@ -80,7 +75,7 @@ contract HH3CompatibilityTest is Test {
         );
         assertEq(
             info.artifactPath,
-            string.concat(vm.projectRoot(), "/", HH3_CONTRACT_INFO_FIXTURE_PATH),
+            string.concat(vm.projectRoot(), "/", HH3_ARTIFACT_PATH),
             "Artifact path should point to the staged HH3 fixture file"
         );
         assertEq(vm.parseJsonString(artifactJson, "._format"), "hh3-artifact-1", "Artifact should retain HH3 format");
@@ -115,11 +110,9 @@ contract HH3CompatibilityTest is Test {
      * fixture under artifacts/build-info/ rather than out/build-info/.
      */
     function testGetBuildInfoFile_withHH3Structure() public {
-        ContractInfo memory contractInfo = _stageFixtureAndGetContractInfo(
-            HH3_BUILD_INFO_FIXTURE,
-            HH3_BUILD_INFO_FIXTURE_DIR,
-            HH3_BUILD_INFO_FIXTURE_PATH
-        );
+        assertTrue(vm.isFile(HH3_ARTIFACT_PATH), "HH3 fixture should be staged by the test script before lookup");
+
+        ContractInfo memory contractInfo = Utils.getContractInfo(HH3_CONTRACT_NAME, HH3_OUT_DIR);
         string memory buildInfoFile = Utils.getBuildInfoFile(
             contractInfo.sourceCodeHash,
             contractInfo.shortName,
@@ -199,32 +192,5 @@ contract HH3CompatibilityTest is Test {
             ),
             "artifactPath should resolve through the spaces-containing outDir"
         );
-    }
-
-    function _stageFixtureAndGetContractInfo(
-        string memory stagedContractName,
-        string memory stagedArtifactDir,
-        string memory stagedArtifactPath
-    ) private returns (ContractInfo memory) {
-        assertFalse(
-            vm.exists(stagedArtifactPath),
-            string.concat("HH3 staged fixture path already exists: ", stagedArtifactPath)
-        );
-
-        string[] memory mkdirArgs = new string[](3);
-        mkdirArgs[0] = "mkdir";
-        mkdirArgs[1] = "-p";
-        mkdirArgs[2] = stagedArtifactDir;
-        vm.ffi(mkdirArgs);
-
-        string[] memory cpArgs = new string[](3);
-        cpArgs[0] = "cp";
-        cpArgs[1] = HH3_FIXTURE_ARTIFACT_PATH;
-        cpArgs[2] = stagedArtifactPath;
-        vm.ffi(cpArgs);
-
-        assertTrue(vm.isFile(stagedArtifactPath), "HH3 fixture copy should be staged before lookup");
-
-        return Utils.getContractInfo(stagedContractName, HH3_OUT_DIR);
     }
 }
