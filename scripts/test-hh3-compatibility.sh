@@ -18,7 +18,7 @@ cleanup() {
 trap cleanup EXIT
 
 forge clean
-rm -rf artifacts
+cleanup
 
 # Unique direct-lookup HH3 artifact fixture. Since no compiled source in this
 # repo uses this name, Foundry will not overwrite it during `forge test`.
