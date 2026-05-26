@@ -59,6 +59,9 @@ Then add the following additional line to `remappings.txt`, in addition to the o
 openzeppelin-foundry-upgrades/=node_modules/@openzeppelin/foundry-upgrades/src/
 ```
 
+> **Note**
+> This library can also be used in Hardhat 3 Solidity tests, where the same remapping applies. See [Using with Hardhat — Solidity tests](https://docs.openzeppelin.com/upgrades-plugins/hardhat-upgrades#solidity-tests) for the Hardhat configuration and an example.
+
 #### Soldeer
 
 Follow the steps above, but instead of running `forge install OpenZeppelin/openzeppelin-foundry-upgrades`, use one of the install commands described in https://soldeer.xyz/project/openzeppelin-foundry-upgrades
