@@ -115,11 +115,11 @@ FOUNDRY_OUT=my-output-dir
 
 ### Windows environments
 
-If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable.
-For example, if you are using [Git for Windows](https://gitforwindows.org/), add the following line in the `.env` file of your project (using forward slashes):
+If you are using Windows, set the `OPENZEPPELIN_BASH_PATH` environment variable to the fully qualified path of the `bash` executable, using forward slashes. For example, with [Git for Windows](https://gitforwindows.org/):
 ```env
 OPENZEPPELIN_BASH_PATH="C:/Program Files/Git/bin/bash"
 ```
+In a Foundry project, you can set this in your project's `.env` file.
 
 ## Usage
 
