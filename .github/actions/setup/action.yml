@@ -1,12 +1,21 @@
 name: Setup Node environment
 
+inputs:
+  node-version:
+    description: Node.js version to use
+    default: '22'
+  cache:
+    description: Whether to use the dependency cache
+    default: 'true'
+
 runs:
   using: composite
   steps:
     - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
-        node-version: 20.x
-        cache: yarn
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ inputs.cache == 'true' && 'yarn' || '' }}
+        registry-url: 'https://registry.npmjs.org'
 
     - name: Install dependencies
       run: yarn --frozen-lockfile --prefer-offline
