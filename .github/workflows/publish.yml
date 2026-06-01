@@ -89,11 +89,9 @@ jobs:
       - name: Publish to Soldeer
         if: steps.changesets.outputs.published == 'true'
         run: |
-          mkdir -p ~/.soldeer
-          echo "$SOLDEER_TOKEN" > ~/.soldeer/.soldeer_login
           PACKAGE_VERSION=$(jq -r .version package.json)
           echo "Publishing version $PACKAGE_VERSION to Soldeer..."
           forge soldeer push openzeppelin-foundry-upgrades~$PACKAGE_VERSION
         shell: bash
         env:
-          SOLDEER_TOKEN: ${{ secrets.SOLDEER_TOKEN }}
+          SOLDEER_API_TOKEN: ${{ secrets.SOLDEER_API_TOKEN }}
