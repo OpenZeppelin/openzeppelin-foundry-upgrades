@@ -77,7 +77,7 @@ See [DEFENDER.md](DEFENDER.md)
 
 ## Foundry Requirements
 
-This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.9.5 or higher.
+This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.9.5 or higher, and Solidity version 0.8.13 or higher.
 
 ## Before Running
 

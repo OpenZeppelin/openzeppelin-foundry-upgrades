@@ -25,7 +25,7 @@ contract UpgradesUseDefenderDeployTest is Test {
         d = new Deployer();
     }
 
-    function _assertDefenderNotAvailable(string memory str) private {
+    function _assertDefenderNotAvailable(string memory str) private pure {
         assertTrue(
             str.contains("The current network with chainId 31337 is not supported by OpenZeppelin Defender") ||
                 str.contains("DEFENDER_KEY and DEFENDER_SECRET must be set in environment variables")

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.13;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
@@ -9,6 +9,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {Options} from "../Options.sol";
 import {Versions} from "./Versions.sol";
 import {Utils} from "./Utils.sol";
+import {StringFinder} from "./StringFinder.sol";
 import {DefenderDeploy} from "./DefenderDeploy.sol";
 
 import {IUpgradeableProxy} from "./interfaces/IUpgradeableProxy.sol";
@@ -346,10 +347,9 @@ library Core {
         string memory stdout = string(result.stdout);
 
         // CLI validate command uses exit code to indicate if the validation passed or failed.
-        Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
         if (result.exitCode == 0) {
             // As an extra precaution, we also check stdout for "SUCCESS" to ensure it actually ran.
-            if (vm.contains(stdout, "SUCCESS")) {
+            if (StringFinder.contains(stdout, "SUCCESS")) {
                 if (result.stderr.length > 0) {
                     // Prints warnings from stderr
                     console.log(string(result.stderr));
@@ -359,7 +359,7 @@ library Core {
                 revert(string(abi.encodePacked("Failed to run upgrade safety validation: ", stdout)));
             }
         } else {
-            if (vm.contains(stdout, "FAILED")) {
+            if (StringFinder.contains(stdout, "FAILED")) {
                 if (result.stderr.length > 0) {
                     // Prints warnings from stderr
                     console.log(string(result.stderr));
@@ -472,8 +472,7 @@ library Core {
 
     function _deployFromBytecode(bytes memory bytecode) private returns (address) {
         address addr;
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             addr := create(0, add(bytecode, 32), mload(bytecode))
         }
         return addr;

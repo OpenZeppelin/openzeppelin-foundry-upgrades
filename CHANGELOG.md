@@ -1,6 +1,14 @@
 # Changelog
 
 
+## Unreleased
+
+- Fix compiler warnings when compiling with newer versions of Foundry and Solidity. ([#115](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/issues/115))
+
+### Breaking changes
+
+- Requires Solidity version 0.8.13 or higher.
+
 ## 0.4.1 (2026-05-29)
 
 - Support use in Hardhat 3 solidity tests. ([#121](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/121))
