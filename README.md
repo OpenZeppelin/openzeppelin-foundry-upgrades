@@ -75,9 +75,10 @@ openzeppelin-foundry-upgrades/=dependencies/openzeppelin-foundry-upgrades-0.3.6/
 
 See [DEFENDER.md](DEFENDER.md)
 
-## Foundry Requirements
+## Requirements
 
-This library requires [forge-std](https://github.com/foundry-rs/forge-std) version 1.9.5 or higher, and Solidity version 0.8.13 or higher.
+- [forge-std](https://github.com/foundry-rs/forge-std) version 1.9.5 or higher.
+- Solidity version 0.8.13 or higher.
 
 ## Before Running
 
