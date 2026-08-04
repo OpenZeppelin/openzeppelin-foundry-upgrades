@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.13;
 
 import {Options} from "../src/Options.sol";
 import {Core} from "../src/internal/Core.sol";
