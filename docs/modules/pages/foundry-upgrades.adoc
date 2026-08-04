@@ -75,10 +75,9 @@ Then add the following additional line to `remappings.txt`, in addition to the o
 openzeppelin-foundry-upgrades/=dependencies/openzeppelin-foundry-upgrades-0.3.6/src/
 ----
 
-== Requirements
+== Foundry Requirements
 
-- https://github.com/foundry-rs/forge-std[forge-std] version 1.9.5 or higher.
-- Solidity version 0.8.13 or higher.
+This library requires https://github.com/foundry-rs/forge-std[forge-std] version 1.9.5 or higher.
 
 == Before Running
 
