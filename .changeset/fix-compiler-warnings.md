@@ -1,6 +1,6 @@
 ---
-'@openzeppelin/foundry-upgrades': minor
+'@openzeppelin/foundry-upgrades': patch
 ---
 
 Fix compiler warnings when compiling with newer versions of Foundry and Solidity.
-- **Breaking change**: Requires Solidity version 0.8.13 or higher.
+- **Note**: Requires Solidity version 0.8.13 or higher.
