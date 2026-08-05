@@ -48,7 +48,7 @@ contract HH3CompatibilityTest is Test {
      * NOTE: FOUNDRY_OUT must be set externally via the test script.
      * vm.setEnv() does not work for FOUNDRY_* variables as Foundry treats them specially.
      */
-    function testGetOutDir_respectsFOUNDRY_OUT() public {
+    function testGetOutDir_respectsFOUNDRY_OUT() public view {
         string memory outDir = Utils.getOutDir();
         assertEq(outDir, HH3_OUT_DIR, "Utils.getOutDir() should respect FOUNDRY_OUT");
     }
@@ -96,7 +96,7 @@ contract HH3CompatibilityTest is Test {
      * NOTE: FOUNDRY_OUT must be set externally via the test script.
      * vm.setEnv() does not work for FOUNDRY_* variables.
      */
-    function testFOUNDRY_OUT_environmentVariable() public {
+    function testFOUNDRY_OUT_environmentVariable() public view {
         string memory defaultValue = "out";
         string memory foundryOut = vm.envOr("FOUNDRY_OUT", defaultValue);
         assertEq(foundryOut, HH3_OUT_DIR, "FOUNDRY_OUT should be set by the test script");

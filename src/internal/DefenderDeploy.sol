@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.13;
 
 import {Vm} from "forge-std/Vm.sol";
 import {console} from "forge-std/console.sol";
@@ -7,6 +7,7 @@ import {console} from "forge-std/console.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Utils, ContractInfo} from "./Utils.sol";
+import {StringFinder} from "./StringFinder.sol";
 import {Versions} from "./Versions.sol";
 import {Options, DefenderOptions} from "../Options.sol";
 import {ProposeUpgradeResponse, ApprovalProcessResponse} from "../Defender.sol";
@@ -216,7 +217,7 @@ library DefenderDeploy {
         return parseProposeUpgradeResponse(stdout);
     }
 
-    function parseProposeUpgradeResponse(string memory stdout) internal returns (ProposeUpgradeResponse memory) {
+    function parseProposeUpgradeResponse(string memory stdout) internal pure returns (ProposeUpgradeResponse memory) {
         ProposeUpgradeResponse memory response;
         response.proposalId = _parseLine("Proposal ID: ", stdout, true);
         response.url = _parseLine("Proposal URL: ", stdout, false);
@@ -227,9 +228,9 @@ library DefenderDeploy {
         string memory expectedPrefix,
         string memory stdout,
         bool required
-    ) private returns (string memory) {
+    ) private pure returns (string memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-        if (vm.contains(stdout, expectedPrefix)) {
+        if (StringFinder.contains(stdout, expectedPrefix)) {
             // Get the substring after the prefix
             string[] memory segments = vm.split(stdout, expectedPrefix);
             if (segments.length > 2) {
@@ -313,7 +314,7 @@ library DefenderDeploy {
         return parseApprovalProcessResponse(stdout);
     }
 
-    function parseApprovalProcessResponse(string memory stdout) internal returns (ApprovalProcessResponse memory) {
+    function parseApprovalProcessResponse(string memory stdout) internal pure returns (ApprovalProcessResponse memory) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
 
         ApprovalProcessResponse memory response;

@@ -12,9 +12,9 @@ library StringFinder {
     /**
      * Returns whether the subject string contains the search string.
      */
-    function contains(string memory subject, string memory search) internal returns (bool) {
+    function contains(string memory subject, string memory search) internal pure returns (bool) {
         Vm vm = Vm(Utils.CHEATCODE_ADDRESS);
-        return vm.contains(subject, search);
+        return vm.indexOf(subject, search) != type(uint256).max;
     }
 
     /**

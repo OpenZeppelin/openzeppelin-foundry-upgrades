@@ -11,7 +11,7 @@ import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.
 contract StringFinderTest is Test {
     using StringFinder for string;
 
-    function testContains() public {
+    function testContains() public pure {
         string memory str = "hello world";
         assertTrue(str.contains("ello"));
         assertFalse(str.contains("Ello"));
