@@ -60,6 +60,7 @@ struct Options {
     bool unsafeSkipStorageCheck;
     /*
      * Skips all upgrade safety checks. This is a dangerous option meant to be used as a last resort.
+     * This does not validate initializer or constructor data, which are passed through to deployment unchanged.
      */
     bool unsafeSkipAllChecks;
     /*
