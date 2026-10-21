@@ -18,6 +18,7 @@ import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
 import {WithConstructor, NoInitializer, RevertingConstructor} from "./contracts/WithConstructor.sol";
 import {HasOwner} from "./contracts/HasOwner.sol";
+import {UnsafeAllowUninitializedProxy} from "./contracts/UnsafeAllowUninitializedProxy.sol";
 
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
@@ -296,6 +297,17 @@ contract UpgradesTest is Test {
         } catch (bytes memory reason) {
             assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
         }
+    }
+
+    // Implementation has no initializer, deployed behind a proxy that allows empty initializer data
+    function testNoInitializer_unsafeAllowUninitializedProxy() public {
+        Options memory opts;
+        opts.constructorData = abi.encode(123);
+        address impl = Upgrades.deployImplementation("WithConstructor.sol:NoInitializer", opts);
+
+        address proxy = address(new UnsafeAllowUninitializedProxy(impl, ""));
+        assertEq(Upgrades.getImplementationAddress(proxy), impl);
+        assertEq(NoInitializer(proxy).a(), 123);
     }
 
     function testDeployUUPSProxy_emptyInitializerData() public {

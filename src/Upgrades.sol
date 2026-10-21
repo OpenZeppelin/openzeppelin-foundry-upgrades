@@ -21,7 +21,7 @@ library Upgrades {
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `ERC1967Proxy` from OpenZeppelin Contracts 5.6 or later
      * @param opts Common options
      * @return Proxy address
      */
@@ -39,7 +39,7 @@ library Upgrades {
      * @dev Deploys a UUPS proxy using the given contract as the implementation.
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `ERC1967Proxy` from OpenZeppelin Contracts 5.6 or later
      * @return Proxy address
      */
     function deployUUPSProxy(string memory contractName, bytes memory initializerData) internal returns (address) {
@@ -52,7 +52,7 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `TransparentUpgradeableProxy` from OpenZeppelin Contracts 5.6 or later
      * @param opts Common options
      * @return Proxy address
      */
@@ -87,7 +87,7 @@ library Upgrades {
      *
      * @param contractName Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `TransparentUpgradeableProxy` from OpenZeppelin Contracts 5.6 or later
      * @return Proxy address
      */
     function deployTransparentProxy(
@@ -395,7 +395,7 @@ library UnsafeUpgrades {
      * @dev Deploys a UUPS proxy using the given contract address as the implementation.
      *
      * @param impl Address of the contract to use as the implementation
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `ERC1967Proxy` from OpenZeppelin Contracts 5.6 or later
      * @return Proxy address
      */
     function deployUUPSProxy(address impl, bytes memory initializerData) internal returns (address) {
@@ -407,7 +407,7 @@ library UnsafeUpgrades {
      *
      * @param impl Address of the contract to use as the implementation
      * @param initialOwner Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+     * @param initializerData Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `TransparentUpgradeableProxy` from OpenZeppelin Contracts 5.6 or later
      * @return Proxy address
      */
     function deployTransparentProxy(

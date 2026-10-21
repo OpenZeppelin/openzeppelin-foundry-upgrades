@@ -108,7 +108,7 @@ Deploys a UUPS proxy using the given contract as the implementation.
 *Parameters:*
 
 * `contractName` (`string`) - Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `ERC1967Proxy` from OpenZeppelin Contracts 5.6 or later
 * `opts` (`struct Options`) - Common options
 
 *Returns*
@@ -124,7 +124,7 @@ Deploys a UUPS proxy using the given contract as the implementation.
 *Parameters:*
 
 * `contractName` (`string`) - Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
-* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `ERC1967Proxy` from OpenZeppelin Contracts 5.6 or later
 
 *Returns*
 
@@ -140,7 +140,7 @@ Deploys a transparent proxy using the given contract as the implementation.
 
 * `contractName` (`string`) - Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
 * `initialOwner` (`address`) - Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `TransparentUpgradeableProxy` from OpenZeppelin Contracts 5.6 or later
 * `opts` (`struct Options`) - Common options
 
 *Returns*
@@ -157,7 +157,7 @@ Deploys a transparent proxy using the given contract as the implementation.
 
 * `contractName` (`string`) - Name of the contract to use as the implementation, e.g. "MyContract.sol" or "MyContract.sol:MyContract" or artifact path relative to the project root directory
 * `initialOwner` (`address`) - Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `TransparentUpgradeableProxy` from OpenZeppelin Contracts 5.6 or later
 
 *Returns*
 
@@ -522,7 +522,7 @@ Deploys a UUPS proxy using the given contract address as the implementation.
 *Parameters:*
 
 * `impl` (`address`) - Address of the contract to use as the implementation
-* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `ERC1967Proxy` from OpenZeppelin Contracts 5.6 or later
 
 *Returns*
 
@@ -538,7 +538,7 @@ Deploys a transparent proxy using the given contract address as the implementati
 
 * `impl` (`address`) - Address of the contract to use as the implementation
 * `initialOwner` (`address`) - Address to set as the owner of the ProxyAdmin contract which gets deployed by the proxy
-* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by proxies from OpenZeppelin Contracts 5.6 or later
+* `initializerData` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by `TransparentUpgradeableProxy` from OpenZeppelin Contracts 5.6 or later
 
 *Returns*
 
