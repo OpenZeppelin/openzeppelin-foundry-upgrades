@@ -276,7 +276,7 @@ library Upgrades {
      * @dev Deploys a beacon proxy using the given beacon and call data.
      *
      * @param beacon Address of the beacon to use
-     * @param data Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by beacon proxies from OpenZeppelin Contracts 5.8 or later
+     * @param data Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended
      * @return Proxy address
      */
     function deployBeaconProxy(address beacon, bytes memory data) internal returns (address) {
@@ -288,7 +288,7 @@ library Upgrades {
      * @dev Deploys a beacon proxy using the given beacon and call data.
      *
      * @param beacon Address of the beacon to use
-     * @param data Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by beacon proxies from OpenZeppelin Contracts 5.8 or later
+     * @param data Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended
      * @param opts Common options
      * @return Proxy address
      */
@@ -487,7 +487,7 @@ library UnsafeUpgrades {
      * @dev Deploys a beacon proxy using the given beacon and call data.
      *
      * @param beacon Address of the beacon to use
-     * @param data Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by beacon proxies from OpenZeppelin Contracts 5.8 or later
+     * @param data Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended
      * @return Proxy address
      */
     function deployBeaconProxy(address beacon, bytes memory data) internal returns (address) {

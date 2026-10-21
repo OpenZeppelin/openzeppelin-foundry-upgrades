@@ -339,7 +339,7 @@ Deploys a beacon proxy using the given beacon and call data.
 *Parameters:*
 
 * `beacon` (`address`) - Address of the beacon to use
-* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by beacon proxies from OpenZeppelin Contracts 5.8 or later
+* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended
 
 *Returns*
 
@@ -354,7 +354,7 @@ Deploys a beacon proxy using the given beacon and call data.
 *Parameters:*
 
 * `beacon` (`address`) - Address of the beacon to use
-* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by beacon proxies from OpenZeppelin Contracts 5.8 or later
+* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended
 * `opts` (`struct Options`) - Common options
 
 *Returns*
@@ -626,7 +626,7 @@ Deploys a beacon proxy using the given beacon and call data.
 *Parameters:*
 
 * `beacon` (`address`) - Address of the beacon to use
-* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended and is disallowed by beacon proxies from OpenZeppelin Contracts 5.8 or later
+* `data` (`bytes`) - Encoded call data of the initializer function to call during creation of the proxy. Leaving this empty skips initialization, which is not recommended
 
 *Returns*
 
