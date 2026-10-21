@@ -18,7 +18,6 @@ contract GreeterV2Proxiable is Initializable, OwnableUpgradeable, UUPSUpgradeabl
 
     function initialize(address initialOwner, string memory _greeting) public initializer {
         __Ownable_init(initialOwner);
-        __UUPSUpgradeable_init();
         greeting = _greeting;
     }
 

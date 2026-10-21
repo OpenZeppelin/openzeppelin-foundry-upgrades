@@ -7,6 +7,7 @@ import {Upgrades, Options} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {StringFinder} from "openzeppelin-foundry-upgrades/internal/StringFinder.sol";
 
+import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
@@ -15,8 +16,9 @@ import {Greeter} from "./contracts/Greeter.sol";
 import {GreeterProxiable} from "./contracts/GreeterProxiable.sol";
 import {GreeterV2} from "./contracts/GreeterV2.sol";
 import {GreeterV2Proxiable} from "./contracts/GreeterV2Proxiable.sol";
-import {WithConstructor, NoInitializer} from "./contracts/WithConstructor.sol";
+import {WithConstructor, NoInitializer, RevertingConstructor} from "./contracts/WithConstructor.sol";
 import {HasOwner} from "./contracts/HasOwner.sol";
+import {UnsafeAllowUninitializedProxy} from "./contracts/UnsafeAllowUninitializedProxy.sol";
 
 // Import additional contracts to include them for compilation
 import "./contracts/Validations.sol";
@@ -261,11 +263,70 @@ contract UpgradesTest is Test {
         assertEq(WithConstructor(proxy).b(), 456);
     }
 
+    function testDeployImplementation_constructorRevert() public {
+        Options memory opts;
+        opts.constructorData = abi.encode(123);
+
+        Invoker i = new Invoker();
+        try i.deployImplementation("WithConstructor.sol:RevertingConstructor", opts) {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(RevertingConstructor.ConstructorReverted.selector, 123));
+        }
+    }
+
+    function testDeployImplementation_constructorRevertNoData() public {
+        Options memory opts;
+
+        Invoker i = new Invoker();
+        try i.deployImplementation("WithConstructor.sol:RevertingConstructorNoData", opts) {
+            fail();
+        } catch Error(string memory reason) {
+            assertTrue(reason.contains("Failed to deploy contract WithConstructor.sol:RevertingConstructorNoData"));
+        }
+    }
+
+    // Implementation has no initializer
     function testNoInitializer() public {
         Options memory opts;
         opts.constructorData = abi.encode(123);
-        address proxy = Upgrades.deployTransparentProxy("WithConstructor.sol:NoInitializer", msg.sender, "", opts);
-        assertEq(WithConstructor(proxy).a(), 123);
+
+        Invoker i = new Invoker();
+        try i.deployTransparentProxy("WithConstructor.sol:NoInitializer", msg.sender, "", opts) {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
+        }
+    }
+
+    // Implementation has no initializer, deployed behind a proxy that allows empty initializer data
+    function testNoInitializer_unsafeAllowUninitializedProxy() public {
+        Options memory opts;
+        opts.constructorData = abi.encode(123);
+        address impl = Upgrades.deployImplementation("WithConstructor.sol:NoInitializer", opts);
+
+        address proxy = address(new UnsafeAllowUninitializedProxy(impl, ""));
+        assertEq(Upgrades.getImplementationAddress(proxy), impl);
+        assertEq(NoInitializer(proxy).a(), 123);
+    }
+
+    function testDeployUUPSProxy_emptyInitializerData() public {
+        Invoker i = new Invoker();
+        try i.deployUUPSProxy("GreeterProxiable.sol", "") {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
+        }
+    }
+
+    // Implementation has an initializer, but it is not called
+    function testDeployTransparentProxy_emptyInitializerData() public {
+        Invoker i = new Invoker();
+        try i.deployTransparentProxy("Greeter.sol", msg.sender, "") {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
+        }
     }
 
     function testProxyAdminCheck() public {
@@ -346,6 +407,10 @@ contract UpgradesTest is Test {
 }
 
 contract Invoker {
+    function deployUUPSProxy(string memory contractName, bytes memory data) public returns (address) {
+        return Upgrades.deployUUPSProxy(contractName, data);
+    }
+
     function deployTransparentProxy(
         string memory contractName,
         address admin,
@@ -361,6 +426,10 @@ contract Invoker {
         Options memory opts
     ) public returns (address) {
         return Upgrades.deployTransparentProxy(contractName, admin, data, opts);
+    }
+
+    function deployImplementation(string memory contractName, Options memory opts) public returns (address) {
+        return Upgrades.deployImplementation(contractName, opts);
     }
 
     function validateImplementation(string memory contractName, Options memory opts) public {

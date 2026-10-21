@@ -6,6 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {UnsafeUpgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
+import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {IBeacon} from "@openzeppelin/contracts/proxy/beacon/IBeacon.sol";
 
 import {Greeter} from "./contracts/Greeter.sol";
@@ -156,8 +157,48 @@ contract UnsafeUpgradesTest is Test {
         assertEq(WithConstructor(proxy).b(), 456);
     }
 
+    // Implementation has no initializer
     function testNoInitializer() public {
-        address proxy = UnsafeUpgrades.deployTransparentProxy(address(new WithConstructor(123)), msg.sender, "");
-        assertEq(WithConstructor(proxy).a(), 123);
+        address impl = address(new NoInitializer(123));
+
+        Invoker i = new Invoker();
+        try i.deployTransparentProxy(impl, msg.sender, "") {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
+        }
+    }
+
+    function testDeployUUPSProxy_emptyInitializerData() public {
+        address impl = address(new GreeterProxiable());
+
+        Invoker i = new Invoker();
+        try i.deployUUPSProxy(impl, "") {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
+        }
+    }
+
+    // Implementation has an initializer, but it is not called
+    function testDeployTransparentProxy_emptyInitializerData() public {
+        address impl = address(new Greeter());
+
+        Invoker i = new Invoker();
+        try i.deployTransparentProxy(impl, msg.sender, "") {
+            fail();
+        } catch (bytes memory reason) {
+            assertEq(reason, abi.encodeWithSelector(ERC1967Proxy.ERC1967ProxyUninitialized.selector));
+        }
+    }
+}
+
+contract Invoker {
+    function deployUUPSProxy(address impl, bytes memory data) public returns (address) {
+        return UnsafeUpgrades.deployUUPSProxy(impl, data);
+    }
+
+    function deployTransparentProxy(address impl, address admin, bytes memory data) public returns (address) {
+        return UnsafeUpgrades.deployTransparentProxy(impl, admin, data);
     }
 }

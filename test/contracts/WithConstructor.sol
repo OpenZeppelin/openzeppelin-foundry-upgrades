@@ -28,3 +28,19 @@ contract NoInitializer {
         a = _a;
     }
 }
+
+contract RevertingConstructor {
+    error ConstructorReverted(uint256 value);
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor(uint256 _a) {
+        revert ConstructorReverted(_a);
+    }
+}
+
+contract RevertingConstructorNoData {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        revert();
+    }
+}
