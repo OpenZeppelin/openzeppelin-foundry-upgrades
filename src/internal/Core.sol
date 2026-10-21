@@ -474,6 +474,12 @@ library Core {
         address addr;
         assembly ("memory-safe") {
             addr := create(0, add(bytecode, 32), mload(bytecode))
+            // Forward the constructor's revert reason, if any
+            if and(iszero(addr), gt(returndatasize(), 0)) {
+                let fmp := mload(0x40)
+                returndatacopy(fmp, 0x00, returndatasize())
+                revert(fmp, returndatasize())
+            }
         }
         return addr;
     }
