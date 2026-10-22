@@ -1,6 +1,10 @@
 # Changelog
 
 
+## 0.4.3 (2026-10-21)
+
+- Preserve constructor revert reasons when deploying contracts by name. Document that empty initializer data is disallowed by proxies from OpenZeppelin Contracts 5.6+. ([#134](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/134))
+
 ## 0.4.2 (2026-08-05)
 
 - Fix compiler warnings when compiling with newer versions of Foundry and Solidity. ([#128](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/128))
