@@ -3159,9 +3159,9 @@ ignore@^5.2.4:
   integrity sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==
 
 immutable@^4.0.0-rc.12:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.3.5.tgz#f8b436e66d59f99760dc577f5c99a4fd2a5cc5a0"
-  integrity sha512-8eabxkth9gZatlwl5TBuJnCsoTADlL6ftEr7A4qgdaTsPyreilDSnUk57SO+jfKcNtxPa22U5KK6DSeAYhpBJw==
+  version "4.3.9"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.3.9.tgz#c98349e05e9c6e2a4d8fe88ac0b363e0d536b544"
+  integrity sha512-ObHy4YN7ycwZOUCLI1/6svfyAFu7vL8RhAvVu/bh/RZW9EPlOyDaQ9jDQWCtdqzaXUjgXZCW1migtHE7YI7UGQ==
 
 import-fresh@^3.3.0:
   version "3.3.0"
