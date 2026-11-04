@@ -1,6 +1,10 @@
 # Changelog
 
 
+## 0.4.4 (2026-11-04)
+
+- Validate namespaced storage with detailed storage layouts, by requiring `@openzeppelin/upgrades-core` `^1.48.0`. Validations of namespaced storage may download the Solidity compiler from binaries.soliditylang.org. ([#137](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/137))
+
 ## 0.4.3 (2026-10-21)
 
 - Preserve constructor revert reasons when deploying contracts by name. Document that empty initializer data is disallowed by proxies from OpenZeppelin Contracts 5.6+. ([#134](https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades/pull/134))
