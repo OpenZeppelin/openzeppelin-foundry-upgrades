@@ -99,6 +99,10 @@ extra_output = ["storageLayout"]
 
 If you do not want to run upgrade safety validations, you can skip the above steps and use the [`unsafeSkipAllChecks` option](src/Options.sol) when calling the `Upgrades` library's functions, or use the `UnsafeUpgrades` library instead. Note that these are dangerous options meant to be used as a last resort.
 
+The `unsafeSkipAllChecks` option only skips upgrade safety validations, such as storage layout and implementation
+compatibility checks. It does not validate initializer data or constructor data; those values are passed through to
+deployment unchanged, so incorrect arguments can deploy a misconfigured or unusable proxy.
+
 ### Optional: Custom output directory
 
 By default, this library assumes your Foundry output directory is set to "out".
