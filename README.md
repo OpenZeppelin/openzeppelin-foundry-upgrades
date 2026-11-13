@@ -1,6 +1,6 @@
 # OpenZeppelin Foundry Upgrades
 
-[![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades)
+[![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/upgrades-plugins/foundry/foundry-upgrades)
 
 Foundry library for deploying and managing upgradeable contracts, which includes upgrade safety validations.
 
@@ -245,7 +245,7 @@ address proxy = UnsafeUpgrades.deployUUPSProxy(
 
 ## Deploying and Verifying
 
-Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://book.getfoundry.sh/guides/scripting-with-solidity) guide.
+Run your script with `forge script` to broadcast and deploy. See Foundry's [Solidity Scripting](https://getfoundry.sh/forge/scripting) guide.
 
 > **Important**
 > Include the `--sender <ADDRESS>` flag for the `forge script` command when performing upgrades, specifying an address that owns the proxy or proxy admin. Otherwise, `OwnableUnauthorizedAccount` errors will occur.
@@ -255,4 +255,4 @@ Run your script with `forge script` to broadcast and deploy. See Foundry's [Soli
 
 ## API
 
-See [Foundry Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/api-foundry-upgrades) for the full API documentation.
+See [Foundry Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/foundry/api) for the full API documentation.

@@ -8,7 +8,7 @@ struct Options {
     /*
      * The reference contract to use for storage layout comparisons.
      *
-     * For supported formats, see https://docs.openzeppelin.com/upgrades-plugins/api-foundry-upgrades#contract_name_formats
+     * For supported formats, see https://docs.openzeppelin.com/upgrades-plugins/foundry/api#contract-name-formats
      *
      * If not using the `referenceBuildInfoDir` option, this must be in Foundry artifact format.
      *
